@@ -1,0 +1,27 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import VonNeumann from './pages/VonNeumann';
+import Harvard from './pages/Harvard';
+import Generaciones from './pages/Generaciones';
+
+function App() {
+  return (
+    <div className="app-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <NavBar />
+      <main style={{ flex: 1, padding: '2rem 1rem 4rem' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/von-neumann" element={<VonNeumann />} />
+          <Route path="/harvard" element={<Harvard />} />
+          <Route path="/generaciones" element={<Generaciones />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+export default App;
