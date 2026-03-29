@@ -1,128 +1,303 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import './Generaciones.css';
 
-const C = {
-  primary: '#004a99',
-  accent: '#e6f0ff',
-};
+const GENERACIONES = [
+  {
+    id: 1,
+    nombre: '1ª Generación',
+    periodo: '1940 – 1956',
+    tecnologia: 'Válvulas de Vacío',
+    color: '#004a99',
+    glow: 'rgba(0,74,153,0.4)',
+    emoji: '💡',
+    icon: 'ENIAC',
+    descripcion:
+      'Computadoras que utilizaban tubos de vacío como interruptores electrónicos. Eran enormes, consumían cantidades masivas de energía y generaban mucho calor. Se programaban en lenguaje de máquina.',
+    datos: [
+      { label: 'Tamaño', valor: '~167 m²', icon: '📐' },
+      { label: 'Peso', valor: '~27 toneladas', icon: '⚖️' },
+      { label: 'Consumo', valor: '150 kW', icon: '⚡' },
+      { label: 'Velocidad', valor: '5.000 op/seg', icon: '🚀' },
+      { label: 'Memoria', valor: 'Tarjetas perforadas', icon: '💾' },
+    ],
+    ejemplos: ['ENIAC (1945)', 'EDVAC', 'IBM 701'],
+    curiosidad: '¡La ENIAC necesitaba 18.000 válvulas! Atribuido a Grace Hopper, el término "bug" se popularizó en esta era al encontrar una polilla en un relé.',
+    simulacion: 'valvulas'
+  },
+  {
+    id: 2,
+    nombre: '2ª Generación',
+    periodo: '1956 – 1964',
+    tecnologia: 'Transistores',
+    color: '#0066cc',
+    glow: 'rgba(0,102,204,0.4)',
+    emoji: '🔬',
+    icon: 'IBM 1401',
+    descripcion:
+      'El transistor reemplazó a las válvulas de vacío. Fue un salto masivo en confiabilidad y reducción de tamaño. Aparecen los lenguajes de alto nivel como COBOL y FORTRAN.',
+    datos: [
+      { label: 'Tamaño', valor: 'Habitación', icon: '📐' },
+      { label: 'Peso', valor: '~1 tonelada', icon: '⚖️' },
+      { label: 'Consumo', valor: '~5 kW', icon: '⚡' },
+      { label: 'Velocidad', valor: '1 M op/seg', icon: '🚀' },
+      { label: 'Memoria', valor: 'Núcleos magnéticos', icon: '💾' },
+    ],
+    ejemplos: ['IBM 1401', 'CDC 1604', 'PDP-1'],
+    curiosidad: 'Los transistores permitieron que las computadoras fueran comerciales para empresas, no solo para gobiernos.',
+    simulacion: 'transistor'
+  },
+  {
+    id: 3,
+    nombre: '3ª Generación',
+    periodo: '1964 – 1971',
+    tecnologia: 'Circuitos Integrados',
+    color: '#3498db',
+    glow: 'rgba(52,152,219,0.4)',
+    emoji: '🔧',
+    icon: 'IBM 360',
+    descripcion:
+      'Múltiples transistores en una sola placa de silicio. Nace la industria del software estandarizado y los sistemas operativos modernos con multiprogramación.',
+    datos: [
+      { label: 'Tamaño', valor: 'Escritorio grande', icon: '📐' },
+      { label: 'Velocidad', valor: '10 M op/seg', icon: '🚀' },
+      { label: 'Consumo', valor: '500 W', icon: '⚡' },
+    ],
+    ejemplos: ['IBM System/360', 'PDP-8', 'CDC 6600'],
+    curiosidad: 'Jack Kilby y Robert Noyce inventaron el chip casi al mismo tiempo. Kilby ganó el Nobel por ello años después.',
+    simulacion: 'chip'
+  },
+  {
+    id: 4,
+    nombre: '4ª Generación',
+    periodo: '1971 – Presente',
+    tecnologia: 'Microprocesadores',
+    color: '#2980b9',
+    glow: 'rgba(41,128,185,0.4)',
+    emoji: '💻',
+    icon: 'Intel 4004',
+    descripcion:
+      'Toda la CPU en un único chip de silicio. Inicia la era de la computación personal (PC), las interfaces gráficas y la conectividad global (Internet).',
+    datos: [
+      { label: 'Tamaño', valor: 'Bolsillo / Laptop', icon: '📐' },
+      { label: 'Velocidad', valor: 'GHz (billones)', icon: '🚀' },
+      { label: 'Capacidad', valor: 'GB - TB', icon: '💾' },
+    ],
+    ejemplos: ['Apple II', 'IBM PC', 'Macintosh'],
+    curiosidad: 'El Intel 4004 tenía 2.300 transistores. Un procesador moderno de hoy puede tener más de 100.000 millones.',
+    simulacion: 'cpu'
+  },
+  {
+    id: 5,
+    nombre: '5ª Generación',
+    periodo: '1980 – Presente',
+    tecnologia: 'Inteligencia Artificial',
+    color: '#1a5276',
+    glow: 'rgba(26,82,118,0.4)',
+    emoji: '🧠',
+    icon: 'IA',
+    descripcion:
+      'Basada en el procesamiento paralelo masivo y la Inteligencia Artificial. Lenguaje natural, redes neuronales y robótica avanzada definen esta era.',
+    datos: [
+      { label: 'Paradigma', valor: 'Aprendizaje Automático', icon: '🧠' },
+      { label: 'Velocidad', valor: 'Petaflops', icon: '🚀' },
+      { label: 'Interfaz', valor: 'Voz / Natural', icon: '🗣️' },
+    ],
+    ejemplos: ['IA Generativa', 'Supercomputadoras', 'Watson'],
+    curiosidad: 'Deep Blue venciendo a Kasparov en 1997 fue el primer gran hito público de esta generación.',
+    simulacion: 'neural'
+  },
+  {
+    id: 6,
+    nombre: 'Futuro',
+    periodo: '2020 – ∞',
+    tecnologia: 'Computación Cuántica',
+    color: '#00a8ff',
+    glow: 'rgba(0,168,255,0.4)',
+    emoji: '⚛️',
+    icon: 'Qubit',
+    descripcion:
+      'Superposición y entrelazamiento. Los qubits permiten resolver problemas de optimización y criptografía que las computadoras clásicas tardarían milenios.',
+    datos: [
+      { label: 'Unidad', valor: 'Qubit', icon: '⚛️' },
+      { label: 'Temperatura', valor: '-273.15 °C', icon: '🌡️' },
+      { label: 'Estado', valor: 'Investigación', icon: '🔬' },
+    ],
+    curiosidad: 'Una computadora cuántica de pocos qubits puede ser más potente que la supercomputadora más grande del mundo para ciertas tareas.',
+    simulacion: 'quantum'
+  }
+];
 
 const QUESTIONS = [
-  { q: '¿Qué tecnología definía a la primera generación?', opts: ['Circuitos Integrados', 'Transistores', 'Válvulas de Vacío', 'Microchips'], a: 2 },
-  { q: 'La segunda generación introdujo:', opts: ['IA', 'Transistores', 'Pantallas Táctiles', 'Windows'], a: 1 },
-  { q: '¿Cuál fue la primera computadora programable de 1ra generación?', opts: ['IBM PC', 'ENIAC', 'Apple II', 'Commodore 64'], a: 1 },
-  { q: 'En la tercera generación aparecieron los:', opts: ['Válvulas', 'Circuitos Integrados', 'Nubes', 'Smartphones'], a: 1 },
-  { q: '¿A qué generación pertenece la invención del microprocesador?', opts: ['Segunda', 'Tercera', 'Cuarta', 'Quinta'], a: 2 },
-  { q: 'La arquitectura Von Neumann se formalizó en la:', opts: ['Primera Gen', 'Segunda Gen', 'Tercera Gen', 'Cuarta Gen'], a: 0 },
-  { q: 'El lenguaje de máquina era el único usado en la:', opts: ['Cuarta Gen', 'Tercera Gen', 'Segunda Gen', 'Primera Gen'], a: 3 },
-  { q: '¿Qué generación se asocia con el procesamiento en paralelo e IA?', opts: ['Cuarta', 'Quinta', 'Tercera', 'Sexta (Moderna)'], a: 1 },
-  { q: 'Las supercomputadoras actuales son evolución de la:', opts: ['Segunda Gen', 'Quinta Gen', 'Primera Gen', 'Tercera Gen'], a: 1 },
-  { q: '¿Qué componente permitió reducir el tamaño de "habitaciones" a "escritorios"?', opts: ['Válvulas', 'Transistores', 'Teclados', 'Disco Rígido'], a: 1 },
-  { q: 'La Ley de Moore describe la evolución de los chips desde la:', opts: ['Segunda Gen', 'Tercera Gen', 'Cuarta Gen', 'Quinta Gen'], a: 1 },
-  { q: 'UNIVAC I fue una computadora famosa de la:', opts: ['Primera Gen', 'Segunda Gen', 'Tercera Gen', 'Cuarta Gen'], a: 0 },
-  { q: 'Aparecen los sistemas operativos en la:', opts: ['Primera Gen', 'Tercera Gen', 'Segunda Gen', 'Cuarta Gen'], a: 1 },
-  { q: 'El disquete fue un medio común en la:', opts: ['Primera Gen', 'Segunda Gen', 'Cuarta Gen', 'Quinta Gen'], a: 2 },
-  { q: '¿En qué generación surgió la PC de IBM?', opts: ['Tercera', 'Sexta', 'Cuarta', 'Quinta'], a: 2 },
-  { q: 'Los lenguajes de alto nivel (COBOL, FORTRAN) surgen en la:', opts: ['Primera Gen', 'Segunda Gen', 'Cuarta Gen', 'Quinta Gen'], a: 1 },
-  { q: '¿Qué tecnología habilitó la computación móvil moderna?', opts: ['Válvulas mini', 'Microprocesadores VLSI', 'Circuitos de Papel', 'Baterías de vapor'], a: 1 },
-  { q: 'El concepto de "Internet" comenzó a gestarse en la:', opts: ['Segunda Gen', 'Cuarta Gen', 'Tercera Gen', 'Primera Gen'], a: 2 },
-  { q: 'La miniaturización extrema es característica de la:', opts: ['Segunda Gen', 'Quarta Gen', 'Quinta Gen', 'Sexta (Actual)'], a: 3 },
-  { q: '¿Quién es considerado el padre de la computación moderna?', opts: ['Bill Gates', 'Steve Jobs', 'Alan Turing', 'Mark Zuckerberg'], a: 2 },
+  { q: '¿Qué tecnología usaba la primera generación?', opts: ['Circuitos Integrados', 'Transistores', 'Válvulas de Vacío', 'Microchips'], a: 2 },
+  { q: '¿Qué componente reemplazó a las válvulas en la 2da generación?', opts: ['Microprocesador', 'Transistor', 'Caché', 'Válvula 2.0'], a: 1 },
+  { q: '¿Quiénes inventaron el circuito integrado?', opts: ['Gates y Jobs', 'Kilby y Noyce', 'Turing y Von Neumann', 'Moore y Bardeen'], a: 1 },
+  { q: '¿Cuál fue el primer microprocesador comercial?', opts: ['Intel 8086', 'Intel 4004', 'MOS 6502', 'i9'], a: 1 },
+  { q: 'La 3ra generación introdujo los...', opts: ['Transistores', 'Tubos de vacío', 'Circuitos Integrados', 'Qubits'], a: 2 },
+  { q: '¿Qué generación dio origen a la Computación Personal (PC)?', opts: ['Primera', 'Tercera', 'Cuarta', 'Segunda'], a: 2 },
+  { q: '¿En qué generación aparece el concepto de Inteligencia Artificial como eje central?', opts: ['Tercera', 'Quinta', 'Sexta (Futuro)', 'Cuarta'], a: 1 },
+  { q: '¿Qué es un Qubit?', opts: ['Un bit muy pequeño', 'Un bit con superposición', 'Un bit de 1950', 'Un registro de CPU'], a: 1 },
+  { q: '¿Quién fundó Intel y formuló la ley sobre la densidad de transistores?', opts: ['Bill Gates', 'Steve Wozniak', 'Gordon Moore', 'Ada Lovelace'], a: 2 },
+  { q: '¿Qué computadora de 1ra gen era del tamaño de una habitación?', opts: ['Apple I', 'Macintosh', 'ENIAC', 'IBM PC'], a: 2 },
+  { q: '¿Qué lenguajes de alto nivel surgieron en la 2da generación?', opts: ['Python y Java', 'Javascript y PHP', 'COBOL y FORTRAN', 'Ensamblador'], a: 2 },
+  { q: '¿En qué año se lanzó el IBM PC marcando la 4ta generación?', opts: ['1945', '1981', '1971', '2000'], a: 1 },
+  { q: '¿Qué temperatura requiere un procesador cuántico moderno?', opts: ['100 °C', '0 °C', '-273 °C (Cero Absoluto)', '25 °C'], a: 2 },
+  { q: '¿Cuál es la principal característica de la "5ta generación"?', opts: ['Válvulas baratas', 'Procesamiento paralelo e IA', 'Uso exclusivo de tarjetas', 'Menos memoria'], a: 1 },
+  { q: '¿Qué es el "cuello de botella de Von Neumann"?', opts: ['Mucho calor', 'Gasto de luz', 'Lentitud por el bus compartido', 'CPU muy grande'], a: 2 },
+  { q: 'Los transistores permitieron reducir el tamaño de las computadoras...', opts: ['Un 10%', 'Un 50%', 'Dramáticamente (de m² a cm²)', 'Nada'], a: 2 },
+  { q: '¿A qué generación pertenece el descubrimiento de la técnica de multiprogramación?', opts: ['Primera', 'Segunda', 'Tercera', 'Cuarta'], a: 2 },
+  { q: '¿Qué tecnología habilita la miniaturización de la 4ta generación?', opts: ['LSI y VLSI', 'Válvulas nano', 'Cables de oro', 'Caché external'], a: 0 },
+  { q: '¿Qué genera mucho calor en la 1ra generación?', opts: ['El teclado', 'Las válvulas de vacío', 'El aire acondicionado', 'Los transistores'], a: 1 },
+  { q: 'En el futuro, ¿qué unidad reemplazará al bit clásico?', opts: ['El byte', 'El tera', 'El Qubit', 'El bit 2.0'], a: 2 },
 ];
 
 const Generaciones = () => {
-  const [started, setStarted] = useState(false);
+  const [genActiva, setGenActiva] = useState(0);
+  const [tab, setTab] = useState('info');
+  const [progreso, setProgreso] = useState(new Set());
+  const [quizStarted, setQuizStarted] = useState(false);
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState(0);
+  const [chosen, setChosen] = useState(null);
   const [finished, setFinished] = useState(false);
-  const [selected, setSelected] = useState(null);
 
-  const handleSelect = (i) => {
-    if (selected !== null) return;
-    setSelected(i);
-    if (i === QUESTIONS[qIdx].a) setScore(s => s + 1);
-  };
+  const gen = GENERACIONES[genActiva];
+
+  useEffect(() => {
+    setProgreso(p => new Set([...p, gen.id]));
+  }, [genActiva]);
 
   const nextQ = () => {
     if (qIdx + 1 < QUESTIONS.length) {
       setQIdx(q => q + 1);
-      setSelected(null);
+      setChosen(null);
     } else {
       setFinished(true);
     }
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h2 style={{ color: C.primary, fontSize: '2rem', fontWeight: 900 }}>Generaciones de Computadoras</h2>
-        <p style={{ color: 'var(--text-light)' }}>De las válvulas de vacío a la Inteligencia Artificial.</p>
+    <div className="gen-page">
+      <header className="gen-header">
+        <div className="gen-header-content">
+          <h1 className="gen-title">Generaciones de Computadoras</h1>
+          <p className="gen-subtitle">Un viaje interactivo desde los tubos al vacío hasta el futuro cuántico.</p>
+          <div className="gen-progress-container">
+            <div className="gen-progress-bar">
+              <div className="gen-progress-fill" style={{ width: `${(progreso.size / GENERACIONES.length) * 100}%` }} />
+            </div>
+            <p className="gen-progress-text">{progreso.size} de {GENERACIONES.length} exploradas</p>
+          </div>
+        </div>
       </header>
 
-      {!started ? (
-        <div style={{ textAlign: 'center', background: '#f8fafc', padding: '4rem', borderRadius: '32px', border: '1px solid var(--border)' }}>
-          <History size={64} color={C.primary} style={{ marginBottom: '1.5rem' }} />
-          <h3>Desafío de Conocimiento</h3>
-          <p style={{ marginBottom: '2rem', opacity: 0.7 }}>Pon a prueba cuánto sabes sobre la evolución tecnológica (20 preguntas).</p>
-          <button onClick={() => setStarted(true)} style={{ background: C.primary, color: 'white', padding: '1rem 3rem', borderRadius: '15px', fontWeight: 800 }}>
-            Comenzar Quiz
-          </button>
-        </div>
-      ) : finished ? (
-        <div style={{ textAlign: 'center', background: '#f8fafc', padding: '4rem', borderRadius: '32px' }}>
-          <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>🎉 ¡Completado!</h3>
-          <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>Tu puntaje es: <strong>{score} de {QUESTIONS.length}</strong></p>
-          <button onClick={() => { setStarted(false); setFinished(false); setQIdx(0); setScore(0); }} style={{ background: C.primary, color: 'white', padding: '1rem 3rem', borderRadius: '15px' }}>
-            Reiniciar
-          </button>
-        </div>
-      ) : (
-        <div style={{ background: 'white', border: '1px solid var(--border)', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', fontSize: '0.8rem', fontWeight: 700, color: C.primary }}>
-            <span>PREGUNTA {qIdx + 1} DE {QUESTIONS.length}</span>
-            <span>ACIERTOS: {score}</span>
+      <div className="gen-layout">
+        <aside className="gen-timeline">
+          {GENERACIONES.map((g, i) => (
+            <button key={g.id} className={`timeline-item ${i === genActiva ? 'active' : ''}`} onClick={() => {setGenActiva(i); setTab('info');}}>
+              <span className="tl-emoji">{g.emoji}</span>
+              <div className="tl-details">
+                <span className="tl-name">{g.nombre}</span>
+                <span className="tl-year">{g.periodo}</span>
+              </div>
+            </button>
+          ))}
+        </aside>
+
+        <main className="gen-main">
+          <div className="gen-card" style={{ '--gen-color': gen.color }}>
+            <div className="gen-card-header">
+              <div className="gen-badge">{gen.emoji}</div>
+              <div>
+                <h2>{gen.nombre}</h2>
+                <p>{gen.tecnologia}</p>
+              </div>
+            </div>
+
+            <div className="gen-tabs">
+              <button className={tab === 'info' ? 'tab-active' : ''} onClick={() => setTab('info')}>Información</button>
+              <button className={tab === 'sim' ? 'tab-active' : ''} onClick={() => setTab('sim')}>Simulador</button>
+            </div>
+
+            <div className="gen-content">
+              {tab === 'info' ? (
+                <div className="info-view">
+                  <p className="description">{gen.descripcion}</p>
+                  <div className="stats-grid">
+                    {gen.datos.map((d, i) => (
+                      <div key={i} className="stat-card">
+                        <span className="stat-icon">{d.icon}</span>
+                        <span className="stat-label">{d.label}</span>
+                        <span className="stat-value">{d.valor}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="curiosity">
+                    <strong>¿Sabías que?</strong>
+                    <p>{gen.curiosidad}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="sim-view">
+                  <Simulador type={gen.simulacion} />
+                </div>
+              )}
+            </div>
           </div>
-          <h4 style={{ fontSize: '1.25rem', marginBottom: '2rem' }}>{QUESTIONS[qIdx].q}</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {QUESTIONS[qIdx].opts.map((opt, i) => (
-              <button 
-                key={i} 
-                onClick={() => handleSelect(i)}
-                style={{ 
-                  textAlign: 'left', 
-                  padding: '1.25rem', 
-                  borderRadius: '12px', 
-                  border: '1px solid var(--border)',
-                  background: selected === null ? '#fff' : i === QUESTIONS[qIdx].a ? '#dcfce7' : selected === i ? '#fee2e2' : '#fff',
-                  transition: 'background 0.2s',
-                  fontWeight: 500
-                }}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-          {selected !== null && (
-            <motion.button 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              onClick={nextQ}
-              style={{ width: '100%', marginTop: '2rem', background: C.primary, color: 'white', padding: '1rem', borderRadius: '12px', fontWeight: 700 }}
-            >
-              {qIdx + 1 < QUESTIONS.length ? 'Siguiente Pregunta' : 'Ver Resultados'}
-            </motion.button>
-          )}
-        </div>
-      )}
+
+          {/* Unified Global Quiz Section */}
+          <section className="global-quiz-section">
+            <h2 className="section-title">🎓 Desafío Final: 20 Preguntas</h2>
+            <div className="unified-quiz-card">
+              {!quizStarted ? (
+                <div className="quiz-start">
+                  <p>Pon a prueba tus conocimientos sobre todas las generaciones de computación.</p>
+                  <button className="btn-primary" onClick={() => setQuizStarted(true)}>Comenzar Test Global</button>
+                </div>
+              ) : finished ? (
+                <div className="quiz-result">
+                  <h3>Puntaje Final: {score} / {QUESTIONS.length}</h3>
+                  <p>{score >= 15 ? '¡Excelente dominio de la historia!' : 'Sigue explorando las generaciones para mejorar.'}</p>
+                  <button className="btn-primary" onClick={() => {setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0);}}>Reiniciar</button>
+                </div>
+              ) : (
+                <div className="quiz-active">
+                  <div className="q-status">Pregunta {qIdx + 1} de {QUESTIONS.length} | ✅ {score}</div>
+                  <h3>{QUESTIONS[qIdx].q}</h3>
+                  <div className="options-grid">
+                    {QUESTIONS[qIdx].opts.map((opt, i) => (
+                      <button 
+                        key={i} 
+                        className={`opt-btn ${chosen === i ? (i === QUESTIONS[qIdx].a ? 'correct' : 'wrong') : ''}`}
+                        onClick={() => { if(chosen === null) { setChosen(i); if(i === QUESTIONS[qIdx].a) setScore(s => s+1); } }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                  {chosen !== null && (
+                    <button className="btn-next" onClick={nextQ}>Siguiente →</button>
+                  )}
+                </div>
+              )}
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   );
 };
 
-// Simple History icon for the start screen
-const History = ({ size, color, style }) => (
-  <svg style={style} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-    <path d="M3 3v5h5"/>
-    <path d="M12 7v5l4 2"/>
-  </svg>
-);
+// Subcomponent Simulator (simplified version of the Simutec logic)
+const Simulador = ({ type }) => {
+  return (
+    <div className="interactive-sim">
+      {type === 'valvulas' && <div className="sim-placeholder">🔌 [Módulo de Válvulas Activo]</div>}
+      {type === 'transistor' && <div className="sim-placeholder">🔬 [Módulo de Transistores Activo]</div>}
+      {type === 'cpu' && <div className="sim-placeholder">💻 [Ciclo de CPU Activo]</div>}
+      {type === 'quantum' && <div className="sim-placeholder">⚛️ [Superposición Activa]</div>}
+      <p style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.7 }}>Este simulador representa la tecnología clave de la era {type}.</p>
+    </div>
+  );
+};
 
 export default Generaciones;
