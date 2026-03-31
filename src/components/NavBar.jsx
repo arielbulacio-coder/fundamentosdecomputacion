@@ -24,7 +24,7 @@ const NavBar = () => {
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/logo_unpilar.png" alt="UNPilar Logo" style={{ height: '40px' }} />
+          <img src={`${import.meta.env.BASE_URL}logo_unpilar.png`} alt="UNPilar Logo" style={{ height: '40px' }} />
           <div>
             <h1 style={{ fontSize: '1.2rem', color: 'var(--primary)', fontWeight: 800, margin: 0 }}>Fundamentos</h1>
             <p style={{ fontSize: '0.7rem', opacity: 0.7, margin: 0 }}>De Computación</p>
