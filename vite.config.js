@@ -2,8 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isGithubPages = process.env.GITHUB_ACTIONS === 'true';
+
 export default defineConfig({
-  base: './',
+  base: isGithubPages ? '/fundamentosdecomputacion/' : '/',
   plugins: [
     react(),
     VitePWA({
