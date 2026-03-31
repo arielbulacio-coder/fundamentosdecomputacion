@@ -1,21 +1,13 @@
 version: '3.8'
 
 services:
-  fundamentos-app:
+  fundamentos:
     build: .
     container_name: fundamentos-app
-    # Change ports if 80/443 are taken by another proxy on the host
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      - DOMAIN=:80  # Default value
-    volumes:
-      # Persistent storage for Caddy SSL certificates and configuration
-      - caddy_data:/data
-      - caddy_config:/config
     restart: always
+    networks:
+      - web
 
-volumes:
-  caddy_data:
-  caddy_config:
+networks:
+  web:
+    external: true
