@@ -197,17 +197,108 @@
 .curiosity strong { display: block; color: var(--primary); margin-bottom: 0.4rem; }
 .curiosity p { margin: 0; font-size: 0.9rem; opacity: 0.8; }
 
-/* ── SIMULATOR ───────────────────────────────────────────── */
+/* ── SIMULATORS ───────────────────────────────────────────── */
 .interactive-sim {
   background: #f1f5f9;
   border-radius: 16px;
-  padding: 3rem;
+  padding: 1.5rem;
   text-align: center;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.sim-placeholder {
-  font-weight: 800;
-  color: var(--primary);
+.sim-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.sim-title { color: var(--primary); font-size: 1.2rem; font-weight: 800; margin: 0; }
+.sim-desc { font-size: 0.9rem; opacity: 0.7; margin: 0; }
+.sim-info { font-size: 0.85rem; padding: 0.75rem; background: #fff; border-radius: 8px; border: 1px solid var(--border); width: 100%; }
+
+/* Valvulas */
+.valvulas-grid { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+.valvula {
+  width: 60px; height: 110px; background: #e2e8f0; border-radius: 30px 30px 10px 10px;
+  position: relative; cursor: pointer; transition: all 0.3s; padding-top: 10px;
+  display: flex; flex-direction: column; align-items: center; border: 2px solid transparent;
+}
+.valvula:hover { transform: translateY(-5px); border-color: var(--primary); }
+.valvula-tubo {
+  width: 34px; height: 60px; background: rgba(255,255,255,0.4); border-radius: 17px;
+  position: relative; overflow: hidden; border: 1.5px solid rgba(0,0,0,0.1);
+}
+.valvula-filamento {
+  position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+  width: 12px; height: 30px; border-radius: 6px; border: 2px solid #ff9f43;
+  transition: opacity 0.3s, box-shadow 0.3s;
+}
+.valvula-on .valvula-filamento { box-shadow: 0 0 15px #ff9f43; background: #ff9f43; }
+.valvula-base { margin-top: 5px; font-size: 0.6rem; font-weight: 900; opacity: 0.5; }
+.valvula-bit { margin-top: 2px; font-weight: 900; font-size: 0.9rem; }
+.bit-1 { color: #f39c12; } .bit-0 { color: #94a3b8; }
+
+/* Transistor */
+.transistor-diagram { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.trans-body { margin: 10px 0; }
+.trans-chip {
+  width: 80px; height: 80px; background: #334155; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900;
+  position: relative; transition: all 0.3s;
+}
+.trans-wire { width: 4px; height: 30px; transition: background 0.3s; }
+.trans-label { font-size: 0.7rem; font-weight: 800; color: #64748b; }
+.trans-status { padding: 1rem; border-radius: 12px; border: 1.5px solid; font-size: 0.85rem; font-weight: 700; background: #fff; }
+
+/* Chip */
+.chip-visual { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%; }
+.chip-body {
+  width: 200px; height: 200px; background: #1e293b; border-radius: 12px; padding: 10px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto;
+}
+.chip-grid { display: grid; width: 100%; height: 100%; gap: 2px; }
+.chip-cell { border-radius: 1px; opacity: 0.8; animation: pulse 2s infinite ease-in-out; }
+@keyframes pulse { 0%, 100% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }
+.chip-info-box { text-align: center; font-weight: 900; }
+.chip-transistor-count { font-size: 1.5rem; line-height: 1; margin-bottom: 2px; }
+.chip-transistor-label { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; }
+
+/* CPU Stage */
+.cpu-diagram { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.cpu-stage {
+  padding: 1rem; background: #fff; border: 2px solid var(--border); border-radius: 12px;
+  text-align: left; transition: all 0.3s;
+}
+.cpu-active { transform: scale(1.02); background: var(--accent); }
+.cpu-stage-name { font-weight: 900; font-size: 0.85rem; margin-bottom: 4px; }
+.cpu-stage-data { font-family: monospace; font-size: 0.9rem; font-weight: 800; }
+.sim-btn {
+  padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 800;
+  cursor: pointer; transition: all 0.2s; border: none;
+}
+
+/* Neural */
+.neural-diagram { display: flex; align-items: center; gap: 1rem; width: 100%; justify-content: center; }
+.neural-node {
+  width: 60px; height: 60px; border-radius: 50%; background: #fff; border: 2px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+}
+.center-node { width: 90px; height: 90px; color: #fff; border-color: transparent; }
+.neural-val { font-weight: 900; font-size: 0.8rem; }
+.neural-lbl { font-size: 0.6rem; font-weight: 800; opacity: 0.6; }
+
+/* Quantum */
+.bloch-sphere-container { background: #0f172a; border-radius: 50%; padding: 10px; box-shadow: 0 0 20px rgba(0,168,255,0.2); }
+.quantum-formula { font-family: monospace; font-size: 1rem; font-weight: 800; text-align: center; height: 60px; display: flex; flex-direction: column; justify-content: center; }
+
+@media (max-width: 650px) {
+  .neural-diagram { flex-direction: column; }
+  .valvula { width: 50px; height: 90px; }
+  .valvula-tubo { width: 30px; height: 50px; }
 }
 
 /* ── QUIZ SECTION ────────────────────────────────────────── */

@@ -287,17 +287,164 @@ const Generaciones = () => {
   );
 };
 
-// Subcomponent Simulator (simplified version of the Simutec logic)
-const Simulador = ({ type }) => {
+const SimulacionValvulas = () => {
+  const [encendidas, setEncendidas] = useState([true, false, true, false, true, false]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setEncendidas(prev => prev.map(() => Math.random() > 0.3));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   return (
-    <div className="interactive-sim">
-      {type === 'valvulas' && <div className="sim-placeholder">🔌 [Módulo de Válvulas Activo]</div>}
-      {type === 'transistor' && <div className="sim-placeholder">🔬 [Módulo de Transistores Activo]</div>}
-      {type === 'cpu' && <div className="sim-placeholder">💻 [Ciclo de CPU Activo]</div>}
-      {type === 'quantum' && <div className="sim-placeholder">⚛️ [Superposición Activa]</div>}
-      <p style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.7 }}>Este simulador representa la tecnología clave de la era {type}.</p>
+    <div className="sim-container">
+      <h4 className="sim-title">🔌 Válvulas de Vacío (1ª Gen)</h4>
+      <p className="sim-desc">Los interruptores originales. Generan calor y luz al procesar bits.</p>
+      <div className="valvulas-grid">
+        {encendidas.map((on, i) => (
+          <div key={i} className={`valvula ${on ? 'valvula-on' : 'valvula-off'}`}>
+            <div className="valvula-tubo"><div className="valvula-filamento" /><div className="valvula-glow" /></div>
+            <div className="valvula-base">V{i + 1}</div>
+            <div className={`valvula-bit ${on ? 'bit-1' : 'bit-0'}`}>{on ? '1' : '0'}</div>
+          </div>
+        ))}
+      </div>
+      <div className="sim-info">Patrón Binario: {encendidas.map(v => v ? '1' : '0').join('')}</div>
     </div>
   );
+};
+
+const SimulacionTransistor = () => {
+  const [voltaje, setVoltaje] = useState(0.3);
+  const on = voltaje >= 0.7;
+  return (
+    <div className="sim-container">
+      <h4 className="sim-title">🔬 El Transistor (2ª Gen)</h4>
+      <div className="transistor-diagram">
+        <div className="trans-label">COLECTOR</div>
+        <div className="trans-wire" style={{ background: on ? '#f39c12' : '#94a3b8' }} />
+        <div className="trans-chip" style={{ background: on ? '#1e293b' : '#334155', boxShadow: on ? '0 0 20px #f39c1244' : 'none' }}>NPN</div>
+        <div className="trans-wire" style={{ background: on ? '#f39c12' : '#94a3b8' }} />
+        <div className="trans-label">EMISOR</div>
+      </div>
+      <div style={{ width: '100%', maxWidth: '200px' }}>
+        <input type="range" min="0" max="1.2" step="0.1" value={voltaje} onChange={e => setVoltaje(parseFloat(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary)' }} />
+        <div style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '5px' }}>Voltaje Base: {voltaje.toFixed(1)}V</div>
+      </div>
+      <div className="trans-status" style={{ color: on ? '#16a34a' : '#dc2626', borderColor: on ? '#16a34a' : '#dc2626' }}>
+        {on ? 'BIT 1: FLUJO ACTIVO' : 'BIT 0: CORTE'}
+      </div>
+    </div>
+  );
+};
+
+const SimulacionChip = () => {
+  const [densidad, setDensidad] = useState(6);
+  return (
+    <div className="sim-container">
+      <h4 className="sim-title">🔧 Circuito Integrado (3ª Gen)</h4>
+      <div className="chip-visual">
+        <div className="chip-body">
+          <div className="chip-grid" style={{ gridTemplateColumns: `repeat(${densidad}, 1fr)` }}>
+            {Array.from({ length: densidad * densidad }).map((_, i) => (
+              <div key={i} className="chip-cell" style={{ background: 'var(--primary)', animationDelay: `${i * 0.05}s` }} />
+            ))}
+          </div>
+        </div>
+        <div className="chip-info-box">
+          <div className="chip-transistor-count">{(densidad * densidad * 64).toLocaleString()}</div>
+          <div className="chip-transistor-label">Componentes por cm²</div>
+          <input type="range" min="4" max="25" value={densidad} onChange={e => setDensidad(parseInt(e.target.value))} style={{ width: '100%', marginTop: '1rem', accentColor: 'var(--primary)' }} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SimulacionCPU = () => {
+  const [stage, setStage] = useState(0);
+  const stages = ['FETCH', 'DECODE', 'EXECUTE', 'WRITE-BACK'];
+  useEffect(() => {
+    const int = setInterval(() => setStage(s => (s + 1) % 4), 1200);
+    return () => clearInterval(int);
+  }, []);
+  return (
+    <div className="sim-container">
+      <h4 className="sim-title">💻 Microprocesador (4ª Gen)</h4>
+      <div className="cpu-diagram">
+        {stages.map((name, i) => (
+          <div key={name} className={`cpu-stage ${stage === i ? 'cpu-active' : ''}`} style={{ borderColor: stage === i ? 'var(--primary)' : 'var(--border)' }}>
+            <div className="cpu-stage-name">{i + 1}. {name}</div>
+            <div className="cpu-stage-data" style={{ color: stage === i ? 'var(--primary)' : 'var(--text-light)' }}>
+              {i === 0 && '>>> 0x2F (LOAD)'}
+              {i === 1 && '>>> MOV R1, #42'}
+              {i === 2 && '>>> REG[1] = 42'}
+              {i === 3 && '>>> OK / BUSY: 0'}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SimulacionNeural = () => {
+  const [val, setVal] = useState(0.7);
+  return (
+    <div className="sim-container">
+      <h4 className="sim-title">🧠 Inteligencia Artificial (5ª Gen)</h4>
+      <div className="neural-diagram">
+        <div className="neural-node"><span className="neural-val">x1</span></div>
+        <div style={{ height: '2px', width: '30px', background: 'var(--border)' }} />
+        <div className="neural-node center-node" style={{ background: `radial-gradient(circle, var(--primary) ${val * 100}%, #1e293b)`, boxShadow: `0 0 20px rgba(0,74,153,${val})` }}>
+          <span className="neural-val">Σ</span>
+        </div>
+        <div style={{ height: '2px', width: '30px', background: 'var(--border)' }} />
+        <div className="neural-node" style={{ borderColor: val > 0.5 ? '#16a34a' : '#dc2626' }}>
+          <span className="neural-val" style={{ color: val > 0.5 ? '#16a34a' : '#dc2626' }}>{val > 0.5 ? '1' : '0'}</span>
+        </div>
+      </div>
+      <input type="range" min="0" max="1" step="0.1" value={val} onChange={e => setVal(parseFloat(e.target.value))} style={{ width: '150px', accentColor: 'var(--primary)' }} />
+      <p className="sim-desc">Activación de Neurona Artificial</p>
+    </div>
+  );
+};
+
+const SimulacionQuantum = () => {
+  const [angle, setAngle] = useState(0);
+  useEffect(() => {
+    const anim = setInterval(() => setAngle(a => (a + 5) % 360), 50);
+    return () => clearInterval(anim);
+  }, []);
+  return (
+    <div className="sim-container">
+      <h4 className="sim-title">⚛️ Computación Cuántica (Futuro)</h4>
+      <div className="bloch-sphere-container">
+        <svg width="150" height="150" viewBox="-80 -80 160 160">
+          <circle cx="0" cy="0" r="70" fill="none" stroke="rgba(0,168,255,0.2)" strokeWidth="1" strokeDasharray="4" />
+          <line x1="0" y1="-70" x2="0" y2="70" stroke="rgba(0,168,255,0.1)" strokeWidth="1" />
+          <line x1="-70" y1="0" x2="70" y2="0" stroke="rgba(0,168,255,0.1)" strokeWidth="1" />
+          <line x1="0" y1="0" x2={Math.cos(angle * Math.PI / 180) * 60} y2={Math.sin(angle * Math.PI / 180) * 60} stroke="#00a8ff" strokeWidth="3" strokeLinecap="round" />
+          <circle cx={Math.cos(angle * Math.PI / 180) * 60} cy={Math.sin(angle * Math.PI / 180) * 60} r="6" fill="#00a8ff" />
+        </svg>
+      </div>
+      <div className="quantum-formula">
+        ψ = α|0⟩ + β|1⟩
+        <span style={{ fontSize: '0.7rem', color: '#00a8ff' }}>Superposición Activa</span>
+      </div>
+    </div>
+  );
+};
+
+const Simulador = ({ type }) => {
+  switch (type) {
+    case 'valvulas': return <SimulacionValvulas />;
+    case 'transistor': return <SimulacionTransistor />;
+    case 'chip': return <SimulacionChip />;
+    case 'cpu': return <SimulacionCPU />;
+    case 'neural': return <SimulacionNeural />;
+    case 'quantum': return <SimulacionQuantum />;
+    default: return <div className="sim-placeholder">Próximamente</div>;
+  }
 };
 
 export default Generaciones;
