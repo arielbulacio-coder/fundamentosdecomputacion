@@ -1,0 +1,27 @@
+{
+    # Email for Let's Encrypt / ZeroSSL notifications
+    email arielbulacio@gmail.com
+}
+
+# Replace with your real domain for automatic SSL (e.g., pilar.example.com)
+:80, :443 {
+    root * /usr/share/caddy
+    file_server {
+        # Enable gzip compression
+    }
+    
+    # Single Page App routing
+    try_files {path} /index.html
+    
+    # Modern compression
+    encode zstd gzip
+    
+    # Keep-alive and performance
+    header {
+        # Security Headers
+        Strict-Transport-Security "max-age=31536000;"
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy no-referrer-when-downgrade
+    }
+}
