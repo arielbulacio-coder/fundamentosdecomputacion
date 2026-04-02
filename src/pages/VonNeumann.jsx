@@ -1,3 +1,4 @@
+import LockedContent from '../components/LockedContent';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 

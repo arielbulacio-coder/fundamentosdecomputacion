@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Cpu, Landmark, History, Home } from 'lucide-react';
+import { Menu, X, Cpu, Landmark, History, Home, Database, Power } from 'lucide-react';
+import logo from '../assets/logo_unpilar.png';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -8,9 +9,12 @@ const NavBar = () => {
 
   const links = [
     { name: 'Inicio', path: '/', icon: <Home size={18} /> },
+    { name: 'Generaciones', path: '/generaciones', icon: <History size={18} /> },
     { name: 'Von Neumann', path: '/von-neumann', icon: <Cpu size={18} /> },
     { name: 'Harvard', path: '/harvard', icon: <Landmark size={18} /> },
-    { name: 'Generaciones', path: '/generaciones', icon: <History size={18} /> },
+    { name: 'Cerebro CPU', path: '/cpu', icon: <Cpu size={18} /> },
+    { name: 'Memoria', path: '/memoria', icon: <Database size={18} /> },
+    { name: 'Arranque', path: '/arranque', icon: <Power size={18} /> },
   ];
 
   return (
@@ -24,7 +28,7 @@ const NavBar = () => {
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src={`${import.meta.env.BASE_URL}logo_unpilar.png`} alt="UNPilar Logo" style={{ height: '40px' }} />
+          <img src={logo} alt="UNPilar Logo" style={{ height: '40px' }} />
           <div>
             <h1 style={{ fontSize: '1.2rem', color: 'var(--primary)', fontWeight: 800, margin: 0 }}>Fundamentos</h1>
             <p style={{ fontSize: '0.7rem', opacity: 0.7, margin: 0 }}>De Computación</p>

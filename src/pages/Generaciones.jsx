@@ -1,3 +1,4 @@
+import LockedContent from '../components/LockedContent';
 import React, { useState, useEffect, useRef } from 'react';
 import './Generaciones.css';
 
@@ -176,7 +177,8 @@ const Generaciones = () => {
   };
 
   return (
-    <div className="gen-page">
+    <LockedContent keyword="valvulas" title="Clase 1: Generaciones de Computadoras">
+      <div className="gen-page">
       <header className="gen-header">
         <div className="gen-header-content">
           <h1 className="gen-title">Generaciones de Computadoras</h1>
@@ -431,11 +433,11 @@ const SimulacionQuantum = () => {
         ψ = α|0⟩ + β|1⟩
         <span style={{ fontSize: '0.7rem', color: '#00a8ff' }}>Superposición Activa</span>
       </div>
-    </div>
+          </div>
+    </LockedContent>
   );
 };
-
-const Simulador = ({ type }) => {
+ = ({ type }) => {
   switch (type) {
     case 'valvulas': return <SimulacionValvulas />;
     case 'transistor': return <SimulacionTransistor />;
