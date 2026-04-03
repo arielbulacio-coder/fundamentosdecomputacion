@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   Box, Cpu, Database, Laptop, 
   Smartphone, Monitor, CheckCircle,
@@ -120,6 +121,19 @@ const Harvard = () => {
               ))}
            </div>
         </section>
+
+        <RepasoClave
+          accentColor="#06b6d4"
+          title="Arquitectura Harvard"
+          facts={[
+            { icon: '🔀', term: 'Separación de Buses', def: 'Harvard usa buses físicos independientes para instrucciones y datos, permitiendo leerlos simultáneamente sin conflictos.' },
+            { icon: '⚡', term: 'Ventaja de Velocidad', def: 'Al no competir por el mismo bus, el CPU puede buscar la próxima instrucción mientras ejecuta la actual.' },
+            { icon: '🛡️', term: 'Ventaja de Seguridad', def: 'La separación impide que datos maliciosos en el área de datos modifiquen instrucciones del programa en ejecución.' },
+            { icon: '🎯', term: 'DSP y Señales', def: 'Ideal para procesamiento de señales digitales (DSP): requiere velocidad constante y predecible para audio/video/comunicaciones.' },
+            { icon: '🤖', term: 'Microcontroladores', def: 'Arduino (AVR), PIC y ARM Cortex-M implementan Harvard para control preciso y confiable de sistemas embebidos.' },
+            { icon: '📜', term: 'Harvard Mark I (1944)', def: 'Máquina electromecánica diseñada por Howard Aiken en Harvard: primera implementación de esta arquitectura separada.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `3px solid ${C.primary}`, boxShadow: '0 30px 60px rgba(6,182,212,0.1)' }}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   Cpu, Zap, Database, ArrowRightLeft, Layers, 
   Settings, ChevronRight, Info, CheckCircle, Smartphone
@@ -118,6 +119,19 @@ const VonNeumann = () => {
             </div>
           </div>
         </section>
+
+        <RepasoClave
+          accentColor="#3b82f6"
+          title="Von Neumann vs Harvard"
+          facts={[
+            { icon: '🧠', term: 'Von Neumann', def: 'Memoria unificada para datos e instrucciones. Base de la mayoría de las PCs. Concepto de "programa almacenado" (1945).' },
+            { icon: '⚠️', term: 'Bottleneck de Von Neumann', def: 'El bus compartido crea un cuello de botella: CPU y memoria compiten por el mismo canal de comunicación.' },
+            { icon: '🏫', term: 'Harvard Pura', def: 'Buses físicos separados para instrucciones y datos. Permite acceso simultáneo, mayor velocidad pero más costoso.' },
+            { icon: '⚙️', term: 'Harvard Modificada', def: 'Híbrido moderno: caché separada internamente (velocidad) + memoria RAM unificada externamente. Usado en CPUs actuales.' },
+            { icon: '📡', term: 'Usos de Harvard', def: 'Microcontroladores (Arduino, PIC), DSPs y sistemas embebidos donde el rendimiento determinístico es crítico.' },
+            { icon: '💾', term: 'Programa Almacenado', def: 'Concepto clave de Von Neumann: instrucciones y datos coexisten en la misma memoria RAM, permitiendo reprogramar la máquina.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>

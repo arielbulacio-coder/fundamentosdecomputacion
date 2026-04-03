@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   Cpu, Zap, Activity, Clock, Layers, Database, 
   Settings, ChevronRight, Play, Info, CheckCircle
@@ -168,6 +169,19 @@ const CPU = () => {
             ))}
           </div>
         </section>
+
+        <RepasoClave
+          accentColor="#3b82f6"
+          title="El Procesador (CPU)"
+          facts={[
+            { icon: '🔄', term: 'Ciclo FDE', def: 'Fetch (buscar instrucción del PC) → Decode (la UC la interpreta) → Execute (la ALU la ejecuta). Repetido miles de millones de veces por segundo.' },
+            { icon: '🧮', term: 'ALU', def: 'Arithmetic Logic Unit: realiza operaciones matemáticas (+,-,×,÷) y lógicas (AND, OR, NOT, XOR) sobre los datos.' },
+            { icon: '🎮', term: 'Unidad de Control (UC)', def: 'Dirige el flujo de datos entre componentes. Decodifica instrucciones y genera las señales de control correspondientes.' },
+            { icon: '⚡', term: 'Pipeline', def: 'Técnica de superposición de instrucciones: mientras se ejecuta una, ya se decodifica la siguiente. Aumenta el IPC (instrucciones por ciclo).' },
+            { icon: '🕐', term: 'Frecuencia de Reloj', def: '1 GHz = 1.000 millones de ciclos por segundo. Más GHz no siempre significa más rendimiento: depende de la arquitectura y el IPC.' },
+            { icon: '📦', term: 'Registros', def: 'Memoria ultrarrápida dentro de la CPU (<1ns). Incluyen: Program Counter (PC), Stack Pointer (SP) y registros de propósito general.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>

@@ -15,10 +15,17 @@ export function shuffleOptions(opts, correctIdx) {
 }
 
 /**
- * Prepares a full quiz with all questions shuffled.
+ * Prepares a full quiz: shuffles question order AND answer options per question.
  */
 export function prepareQuiz(questions) {
-  return questions.map(q => {
+  // Fisher-Yates shuffle on question order
+  const shuffled = [...questions];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  // Shuffle answer options for each question
+  return shuffled.map(q => {
     const { shuffledOpts, shuffledAnswerIdx } = shuffleOptions(q.opts, q.a);
     return { ...q, opts: shuffledOpts, a: shuffledAnswerIdx };
   });

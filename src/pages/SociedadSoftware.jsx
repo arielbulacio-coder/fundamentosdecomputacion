@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   Users, Database, FileCode, Share2, Globe, 
   Settings, Layers, Info, CheckCircle, ShieldCheck
@@ -95,6 +96,19 @@ const SociedadSoftware = () => {
              </div>
           </div>
         </section>
+
+        <RepasoClave
+          accentColor="#00f2ff"
+          title="Sociedad, Datos y Software"
+          facts={[
+            { icon: '⚙️', term: 'Software de Sistema', def: 'SO, controladores (drivers), BIOS/UEFI. Gestiona el hardware y permite que las aplicaciones de usuario funcionen.' },
+            { icon: '📱', term: 'Software de Aplicación', def: 'Programas para tareas específicas del usuario: ofimática, navegadores, juegos, editores multimedia, etc.' },
+            { icon: '🔓', term: 'Open Source vs Propietario', def: 'Open Source: código libre para ver/modificar/distribuir (Linux, Firefox). Propietario: código cerrado (Windows, Photoshop).' },
+            { icon: '☁️', term: 'SaaS (Software as a Service)', def: 'Se accede vía internet sin instalación local. Pago por uso. Ejemplos: Google Docs, Netflix, Salesforce.' },
+            { icon: '🔄', term: 'Ciclo del Dato', def: 'Captura → Procesamiento → Almacenamiento → Distribución → Consumo. Base del pensamiento sistémico digital.' },
+            { icon: '🌐', term: 'Brecha Digital', def: 'Desigualdad de acceso a TICs entre regiones, edades y géneros. Principal desafío social y político del siglo XXI.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #00f2ff', boxShadow: '0 30px 60px rgba(0,242,255,0.1)' }}>

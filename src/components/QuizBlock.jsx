@@ -1,21 +1,22 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RegistrationModal from './RegistrationModal';
 import { prepareQuiz } from '../utils/quizUtils';
 
 /**
  * Reusable quiz block with:
- * - Shuffled answer positions (generated once per quiz session)
+ * - Shuffled question order + shuffled answer positions (generated once per session)
  * - Score tracking with explanation feedback
- * - Registration modal on passing score
- * 
+ * - 70% passing threshold
+ * - On pass: "Mejorar puntaje" vs "Registrar resultado" decision
+ *
  * Props:
  *   questions: [{ q, opts, a, exp }]
- *   passingScore: number (default: 60% of total)
+ *   passingScore: number (override, default: 70% of total)
  *   accentColor: string (default '#3b82f6')
- *   materia: string (subject name, e.g. 'Fundamentos de Computación')
- *   clase: string (label for DB, e.g. 'Clase 11: Seguridad Informática')
- *   unidad: string (label for DB, e.g. 'Unidad 4')
+ *   materia: string
+ *   clase: string
+ *   unidad: string
  */
 const QuizBlock = ({
   questions,
@@ -32,14 +33,14 @@ const QuizBlock = ({
   const [finished, setFinished] = useState(false);
   const [showRegistration, setShowRegistration] = useState(false);
 
-  // Shuffle all questions ONCE when quiz starts (useMemo with started as dep)
+  // Shuffle questions + options ONCE when quiz starts
   const shuffledQuestions = useMemo(() => {
     if (!started) return [];
     return prepareQuiz(questions);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started]);
 
-  const minPass = passingScore ?? Math.ceil(questions.length * 0.6);
+  const minPass = passingScore ?? Math.ceil(questions.length * 0.7);
   const passed = score >= minPass;
   const pct = started && finished ? Math.round((score / questions.length) * 100) : 0;
 
@@ -67,13 +68,14 @@ const QuizBlock = ({
     }
   };
 
+  // ── Start screen ────────────────────────────────────────────────────────────
   if (!started) {
     return (
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: '1.1rem', color: '#94a3b8', marginBottom: '2.5rem' }}>
           <strong style={{ color: '#fff' }}>{questions.length} preguntas</strong> — Necesitás{' '}
-          <strong style={{ color: accentColor }}>{minPass}/{questions.length}</strong> para aprobar.
-          <br />Las opciones aparecerán en orden aleatorio.
+          <strong style={{ color: accentColor }}>{minPass}/{questions.length} ({Math.round(minPass / questions.length * 100)}%)</strong> para aprobar.
+          <br />Las preguntas y opciones aparecerán en orden aleatorio.
         </div>
         <button
           onClick={() => setStarted(true)}
@@ -90,49 +92,82 @@ const QuizBlock = ({
     );
   }
 
+  // ── Finished screen ─────────────────────────────────────────────────────────
   if (finished) {
     return (
       <>
         <div style={{ textAlign: 'center' }}>
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-          >
+          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
             <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>{passed ? '🎓' : '📚'}</div>
             <h3 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '0.5rem' }}>
               {score} / {questions.length}
             </h3>
-            <div style={{ fontSize: '1.5rem', color: passed ? '#22c55e' : '#f59e0b', fontWeight: 700, marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '1.5rem', color: passed ? '#22c55e' : '#f59e0b', fontWeight: 700, marginBottom: '2rem' }}>
               {pct}% — {passed ? '¡APROBADO!' : 'NECESITÁS REPASAR'}
             </div>
-            <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '3rem' }}>
-              {passed
-                ? 'Excelente trabajo. Podés registrar tu resultado a continuación.'
-                : `Necesitabas ${minPass} respuestas correctas. Repasá el contenido teórico e intentalo de nuevo.`}
-            </p>
-          </motion.div>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={reset}
-              style={{
-                background: 'rgba(255,255,255,0.05)', color: '#fff', border: '2px solid rgba(255,255,255,0.1)',
-                padding: '1rem 2.5rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1rem'
-              }}
-            >
-              Reintentar
-            </button>
-            {passed && (
-              <button
-                onClick={() => setShowRegistration(true)}
+
+            {passed ? (
+              /* ── Passed: decision panel ── */
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
                 style={{
-                  background: 'linear-gradient(to right, #22c55e, #3b82f6)', color: '#fff', border: 'none',
-                  padding: '1rem 2.5rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1rem'
+                  background: '#1e293b', borderRadius: '35px', padding: '2.5rem',
+                  maxWidth: '520px', margin: '0 auto 2rem',
+                  border: '1.5px solid rgba(34,197,94,0.2)'
                 }}
               >
-                Registrar Aprobación 🎓
-              </button>
+                <p style={{ color: '#f8fafc', fontSize: '1.15rem', fontWeight: 800, marginBottom: '0.75rem' }}>
+                  ¿Qué deseas hacer?
+                </p>
+                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+                  Podés intentar mejorar tu puntaje o registrar este resultado para que tu docente lo vea.
+                </p>
+                <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+                  <button
+                    onClick={() => setShowRegistration(true)}
+                    style={{
+                      background: 'linear-gradient(to right, #22c55e, #16a34a)', color: '#fff', border: 'none',
+                      padding: '1.2rem 2rem', borderRadius: '20px', fontWeight: 900,
+                      cursor: 'pointer', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem'
+                    }}
+                  >
+                    🎓 Registrar este resultado ({pct}%)
+                  </button>
+                  <button
+                    onClick={reset}
+                    style={{
+                      background: `${accentColor}20`, color: accentColor,
+                      border: `2px solid ${accentColor}40`,
+                      padding: '1.2rem 2rem', borderRadius: '20px', fontWeight: 900,
+                      cursor: 'pointer', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem'
+                    }}
+                  >
+                    🔄 Mejorar mi puntaje
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              /* ── Not passed: retry prompt ── */
+              <div>
+                <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '2rem' }}>
+                  Necesitabas al menos <strong style={{ color: accentColor }}>{minPass}</strong> respuestas correctas ({Math.round(minPass / questions.length * 100)}%).
+                  Repasá el contenido y la sección de repaso rápido.
+                </p>
+                <button
+                  onClick={reset}
+                  style={{
+                    background: `${accentColor}20`, color: accentColor,
+                    border: `2px solid ${accentColor}40`,
+                    padding: '1rem 2.5rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1rem'
+                  }}
+                >
+                  🔄 Reintentar
+                </button>
+              </div>
             )}
-          </div>
+          </motion.div>
         </div>
 
         <RegistrationModal
@@ -148,6 +183,7 @@ const QuizBlock = ({
     );
   }
 
+  // ── Question screen ─────────────────────────────────────────────────────────
   const current = shuffledQuestions[qIdx];
 
   return (

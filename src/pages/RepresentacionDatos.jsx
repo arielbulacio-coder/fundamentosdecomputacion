@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
-import { Binary, Hash, FileJson, Music, Video, Calculator, Zap, Database, ArrowDown, Shield } from 'lucide-react';
+import RepasoClave from '../components/RepasoClave';
+import { Binary, FileJson, Music, Video, Calculator } from 'lucide-react';
 
 const QUESTIONS = [
   { q: '¿Cuál es la base del sistema binario?', opts: ['Base 10', 'Base 2 (0 y 1)', 'Base 16', 'Base 8'], a: 1, exp: 'Los circuitos digitales solo entienden dos estados: encendido (1) y apagado (0). Todo lo demás se construye sobre esta base.' },
@@ -29,7 +30,6 @@ const QUESTIONS = [
 
 const RepresentacionDatos = () => {
   const [num, setNum] = useState(42);
-  const [binaryStr, setBinaryStr] = useState("101010");
 
   const getDivisions = (n) => {
     let steps = []; let current = Math.abs(Math.floor(n));
@@ -38,15 +38,7 @@ const RepresentacionDatos = () => {
     return steps;
   };
 
-  const getBinarySum = (bin) => {
-    let sum = 0; let components = [];
-    const bits = bin.replace(/[^01]/g, '').split('').reverse();
-    bits.forEach((bit, i) => { if (bit === '1') { const val = Math.pow(2, i); sum += val; components.push({ pos: i, val }); } });
-    return { sum, components: components.reverse() };
-  };
-
   const divisions = getDivisions(num);
-  const binSum = getBinarySum(binaryStr);
 
   return (
     <LockedContent keyword="binario" title="Clase 8: Representación de la Información" unit={3}>
@@ -85,28 +77,100 @@ const RepresentacionDatos = () => {
           </div>
         </section>
 
-        {/* Simulador: Decimal → Binario */}
+        {/* Simulador: Conversor Multi-Base */}
         <section style={{ marginBottom: '6rem' }}>
           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
               <Calculator color="#10b981" size={42} style={{ margin: '0 auto 1rem' }} />
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>De lo Humano a lo Digital</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '600px', margin: '1rem auto 0' }}>
-                Utilizamos el método de <strong>divisiones sucesivas</strong>. Los restos leídos de abajo hacia arriba forman el código binario.
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Conversor de Bases Numéricas</h2>
+              <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '640px', margin: '1rem auto 0' }}>
+                Ingresá un número decimal y observá su representación simultánea en <strong style={{ color: '#3b82f6' }}>Binario</strong>, <strong style={{ color: '#8b5cf6' }}>Hexadecimal</strong> y <strong style={{ color: '#f59e0b' }}>Octal</strong>.
               </p>
             </div>
+
             <div style={{ maxWidth: '400px', margin: '0 auto 3rem' }}>
               <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '0.75rem', color: '#64748b', fontWeight: 800 }}>DECIMAL (0-255):</label>
-              <input type="number" min="0" max="255" value={num} onChange={e => setNum(parseInt(e.target.value) || 0)} style={{ width: '100%', background: '#0f172a', border: '2px solid #10b981', borderRadius: '15px', padding: '1.25rem', color: '#fff', fontSize: '2rem', fontWeight: 900, textAlign: 'center', boxSizing: 'border-box' }} />
+              <input type="number" min="0" max="255" value={num} onChange={e => setNum(Math.min(255, Math.max(0, parseInt(e.target.value) || 0)))} style={{ width: '100%', background: '#0f172a', border: '2px solid #10b981', borderRadius: '15px', padding: '1.25rem', color: '#fff', fontSize: '2rem', fontWeight: 900, textAlign: 'center', boxSizing: 'border-box' }} />
             </div>
-            <div style={{ display: 'flex', overflowX: 'auto', gap: '1rem', paddingBottom: '1rem', justifyContent: 'center' }}>
-              {divisions.map((step, i) => (
-                <div key={i} style={{ minWidth: '120px', background: '#1e293b', padding: '1.5rem', borderRadius: '20px', textAlign: 'center', flexShrink: 0 }}>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 800 }}>{step.n} ÷ 2</div>
-                  <div style={{ height: '2px', background: '#10b981', margin: '0.75rem 0', opacity: 0.3 }} />
-                  <div style={{ color: '#10b981', fontWeight: 900, fontSize: '1.2rem' }}>Resto: {step.r}</div>
+
+            {/* Resultados en las 4 bases */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+              {[
+                { label: 'Decimal', base: 10, value: num.toString(), color: '#10b981', prefix: '' },
+                { label: 'Binario', base: 2, value: num.toString(2).padStart(8, '0'), color: '#3b82f6', prefix: '0b' },
+                { label: 'Hexadecimal', base: 16, value: num.toString(16).toUpperCase().padStart(2, '0'), color: '#8b5cf6', prefix: '0x' },
+                { label: 'Octal', base: 8, value: num.toString(8), color: '#f59e0b', prefix: '0o' },
+              ].map(b => (
+                <div key={b.label} style={{ background: '#1e293b', borderRadius: '25px', padding: '2rem', textAlign: 'center', border: `2px solid ${b.color}30` }}>
+                  <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
+                    Base {b.base} — {b.label}
+                  </div>
+                  <div style={{ fontFamily: 'monospace', fontSize: '1.6rem', fontWeight: 900, color: b.color, wordBreak: 'break-all' }}>
+                    <span style={{ opacity: 0.4, fontSize: '1rem' }}>{b.prefix}</span>{b.value}
+                  </div>
                 </div>
               ))}
+            </div>
+
+            {/* Divisiones sucesivas → Binario */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem', color: '#3b82f6' }}>
+                Método: Divisiones Sucesivas (Decimal → Binario)
+              </h3>
+              <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                Dividir por 2 repetidamente. Los <strong style={{ color: '#3b82f6' }}>restos leídos de abajo hacia arriba</strong> forman el número binario.
+              </p>
+              <div style={{ display: 'flex', overflowX: 'auto', gap: '0.75rem', paddingBottom: '0.5rem' }}>
+                {divisions.map((step, i) => (
+                  <div key={i} style={{ minWidth: '110px', background: '#1e293b', padding: '1.25rem', borderRadius: '18px', textAlign: 'center', flexShrink: 0, borderBottom: `3px solid ${i === divisions.length - 1 ? '#3b82f6' : '#1e293b'}` }}>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>{step.n} ÷ 2</div>
+                    <div style={{ height: '2px', background: '#3b82f6', margin: '0.6rem 0', opacity: 0.2 }} />
+                    <div style={{ color: '#3b82f6', fontWeight: 900, fontSize: '1.1rem' }}>R: {step.r}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: '1rem', padding: '1rem 1.5rem', background: '#0f172a', borderRadius: '15px', display: 'inline-flex', gap: '1rem', alignItems: 'center' }}>
+                <span style={{ color: '#64748b', fontSize: '0.85rem' }}>Restos (↑ abajo→arriba):</span>
+                <span style={{ fontFamily: 'monospace', fontWeight: 900, color: '#3b82f6', fontSize: '1.2rem', letterSpacing: '4px' }}>
+                  {num.toString(2).padStart(8, '0')}
+                </span>
+              </div>
+            </div>
+
+            {/* Descomposición posicional Binario → Decimal */}
+            <div>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem', color: '#10b981' }}>
+                Método: Suma de Potencias (Binario → Decimal)
+              </h3>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                {num.toString(2).padStart(8, '0').split('').map((bit, i, arr) => {
+                  const pos = arr.length - 1 - i;
+                  const val = parseInt(bit) * Math.pow(2, pos);
+                  return (
+                    <div key={i} style={{
+                      textAlign: 'center',
+                      minWidth: '56px',
+                      opacity: bit === '1' ? 1 : 0.3
+                    }}>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', marginBottom: '4px' }}>2^{pos}</div>
+                      <div style={{
+                        background: bit === '1' ? '#10b98120' : '#1e293b',
+                        border: `2px solid ${bit === '1' ? '#10b981' : '#334155'}`,
+                        borderRadius: '12px', padding: '0.6rem 0.5rem',
+                        fontSize: '1.2rem', fontWeight: 900,
+                        color: bit === '1' ? '#10b981' : '#475569'
+                      }}>{bit}</div>
+                      <div style={{ fontSize: '0.7rem', color: bit === '1' ? '#10b981' : '#334155', marginTop: '4px', fontWeight: 700 }}>
+                        {bit === '1' ? `+${val}` : '—'}
+                      </div>
+                    </div>
+                  );
+                })}
+                <div style={{ fontSize: '1.5rem', color: '#64748b', margin: '0 0.5rem', alignSelf: 'center' }}>=</div>
+                <div style={{ background: '#10b98120', border: '2px solid #10b981', borderRadius: '15px', padding: '0.75rem 1.25rem', fontSize: '1.4rem', fontWeight: 900, color: '#10b981', alignSelf: 'center' }}>
+                  {num}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -154,6 +218,19 @@ const RepresentacionDatos = () => {
             </div>
           </div>
         </section>
+
+        <RepasoClave
+          accentColor="#10b981"
+          title="Representación de Datos"
+          facts={[
+            { icon: '💾', term: 'Bit y Byte', def: '1 bit = 0 ó 1. 1 byte = 8 bits (256 combinaciones). 1 KiB = 1024 bytes. El byte es la unidad mínima de almacenamiento direccionable.' },
+            { icon: '🔢', term: 'Binario (Base 2)', def: 'El lenguaje nativo del hardware. Conversión: divisiones sucesivas (decimal→bin) o suma de potencias de 2 (bin→decimal).' },
+            { icon: '🔠', term: 'Hexadecimal (Base 16)', def: 'Taquigrafía del binario: 1 dígito hex = 4 bits exactos (nibble). 0-9 y A-F. 11111111 binario = FF hexadecimal = 255 decimal.' },
+            { icon: '📝', term: 'ASCII y UTF-8', def: 'ASCII: 7 bits, 128 caracteres (A=65, a=97). UTF-8: Unicode extensible que soporta todos los idiomas y emojis del mundo.' },
+            { icon: '➖', term: 'Complemento a 2', def: 'Representar negativos: invertir todos los bits y sumar 1. Permite usar el mismo circuito sumador de la ALU para restar.' },
+            { icon: '🔬', term: 'IEEE 754', def: 'Estándar para punto flotante (decimales): signo (1 bit) + exponente + mantisa. Define precisión simple (32 bits) y doble (64 bits).' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #10b981', boxShadow: '0 30px 60px rgba(16,185,129,0.1)' }}>

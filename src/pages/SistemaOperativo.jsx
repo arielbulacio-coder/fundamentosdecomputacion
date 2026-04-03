@@ -1,10 +1,11 @@
-import React from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
-import { 
-  Server, Cpu, Database, Shield, Layers, Settings, Globe, 
-  Info, Smartphone, CheckCircle, Activity, Layout
+import RepasoClave from '../components/RepasoClave';
+import {
+  Server, Cpu, Database, Layout,
+  CheckCircle, Activity, RefreshCw, Plus, PlayCircle
 } from 'lucide-react';
 
 const OS_QUESTS = [
@@ -29,6 +30,230 @@ const OS_QUESTS = [
   { q: 'La Gestión de E/S (Entrada/Salida) en un SO usa "Buffering" para:', opts: ['Limpiar el disco', 'Sincronizar dispositivos de diferentes velocidades almacenando datos intermedios en RAM', 'Aumentar el volumen', 'Cargar fotos'], a: 1, exp: 'Evita que el sistema espere a cada bit que viene de un dispositivo lento.' },
   { q: '¿Cuál es la función del Gestor de Arranque (Bootloader) en sistemas con varios SO?', opts: ['Borrar el disco', 'Permitir al usuario elegir qué sistema operativo cargar (ej: Windows o Ubuntu)', 'Instalar actualizaciones', 'Mejorar el rendimiento'], a: 1, exp: 'Permite el famoso "Dual Boot".' }
 ];
+
+const PROCESS_COLORS = ['#9333ea', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+const QUANTUM = 2;
+
+const runRoundRobin = (processes) => {
+  const procs = processes.map((p, i) => ({
+    ...p, id: i, remaining: p.burst, start: -1, finish: -1
+  }));
+  const gantt = [];
+  let time = 0;
+  const queue = [...procs.map(p => ({ ...p }))];
+
+  while (queue.some(p => p.remaining > 0)) {
+    let executed = false;
+    for (let i = 0; i < queue.length; i++) {
+      if (queue[i].remaining > 0) {
+        const slice = Math.min(QUANTUM, queue[i].remaining);
+        if (queue[i].start === -1) queue[i].start = time;
+        gantt.push({ id: queue[i].id, name: queue[i].name, start: time, end: time + slice, color: queue[i].color });
+        time += slice;
+        queue[i].remaining -= slice;
+        if (queue[i].remaining === 0) queue[i].finish = time;
+        executed = true;
+      }
+    }
+    if (!executed) break;
+  }
+
+  const stats = queue.map(p => ({
+    name: p.name,
+    color: p.color,
+    burst: p.burst,
+    finish: p.finish,
+    turnaround: p.finish,
+    waiting: p.finish - p.burst
+  }));
+
+  return { gantt, stats, totalTime: time };
+};
+
+const DEFAULT_PROCESSES = [
+  { name: 'P1', burst: 5 },
+  { name: 'P2', burst: 3 },
+  { name: 'P3', burst: 7 },
+  { name: 'P4', burst: 2 },
+];
+
+const SchedulerSimulator = () => {
+  const [processes, setProcesses] = useState(
+    DEFAULT_PROCESSES.map((p, i) => ({ ...p, color: PROCESS_COLORS[i] }))
+  );
+  const [result, setResult] = useState(null);
+  const [newName, setNewName] = useState('');
+  const [newBurst, setNewBurst] = useState(4);
+
+  const simulate = () => {
+    setResult(runRoundRobin(processes));
+  };
+
+  const reset = () => {
+    setProcesses(DEFAULT_PROCESSES.map((p, i) => ({ ...p, color: PROCESS_COLORS[i] })));
+    setResult(null);
+  };
+
+  const addProcess = () => {
+    if (processes.length >= 5) return;
+    const name = newName.trim() || `P${processes.length + 1}`;
+    setProcesses(ps => [...ps, { name, burst: Math.max(1, Math.min(10, newBurst)), color: PROCESS_COLORS[ps.length] }]);
+    setNewName('');
+  };
+
+  const removeProcess = (i) => {
+    setProcesses(ps => ps.filter((_, idx) => idx !== i));
+    setResult(null);
+  };
+
+  const updateBurst = (i, val) => {
+    setProcesses(ps => ps.map((p, idx) => idx === i ? { ...p, burst: Math.max(1, Math.min(10, val)) } : p));
+    setResult(null);
+  };
+
+  return (
+    <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <Activity color="#9333ea" size={42} style={{ margin: '0 auto 1rem' }} />
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>Simulador de Planificación Round Robin</h2>
+        <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '640px', margin: '0 auto' }}>
+          Define procesos con su tiempo de ráfaga (burst). El algoritmo reparte la CPU en turnos de <strong style={{ color: '#9333ea' }}>quantum = {QUANTUM} unidades</strong> de forma circular.
+        </p>
+      </div>
+
+      {/* Tabla de procesos */}
+      <div style={{ background: '#0f172a', borderRadius: '25px', padding: '2rem', marginBottom: '2rem' }}>
+        <h3 style={{ fontWeight: 800, color: '#94a3b8', fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1.25rem' }}>Procesos en Cola</h3>
+        <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          {processes.map((p, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#1e293b', padding: '0.75rem 1.25rem', borderRadius: '15px', borderLeft: `5px solid ${p.color}` }}>
+              <span style={{ fontWeight: 900, color: p.color, minWidth: '30px' }}>{p.name}</span>
+              <span style={{ color: '#64748b', fontSize: '0.85rem', flex: 1 }}>Burst:</span>
+              <input
+                type="number" min="1" max="10" value={p.burst}
+                onChange={e => updateBurst(i, parseInt(e.target.value) || 1)}
+                style={{ width: '60px', background: '#0f172a', border: `1px solid ${p.color}40`, borderRadius: '8px', padding: '0.4rem 0.5rem', color: '#fff', fontSize: '0.95rem', fontWeight: 800, textAlign: 'center' }}
+              />
+              <span style={{ color: '#64748b', fontSize: '0.8rem' }}>ut</span>
+              <button onClick={() => removeProcess(i)} style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', fontSize: '1.1rem', padding: '0 0.25rem' }}>✕</button>
+            </div>
+          ))}
+        </div>
+
+        {/* Agregar proceso */}
+        {processes.length < 5 && (
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <input
+              placeholder="Nombre"
+              value={newName}
+              onChange={e => setNewName(e.target.value)}
+              style={{ width: '80px', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '0.6rem 0.75rem', color: '#fff', fontSize: '0.85rem' }}
+            />
+            <input
+              type="number" min="1" max="10" value={newBurst}
+              onChange={e => setNewBurst(parseInt(e.target.value) || 1)}
+              style={{ width: '70px', background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '0.6rem 0.75rem', color: '#fff', fontSize: '0.85rem', textAlign: 'center' }}
+            />
+            <span style={{ color: '#64748b', fontSize: '0.8rem' }}>ut</span>
+            <button onClick={addProcess} style={{ background: '#9333ea30', color: '#9333ea', border: '1px solid #9333ea40', padding: '0.6rem 1rem', borderRadius: '10px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
+              <Plus size={14} /> Agregar
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Botones */}
+      <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem' }}>
+        <button
+          onClick={simulate}
+          style={{ background: 'linear-gradient(to right, #4f46e5, #9333ea)', color: '#fff', border: 'none', padding: '1rem 2.5rem', borderRadius: '20px', fontWeight: 900, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+        >
+          <PlayCircle size={20} /> Simular Round Robin
+        </button>
+        <button
+          onClick={reset}
+          style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.08)', padding: '1rem 2rem', borderRadius: '20px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+        >
+          <RefreshCw size={16} /> Reiniciar
+        </button>
+      </div>
+
+      {/* Resultado */}
+      {result && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          {/* Diagrama de Gantt */}
+          <h3 style={{ fontWeight: 800, color: '#94a3b8', fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1rem' }}>Diagrama de Gantt</h3>
+          <div style={{ background: '#0f172a', borderRadius: '20px', padding: '1.5rem', marginBottom: '2rem', overflowX: 'auto' }}>
+            <div style={{ display: 'flex', minWidth: 'max-content', gap: 0 }}>
+              {result.gantt.map((g, i) => (
+                <div key={i} style={{
+                  width: `${(g.end - g.start) * 40}px`,
+                  background: g.color + '33',
+                  border: `2px solid ${g.color}`,
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  padding: '0.75rem 0.25rem',
+                  margin: '0 2px',
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  color: g.color,
+                  minWidth: '36px'
+                }}>
+                  {g.name}
+                  <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '0.25rem' }}>
+                    {g.start}-{g.end}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', marginTop: '0.5rem' }}>
+              {result.gantt.map((g, i) => (
+                <div key={i} style={{ width: `${(g.end - g.start) * 40}px`, margin: '0 2px', fontSize: '0.65rem', color: '#334155', textAlign: 'left', minWidth: '36px' }}>
+                  {g.start}
+                </div>
+              ))}
+              <div style={{ fontSize: '0.65rem', color: '#334155' }}>{result.totalTime}</div>
+            </div>
+          </div>
+
+          {/* Tabla de estadísticas */}
+          <h3 style={{ fontWeight: 800, color: '#94a3b8', fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1rem' }}>Estadísticas</h3>
+          <div style={{ background: '#0f172a', borderRadius: '20px', overflow: 'hidden' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+              <thead>
+                <tr style={{ background: '#1e293b' }}>
+                  {['Proceso', 'Burst', 'Finalización', 'Turnaround', 'Espera'].map(h => (
+                    <th key={h} style={{ padding: '1rem', textAlign: 'center', color: '#64748b', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {result.stats.map((s, i) => (
+                  <tr key={i} style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                    <td style={{ padding: '0.85rem 1rem', textAlign: 'center', fontWeight: 800, color: s.color }}>{s.name}</td>
+                    <td style={{ padding: '0.85rem 1rem', textAlign: 'center', color: '#f8fafc' }}>{s.burst} ut</td>
+                    <td style={{ padding: '0.85rem 1rem', textAlign: 'center', color: '#f8fafc' }}>{s.finish} ut</td>
+                    <td style={{ padding: '0.85rem 1rem', textAlign: 'center', color: '#a78bfa' }}>{s.turnaround} ut</td>
+                    <td style={{ padding: '0.85rem 1rem', textAlign: 'center', color: s.waiting > 0 ? '#f59e0b' : '#22c55e' }}>{s.waiting} ut</td>
+                  </tr>
+                ))}
+                <tr style={{ borderTop: '2px solid rgba(255,255,255,0.08)', background: '#1e293b' }}>
+                  <td colSpan={3} style={{ padding: '0.85rem 1rem', textAlign: 'right', color: '#64748b', fontSize: '0.8rem', fontWeight: 700 }}>Promedio</td>
+                  <td style={{ padding: '0.85rem 1rem', textAlign: 'center', color: '#a78bfa', fontWeight: 800 }}>
+                    {(result.stats.reduce((s, p) => s + p.turnaround, 0) / result.stats.length).toFixed(1)} ut
+                  </td>
+                  <td style={{ padding: '0.85rem 1rem', textAlign: 'center', color: '#f59e0b', fontWeight: 800 }}>
+                    {(result.stats.reduce((s, p) => s + p.waiting, 0) / result.stats.length).toFixed(1)} ut
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+};
 
 const SistemaOperativo = () => {
   return (
@@ -89,15 +314,31 @@ const SistemaOperativo = () => {
                  </ul>
               </div>
               <div style={{ position: 'relative' }}>
-                 <img 
-                   src="/assets/operating_system_layers_glass_1775235566953.png" 
-                   alt="OS Layers Architecture" 
-                   style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(147,51,234,0.3)' }} 
+                 <img
+                   src="/assets/operating_system_layers_glass_1775235566953.png"
+                   alt="OS Layers Architecture"
+                   style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(147,51,234,0.3)' }}
                  />
                  <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
               </div>
            </div>
         </section>
+
+        {/* Simulador Round Robin */}
+        <SchedulerSimulator />
+
+        <RepasoClave
+          accentColor="#9333ea"
+          title="Sistemas Operativos"
+          facts={[
+            { icon: '🔑', term: 'Kernel (Núcleo)', def: 'Corazón del SO con acceso total al hardware. Opera en Modo Kernel. Gestiona CPU, memoria RAM y periféricos.' },
+            { icon: '🏃', term: 'Proceso vs Hilo', def: 'Proceso: programa en ejecución con su propia RAM y recursos. Hilo (Thread): unidad de ejecución mínima dentro de un proceso.' },
+            { icon: '🔄', term: 'Scheduling / Planificación', def: 'Decide qué proceso usa la CPU en cada momento. Algoritmos: Round Robin (turnos), FCFS (llegada), SJF (más corto primero).' },
+            { icon: '🔒', term: 'Deadlock (Abrazo Mortal)', def: 'Dos o más procesos se esperan mutuamente para liberar un recurso, bloqueándose indefinidamente. Requiere 4 condiciones de Coffman.' },
+            { icon: '🗂️', term: 'Paginación', def: 'Divide la memoria en páginas de tamaño fijo para evitar fragmentación externa. Base del funcionamiento de la memoria virtual.' },
+            { icon: '📞', term: 'System Call', def: 'Puente legal entre aplicaciones (Modo Usuario) y el Kernel. Las apps solicitan servicios del SO sin acceder al hardware directamente.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #9333ea', boxShadow: '0 30px 60px rgba(147,51,234,0.1)' }}>
@@ -106,8 +347,8 @@ const SistemaOperativo = () => {
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Sistemas Operativos</h2>
             <p style={{ color: '#94a3b8', marginTop: '1rem' }}>20 preguntas para validar tu conocimiento sobre la gestión de recursos del sistema.</p>
           </div>
-          <QuizBlock 
-            questions={OS_QUESTS} 
+          <QuizBlock
+            questions={OS_QUESTS}
             accentColor="#9333ea"
             clase="Clase 10: Sistemas Operativos"
             unidad="Unidad 4"

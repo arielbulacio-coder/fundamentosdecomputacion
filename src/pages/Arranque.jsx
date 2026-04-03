@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   Power, Zap, Activity, ShieldCheck, Database, 
   Settings, ChevronRight, Info, CheckCircle, Smartphone, ExternalLink, HardDrive
@@ -92,6 +93,19 @@ const Arranque = () => {
               <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
            </div>
         </section>
+
+        <RepasoClave
+          accentColor="#ff4757"
+          title="Proceso de Arranque"
+          facts={[
+            { icon: '⚡', term: 'POST', def: 'Power On Self Test: primer proceso al encender. Verifica CPU, RAM, GPU, teclado y periféricos antes de cargar el SO.' },
+            { icon: '🔧', term: 'BIOS vs UEFI', def: 'BIOS: firmware legacy de 16 bits, limitado a discos ≤2TB/MBR. UEFI: 64 bits, Secure Boot, GUI, soporte GPT y arranque rápido.' },
+            { icon: '💾', term: 'MBR vs GPT', def: 'MBR: máximo 2TB, 4 particiones primarias. GPT: discos de cualquier tamaño, hasta 128 particiones, más confiable y moderno.' },
+            { icon: '🚀', term: 'Bootloader', def: 'Programa que carga el kernel del SO en RAM. GRUB (Linux), Windows Boot Manager (Windows). Permite el Dual Boot.' },
+            { icon: '🔋', term: 'Batería CMOS', def: 'Pila CR2032 en la placa madre que mantiene la configuración del BIOS y el reloj del sistema (RTC) cuando se apaga la PC.' },
+            { icon: '🔐', term: 'Secure Boot', def: 'Característica UEFI que verifica la firma digital del bootloader para bloquear malware de inicio (bootkits y rootkits).' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ff4757', boxShadow: '0 30px 60px rgba(255,71,87,0.1)' }}>

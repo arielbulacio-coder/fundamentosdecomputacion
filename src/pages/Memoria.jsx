@@ -1,8 +1,9 @@
-import React from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
-import { Database, Zap, Cpu, Server, HardDrive, ShieldCheck, ChevronRight, BarChart } from 'lucide-react';
+import RepasoClave from '../components/RepasoClave';
+import { Database, Zap, Server, ShieldCheck, BarChart, RefreshCw, PlayCircle } from 'lucide-react';
 
 const MEM_QUESTS = [
   { q: '¿Qué significa RAM?', opts: ['Read Access Memory', 'Random Access Memory', 'Rapid Advanced Memory', 'Root Alpha Memory'], a: 1, exp: 'Es una memoria de acceso aleatorio, lo que significa que se puede leer cualquier punto con la misma velocidad.' },
@@ -26,6 +27,218 @@ const MEM_QUESTS = [
   { q: 'Los registros del CPU se encuentran en el nivel más ______ de la jerarquía:', opts: ['Bajo', 'Medio', 'Externo', 'Alto (Nivel 0)'], a: 3, exp: 'Están en la punta de la pirámide: son lo más rápido y escaso que existe.' },
   { q: '¿Qué significa que la memoria ROM sea "no volátil"?', opts: ['Que puede explotar', 'Que no pierde su contenido al quitar la alimentación eléctrica', 'Que es líquida', 'Que vuela muy rápido'], a: 1, exp: 'Es ideal para guardar el BIOS o el firmware de control.' }
 ];
+
+const CACHE_SIZE = 4;
+const MEMORY_ADDRESSES = ['0x1A', '0x2B', '0x3C', '0x4D', '0x5E', '0x6F', '0x7A', '0x8B', '0x9C', '0xAD'];
+const ACCESS_TIMES = { cache: 2, ram: 80, disk: 5000000 };
+
+const CacheSimulator = () => {
+  const [cache, setCache] = useState([]); // [{addr, data, useOrder}]
+  const [log, setLog] = useState([]);
+  const [hits, setHits] = useState(0);
+  const [misses, setMisses] = useState(0);
+  const [useOrder, setUseOrder] = useState(0);
+  const [lastAccess, setLastAccess] = useState(null);
+
+  const requestData = useCallback(() => {
+    const addr = MEMORY_ADDRESSES[Math.floor(Math.random() * MEMORY_ADDRESSES.length)];
+    const hitIndex = cache.findIndex(c => c.addr === addr);
+
+    if (hitIndex !== -1) {
+      // Cache HIT
+      const newOrder = useOrder + 1;
+      const newCache = cache.map((c, i) =>
+        i === hitIndex ? { ...c, useOrder: newOrder } : c
+      );
+      setCache(newCache);
+      setUseOrder(newOrder);
+      setHits(h => h + 1);
+      setLastAccess({ addr, type: 'HIT', time: ACCESS_TIMES.cache });
+      setLog(l => [{ addr, type: 'HIT', time: ACCESS_TIMES.cache, id: Date.now() }, ...l].slice(0, 6));
+    } else {
+      // Cache MISS — cargar desde RAM
+      const newOrder = useOrder + 1;
+      let newCache = [...cache];
+      let evicted = null;
+
+      if (newCache.length < CACHE_SIZE) {
+        newCache.push({ addr, data: `Dato@${addr}`, useOrder: newOrder });
+      } else {
+        // LRU: evict the one with lowest useOrder
+        const lruIdx = newCache.reduce((minI, c, i) => c.useOrder < newCache[minI].useOrder ? i : minI, 0);
+        evicted = newCache[lruIdx].addr;
+        newCache[lruIdx] = { addr, data: `Dato@${addr}`, useOrder: newOrder };
+      }
+
+      setCache(newCache);
+      setUseOrder(newOrder);
+      setMisses(m => m + 1);
+      setLastAccess({ addr, type: 'MISS', time: ACCESS_TIMES.ram, evicted });
+      setLog(l => [{ addr, type: 'MISS', time: ACCESS_TIMES.ram, evicted, id: Date.now() }, ...l].slice(0, 6));
+    }
+  }, [cache, useOrder]);
+
+  const reset = () => {
+    setCache([]);
+    setLog([]);
+    setHits(0);
+    setMisses(0);
+    setUseOrder(0);
+    setLastAccess(null);
+  };
+
+  const total = hits + misses;
+  const hitRate = total > 0 ? ((hits / total) * 100).toFixed(0) : 0;
+
+  return (
+    <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <Cpu color="#ec4899" size={42} style={{ margin: '0 auto 1rem' }} />
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>Simulador de Caché (LRU)</h2>
+        <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '640px', margin: '0 auto' }}>
+          Presiona <strong style={{ color: '#ec4899' }}>Solicitar Dato</strong> para que la CPU pida una dirección de memoria aleatoria. La caché tiene <strong style={{ color: '#a855f7' }}>{CACHE_SIZE} bloques</strong> usando política de reemplazo <strong style={{ color: '#a855f7' }}>LRU</strong>.
+        </p>
+      </div>
+
+      {/* Estado actual */}
+      {lastAccess && (
+        <motion.div
+          key={lastAccess.addr + lastAccess.type + hits + misses}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          style={{
+            background: lastAccess.type === 'HIT' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
+            border: `2px solid ${lastAccess.type === 'HIT' ? '#22c55e' : '#ef4444'}`,
+            borderRadius: '20px', padding: '1.5rem 2rem', marginBottom: '2rem', textAlign: 'center'
+          }}
+        >
+          <span style={{ fontSize: '1.4rem', fontWeight: 900, color: lastAccess.type === 'HIT' ? '#22c55e' : '#ef4444' }}>
+            {lastAccess.type === 'HIT' ? '✓ CACHE HIT' : '✗ CACHE MISS'}
+          </span>
+          <span style={{ color: '#94a3b8', marginLeft: '1.5rem' }}>
+            Dirección: <strong style={{ color: '#fff' }}>{lastAccess.addr}</strong>
+            {' — '}Tiempo de acceso: <strong style={{ color: lastAccess.type === 'HIT' ? '#22c55e' : '#f59e0b' }}>{lastAccess.time} ns</strong>
+            {lastAccess.evicted && <span style={{ color: '#64748b' }}> — Desalojado: <strong>{lastAccess.evicted}</strong></span>}
+          </span>
+        </motion.div>
+      )}
+
+      {/* Caché slots + Log */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
+        {/* Slots de caché */}
+        <div>
+          <h3 style={{ fontWeight: 800, marginBottom: '1rem', color: '#a855f7', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Bloques en Caché</h3>
+          <div style={{ display: 'grid', gap: '0.75rem' }}>
+            {Array.from({ length: CACHE_SIZE }).map((_, i) => {
+              const slot = cache[i];
+              const isLRU = slot && cache.length === CACHE_SIZE &&
+                slot.useOrder === Math.min(...cache.map(c => c.useOrder));
+              return (
+                <div key={i} style={{
+                  padding: '1rem 1.5rem',
+                  background: slot ? '#1e293b' : '#0f172a',
+                  borderRadius: '15px',
+                  border: `1.5px solid ${slot ? (isLRU ? '#f59e0b50' : '#a855f730') : 'rgba(255,255,255,0.04)'}`,
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                }}>
+                  <span style={{ color: '#64748b', fontSize: '0.8rem', fontWeight: 700 }}>Bloque {i}</span>
+                  {slot ? (
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 800, color: '#ec4899' }}>{slot.addr}</span>
+                      {isLRU && cache.length === CACHE_SIZE && (
+                        <span style={{ fontSize: '0.65rem', color: '#f59e0b', background: '#f59e0b20', padding: '2px 8px', borderRadius: '8px', fontWeight: 800 }}>LRU</span>
+                      )}
+                    </div>
+                  ) : (
+                    <span style={{ color: '#334155', fontSize: '0.8rem' }}>vacío</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Log de accesos */}
+        <div>
+          <h3 style={{ fontWeight: 800, marginBottom: '1rem', color: '#a855f7', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Historial de Accesos</h3>
+          <div style={{ display: 'grid', gap: '0.75rem' }}>
+            {log.length === 0 ? (
+              <p style={{ color: '#334155', fontSize: '0.9rem', padding: '1rem' }}>Sin accesos aún. Presiona el botón.</p>
+            ) : log.map((entry, i) => (
+              <div key={entry.id} style={{
+                padding: '0.8rem 1.2rem',
+                background: '#0f172a',
+                borderRadius: '12px',
+                borderLeft: `4px solid ${entry.type === 'HIT' ? '#22c55e' : '#ef4444'}`,
+                display: 'flex', justifyContent: 'space-between',
+                opacity: 1 - i * 0.12
+              }}>
+                <span style={{ fontWeight: 700, color: entry.type === 'HIT' ? '#22c55e' : '#ef4444', fontSize: '0.8rem' }}>
+                  {entry.type}
+                </span>
+                <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{entry.addr}</span>
+                <span style={{ color: '#64748b', fontSize: '0.75rem' }}>{entry.time} ns</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2.5rem' }}>
+        {[
+          { label: 'Hits', value: hits, color: '#22c55e' },
+          { label: 'Misses', value: misses, color: '#ef4444' },
+          { label: 'Hit Rate', value: `${hitRate}%`, color: '#a855f7' }
+        ].map(s => (
+          <div key={s.label} style={{ background: '#1e293b', borderRadius: '20px', padding: '1.5rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '2rem', fontWeight: 900, color: s.color }}>{s.value}</div>
+            <div style={{ color: '#64748b', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.25rem' }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Comparativa de tiempos */}
+      <div style={{ background: '#0f172a', borderRadius: '20px', padding: '1.5rem 2rem', marginBottom: '2.5rem' }}>
+        <h4 style={{ margin: '0 0 1rem', fontSize: '0.8rem', color: '#64748b', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase' }}>Comparativa de Velocidad</h4>
+        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+          {[
+            { label: 'Caché L1', time: '~2 ns', color: '#ec4899', bar: 100 },
+            { label: 'RAM (DDR)', time: '~80 ns', color: '#a855f7', bar: 40 },
+            { label: 'SSD NVMe', time: '~100 µs', color: '#6366f1', bar: 15 },
+            { label: 'HDD', time: '~10 ms', color: '#334155', bar: 5 }
+          ].map(m => (
+            <div key={m.label} style={{ flex: '1', minWidth: '120px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700 }}>{m.label}</span>
+                <span style={{ fontSize: '0.75rem', color: m.color, fontWeight: 800 }}>{m.time}</span>
+              </div>
+              <div style={{ height: '8px', background: '#1e293b', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${m.bar}%`, background: m.color, borderRadius: '4px', transition: '0.3s' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Botones */}
+      <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+        <button
+          onClick={requestData}
+          style={{ background: 'linear-gradient(to right, #a855f7, #ec4899)', color: '#fff', border: 'none', padding: '1rem 2.5rem', borderRadius: '20px', fontWeight: 900, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+        >
+          <PlayCircle size={20} /> Solicitar Dato
+        </button>
+        <button
+          onClick={reset}
+          style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.08)', padding: '1rem 2rem', borderRadius: '20px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+        >
+          <RefreshCw size={16} /> Reiniciar
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Memoria = () => {
   return (
@@ -56,15 +269,15 @@ const Memoria = () => {
                   { level: 'L4: SSD / Disco', speed: 'ms', cap: 'TB', color: '#6366f1' },
                   { level: 'L5: Remoto / Cinta', speed: 'Seg/Min', cap: 'PB', color: '#4f46e5' }
                 ].map((l, i) => (
-                  <motion.div 
+                  <motion.div
                     key={i}
                     whileHover={{ scale: 1.02, x: 10 }}
-                    style={{ 
-                      padding: '1.25rem', 
-                      background: '#0f172a', 
-                      borderRadius: '15px', 
+                    style={{
+                      padding: '1.25rem',
+                      background: '#0f172a',
+                      borderRadius: '15px',
                       borderLeft: `6px solid ${l.color}`,
-                      display: 'flex', 
+                      display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
                     }}
@@ -78,12 +291,12 @@ const Memoria = () => {
                 ))}
               </div>
             </div>
-            
+
             <div style={{ textAlign: 'center' }}>
-              <img 
-                src="/assets/memory_hierarchy_pyramid_1775235453344.png" 
-                alt="Memory Pyramid" 
-                style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} 
+              <img
+                src="/assets/memory_hierarchy_pyramid_1775235453344.png"
+                alt="Memory Pyramid"
+                style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
               />
               <div style={{ marginTop: '2rem', background: '#0f172a', padding: '1.5rem', borderRadius: '25px', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                 <div>
@@ -119,6 +332,22 @@ const Memoria = () => {
           </div>
         </section>
 
+        {/* Simulador de Caché */}
+        <CacheSimulator />
+
+        <RepasoClave
+          accentColor="#a855f7"
+          title="Jerarquía de Memoria"
+          facts={[
+            { icon: '🏆', term: 'Jerarquía L0→L5', def: 'Registros (<1ns) → Caché L1/L2/L3 (1-50ns) → RAM DDR (100ns) → SSD (µs) → HDD (ms) → Nube. Velocidad vs capacidad.' },
+            { icon: '⚡', term: 'Caché (SRAM)', def: 'Static RAM: más rápida (~2-5ns), cara, no necesita refresco. Anticipa pedidos del CPU por localidad espacial y temporal.' },
+            { icon: '🔄', term: 'RAM (DRAM)', def: 'Dynamic RAM: volátil, necesita refresco eléctrico constante (~100ns). Almacena todos los procesos activos del sistema.' },
+            { icon: '🔒', term: 'ROM / Flash / EEPROM', def: 'No volátil. Conserva datos sin energía eléctrica. Usada para BIOS/UEFI, pendrives, SSDs. Puede regrabarse eléctricamente.' },
+            { icon: '💻', term: 'Memoria Virtual + Swap', def: 'El SO usa espacio de disco como extensión de la RAM. El intercambio (swapping) es ~1000× más lento que la RAM real.' },
+            { icon: '🔁', term: 'Política LRU', def: 'Least Recently Used: el bloque de caché menos accedido recientemente es el primero en ser reemplazado cuando la caché está llena.' },
+          ]}
+        />
+
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #a855f7', boxShadow: '0 30px 60px rgba(168,85,247,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -126,8 +355,8 @@ const Memoria = () => {
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Jerarquías</h2>
             <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Valida tu conocimiento sobre gestión de memoria con esta evaluación de 20 preguntas.</p>
           </div>
-          <QuizBlock 
-            questions={MEM_QUESTS} 
+          <QuizBlock
+            questions={MEM_QUESTS}
             accentColor="#a855f7"
             clase="Clase 4: Gestión de Memoria"
             unidad="Unidad 1"

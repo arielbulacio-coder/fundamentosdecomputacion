@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   History, Milestone, Cpu, Zap, Activity, Info, 
   Database, Server, Globe, Bot
@@ -93,6 +94,19 @@ const Generaciones = () => {
             ))}
           </div>
         </section>
+
+        <RepasoClave
+          accentColor="#0088ff"
+          title="Historia de la Computación"
+          facts={[
+            { icon: '💡', term: '1ª Generación: Válvulas de Vacío', def: '1940-1956. Máquinas del tamaño de habitaciones (ENIAC: 18.000 válvulas). Programación con tarjetas perforadas.' },
+            { icon: '⚡', term: '2ª Generación: Transistores', def: '1956-1963. Más compactos y confiables. Aparecen los primeros lenguajes de alto nivel (FORTRAN, COBOL).' },
+            { icon: '🔬', term: '3ª Generación: Circuitos Integrados', def: '1964-1971. Múltiples transistores en un chip. Surge el concepto de familia de computadoras y el tiempo compartido.' },
+            { icon: '🖥️', term: '4ª Generación: Microprocesadores', def: '1971-hoy. Intel 4004 integra la CPU en un chip. Nace la computadora personal (PC) y la interfaz gráfica.' },
+            { icon: '🤖', term: '5ª Generación: IA y Quantum', def: 'Procesamiento masivo paralelo, aprendizaje automático, redes neuronales profundas y computación cuántica.' },
+            { icon: '📐', term: 'Ley de Moore', def: 'El número de transistores en un chip se duplica cada ~2 años, reduciendo costo y tamaño exponencialmente.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #0088ff', boxShadow: '0 30px 60px rgba(0,136,255,0.1)' }}>

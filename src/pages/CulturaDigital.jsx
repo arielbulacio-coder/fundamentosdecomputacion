@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
+import RepasoClave from '../components/RepasoClave';
 import { 
   Globe, Share2, Zap, ZapOff, Shield, Database, Smartphone, 
   Cpu, Users, Info, Rocket, CheckCircle, BarChart3
@@ -98,6 +99,19 @@ const CulturaDigital = () => {
               </div>
            </div>
         </section>
+
+        <RepasoClave
+          accentColor="#2ed573"
+          title="Cultura Digital y TICs"
+          facts={[
+            { icon: '🌐', term: 'TICs', def: 'Tecnologías de Información y Comunicación: conjunto de herramientas digitales para crear, gestionar y compartir información.' },
+            { icon: '🏭', term: 'Industria 4.0', def: 'Cuarta revolución industrial: IoT, Big Data, Inteligencia Artificial, Robótica, Cloud Computing y Manufactura Aditiva (3D).' },
+            { icon: '🏙️', term: 'Smart Cities', def: 'Ciudades que usan sensores y TICs para optimizar servicios: tráfico inteligente, energía, salud pública y seguridad.' },
+            { icon: '🎭', term: 'Deepfakes', def: 'Contenido multimedia falsificado con redes GAN (IA). Principal vector de desinformación y fraude en la era digital.' },
+            { icon: '🏛️', term: 'E-government', def: 'Gobierno electrónico: trámites, votación y servicios públicos digitales. Aumenta la transparencia y reduce la burocracia.' },
+            { icon: '👤', term: 'Ciudadanía Digital', def: 'Conjunto de derechos y responsabilidades en el entorno online: privacidad, respeto, veracidad, seguridad y participación.' },
+          ]}
+        />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #2ed573', boxShadow: '0 30px 60px rgba(46,213,115,0.1)' }}>
