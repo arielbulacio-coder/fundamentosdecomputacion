@@ -4,7 +4,8 @@ import LockedContent from '../components/LockedContent';
 import { 
   Cpu, Database, LayoutGrid, Sliders, Play, 
   RotateCcw, Info, CheckCircle, Smartphone, 
-  Laptop, Monitor, Activity, ArrowRight
+  Laptop, Monitor, Activity, ArrowRight, Zap,
+  Layers, HardDrive
 } from 'lucide-react';
 
 const C = {
@@ -66,11 +67,8 @@ const VonNeumann = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '4rem', alignItems: 'center' }}>
               <div>
                 <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '1.5rem', color: C.primary }}>Simulador de Ciclo</h2>
-                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem', marginBottom: '2.5rem' }}>
-                  Observa cómo la CPU interactúa con la RAM a través de los buses. Cada paso es vital para procesar una sola instrucción.
-                </p>
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem' }}>
-                  <button 
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2.5rem' }}>
+                   <button 
                     onClick={nextPhase}
                     style={{ background: C.primary, color: '#fff', border: 'none', padding: '1.25rem 2.5rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
                   >
@@ -83,57 +81,19 @@ const VonNeumann = () => {
                     <RotateCcw size={20} />
                   </button>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                  {phases.map((p, i) => (
-                    <div 
-                      key={p.id}
-                      style={{ 
-                        padding: '0.75rem 1.25rem', borderRadius: '15px', fontSize: '0.85rem', fontWeight: 800,
-                        background: i === phaseIdx ? p.color : 'rgba(255,255,255,0.02)',
-                        color: i === phaseIdx ? '#000' : '#475569',
-                        transition: '0.3s'
-                      }}
-                    >
-                      {p.label}
-                    </div>
-                  ))}
+                <div style={{ background: '#0f172a', padding: '2rem', borderRadius: '25px', border: '1px solid rgba(255,255,255,0.02)' }}>
+                  <h4 style={{ color: phases[phaseIdx].color, fontWeight: 900, fontSize: '1.1rem', marginBottom: '0.5rem' }}>{phases[phaseIdx].label}</h4>
+                  <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>Ciclos completados: {cycles}</p>
                 </div>
               </div>
 
-              <div style={{ background: '#000', padding: '3rem', borderRadius: '40px', border: '2px solid rgba(255,255,255,0.05)', position: 'relative' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3rem' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ color: C.primary, marginBottom: '0.5rem' }}><Cpu size={32} /></div>
-                    <span style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.5 }}>CPU</span>
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ color: C.secondary, marginBottom: '0.5rem' }}><Database size={32} /></div>
-                    <span style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.5 }}>RAM</span>
-                  </div>
-                </div>
-                {/* Visualización de Buses */}
-                <div style={{ height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem', position: 'relative' }}>
-                  <motion.div 
-                    animate={{ background: phaseIdx === 1 ? C.primary : 'rgba(255,255,255,0.05)' }}
-                    style={{ height: '6px', borderRadius: '3px' }} 
-                  />
-                  <motion.div 
-                    animate={{ background: (phaseIdx === 2 || phaseIdx === 4) ? C.secondary : 'rgba(255,255,255,0.05)' }}
-                    style={{ height: '6px', borderRadius: '3px' }} 
-                  />
-                  <motion.div 
-                    animate={{ background: phaseIdx === 3 ? '#f59e0b' : 'rgba(255,255,255,0.05)' }}
-                    style={{ height: '6px', borderRadius: '3px' }} 
-                  />
-                  <div style={{ position: 'absolute', top: '-1.5rem', width: '100%', display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', fontWeight: 900, opacity: 0.3 }}>
-                    <span>DIRECCIONES</span>
-                    <span>DATOS</span>
-                    <span>CONTROL</span>
-                  </div>
-                </div>
-                <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.8rem', fontWeight: 700, color: C.primary }}>
-                  Ciclos Completados: {cycles}
-                </div>
+              <div style={{ position: 'relative' }}>
+                <img 
+                  src="/assets/vn_diagram.png" 
+                  alt="Von Neumann Diagram" 
+                  style={{ width: '100%', borderRadius: '40px', boxShadow: `0 20px 50px ${C.primary}20` }} 
+                />
+                <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle, transparent 20%, ${C.bg} 100%)`, borderRadius: '40px' }} />
               </div>
             </div>
           </div>
@@ -144,15 +104,15 @@ const VonNeumann = () => {
           <div style={{ background: C.card, padding: '3.5rem', borderRadius: '45px', borderLeft: `8px solid ${C.danger}` }}>
             <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1.5rem', color: C.danger }}>El Cuello de Botella</h2>
             <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
-              Al usar un solo bus para instrucciones y datos, la CPU (que es veloz) debe esperar a que la RAM (que es lenta) termine de enviar la información. Es como tener un motor de Ferrari pero una carretera de carril único.
+              Al usar un solo bus para instrucciones y datos, la CPU debe esperar a que la RAM envíe la información. Es el límite físico fundamental de esta arquitectura.
             </p>
           </div>
           <div style={{ background: 'rgba(255,255,255,0.02)', padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '1.25rem' }}>Soluciones Modernas</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '1.25rem' }}>Optimización Moderna</h3>
             <ul style={{ display: 'grid', gap: '1rem', padding: 0, listStyle: 'none' }}>
-              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Niveles de Memoria Caché (L1, L2, L3)</li>
-              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Predictores de Salto en la CPU</li>
-              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Buses Multi-canal de alta velocidad</li>
+              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Niveles de Memoria Caché L1/L2/L3</li>
+              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Segmentación (Pipelining)</li>
+              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Buses de alta velocidad (DDR)</li>
             </ul>
           </div>
         </section>
@@ -161,7 +121,7 @@ const VonNeumann = () => {
         <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `2px solid ${C.primary}40`, boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
           {!quizStarted ? (
             <div style={{ textAlign: 'center' }}>
-              <LayoutGrid size={56} color={C.primary} style={{ marginBottom: '1.5rem' }} />
+              <LayoutGrid size={56} color={C.primary} style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
               <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Fundamentos</h2>
               <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>Demuestra que entiendes el flujo de datos que mueve al mundo.</p>
               <button 

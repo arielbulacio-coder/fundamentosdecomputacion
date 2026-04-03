@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import { 
-  Box, Cpu, Database, Save, Laptop, 
-  Smartphone, Monitor, Info, CheckCircle,
-  Play, RotateCcw, ChevronRight, Activity
+  Box, Cpu, Database, Laptop, 
+  Smartphone, Monitor, CheckCircle,
+  Activity, ArrowRight
 } from 'lucide-react';
 
 const C = {
@@ -32,7 +32,7 @@ const Harvard = () => {
   const [finished, setFinished] = useState(false);
 
   return (
-    <LockedContent keyword="arquitectura" title="Clase 2: Harvard vs Von Neumann" unit={2}>
+    <LockedContent keyword="arquitectura" title="Clase 2 suplemento: Harvard" unit={2}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: C.text }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -45,36 +45,13 @@ const Harvard = () => {
           </motion.div>
         </header>
 
-        {/* Comparativa Estructural */}
+        {/* Comparativa y Diagrama */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
-            <motion.div whileHover={{ y: -10 }} style={{ background: C.card, padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ background: C.primary + '15', color: C.primary, padding: '1.25rem', borderRadius: '25px', width: 'fit-content', marginBottom: '2rem' }}>
-                <Monitor size={32} />
-              </div>
-              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1.5rem' }}>Von Neumann</h2>
-              <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '2.5rem' }}>
-                El modelo clásico de propósito general. Usa un <strong>único bus</strong> para datos e instrucciones, lo que genera flexibilidad pero crea un "cuello de botella".
-              </p>
-              <div style={{ background: '#000', padding: '2rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: C.primary }}>
-                  <Activity size={20} />
-                  <span style={{ fontWeight: 800, fontSize: '0.8rem', letterSpacing: '1px' }}>BUS ÚNICO</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>
-                  <Database size={40} opacity={0.3} />
-                </div>
-                <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.5, textAlign: 'center' }}>Instrucciones y Datos comparten el mismo camino.</p>
-              </div>
-            </motion.div>
-
-            <motion.div whileHover={{ y: -10 }} style={{ background: C.card, padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(59,130,246,0.2)', boxShadow: `0 25px 50px -12px ${C.primary}15` }}>
-              <div style={{ background: C.secondary + '15', color: C.secondary, padding: '1.25rem', borderRadius: '25px', width: 'fit-content', marginBottom: '2rem' }}>
-                <Cpu size={32} />
-              </div>
-              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1.5rem' }}>Harvard</h2>
-              <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '2.5rem' }}>
-                Especialización máxima. Separa <strong>físicamente</strong> la memoria de programa de la de datos, permitiendo leer ambos al mismo tiempo.
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+            <div style={{ background: C.card, padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2rem' }}>El fin del cuello de botella</h2>
+              <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem', marginBottom: '2.5rem' }}>
+                Al separar físicamente las memorias de programa y datos, la CPU puede leer la siguiente instrucción mientras está guardando un resultado en RAM. <strong>Paralelismo total.</strong>
               </p>
               <div style={{ background: '#000', padding: '2rem', borderRadius: '30px', border: '1px solid rgba(6,182,212,0.2)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -93,21 +70,29 @@ const Harvard = () => {
                 </div>
                 <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.5, textAlign: 'center' }}>Caminos paralelos = Máxima velocidad.</p>
               </div>
-            </motion.div>
+            </div>
+            <div style={{ position: 'relative' }}>
+              <img 
+                src="/assets/harvard_architecture_split_neon_1775235605987.png" 
+                alt="Harvard Architecture" 
+                style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(6,182,212,0.2)' }} 
+              />
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
+            </div>
           </div>
         </section>
 
-        {/* Aplicaciones Reales */}
+        {/* Aplicaciones */}
         <section style={{ marginBottom: '6rem', background: 'rgba(255,255,255,0.02)', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4.5rem', fontWeight: 900 }}>¿Dónde las encontramos hoy?</h2>
+          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4.5rem', fontWeight: 900 }}>Dominio en el Mundo Embebido</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
             {[
-              { icon: <Smartphone size={40} />, title: 'Microcontroladores', color: C.primary, desc: 'Arduino (AVR) y PIC usan Harvard pura para garantizar respuesta inmediata en sensores y motores.' },
-              { icon: <Laptop size={40} />, title: 'Procesadores ARM', color: C.secondary, desc: 'Smartphones y chips Apple M3 usan Harvard Modificada: cachés L1 separados para datos e instrucciones.' },
-              { icon: <Monitor size={40} />, title: 'DSPs de Audio', color: C.accent, desc: 'Procesan ondas de sonido en tiempo real sin pausas, gracias a sus buses paralelos especializados.' }
+              { icon: <Smartphone />, title: 'Microcontroladores', color: C.primary, desc: 'Arduino (AVR) y PIC usan Harvard pura para garantizar respuesta inmediata.' },
+              { icon: <Laptop />, title: 'Procesadores ARM', color: C.secondary, desc: 'Chips Apple M3 y Snapdragon usan Harvard Modificada con cachés L1 divididos.' },
+              { icon: <Monitor />, title: 'DSPs de Audio', color: C.accent, desc: 'Procesan ondas de sonido en tiempo real sin pausas por buses compartidos.' }
             ].map((item, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ color: item.color, marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>{item.icon}</div>
+                <div style={{ color: item.color, marginBottom: '1.5rem' }}>{React.cloneElement(item.icon, { size: 40, style: { margin: '0 auto' } })}</div>
                 <h3 style={{ fontSize: '1.6rem', marginBottom: '1.25rem', fontWeight: 800 }}>{item.title}</h3>
                 <p style={{ color: '#94a3b8', fontSize: '1.05rem', lineHeight: 1.8 }}>{item.desc}</p>
               </div>
@@ -119,15 +104,14 @@ const Harvard = () => {
         <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: '2px solid rgba(59,130,246,0.2)', boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
           {!quizStarted ? (
             <div style={{ textAlign: 'center' }}>
-              <CheckCircle size={56} color={C.primary} style={{ marginBottom: '1.5rem' }} />
+              <CheckCircle size={56} color={C.primary} style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
               <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Arquitectura</h2>
               <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Sabes elegir la arquitectura correcta para cada problema?</p>
               <button 
                 onClick={() => setQuizStarted(true)} 
                 style={{ 
                   background: 'linear-gradient(to right, #3b82f6, #06b6d4)', color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem',
-                  boxShadow: `0 15px 30px ${C.primary}40`
+                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
                 }}
               >
                 Comenzar Evaluación
