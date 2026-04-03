@@ -6,7 +6,7 @@ const API_BASE = typeof window !== 'undefined'
   ? (window.__FUNDAMENTOS_API__ || '/api')
   : '/api';
 
-const RegistrationModal = ({ isOpen, onClose, score, total, clase, unidad }) => {
+const RegistrationModal = ({ isOpen, onClose, score, total, materia, unidad, clase }) => {
   const [form, setForm] = useState({ numero_comision: '', dni: '', apellido: '', nombres: '' });
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [message, setMessage] = useState('');
@@ -24,8 +24,9 @@ const RegistrationModal = ({ isOpen, onClose, score, total, clase, unidad }) => 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          clase,
+          materia: materia || 'Fundamentos de Computación',
           unidad,
+          clase,
           puntaje: score,
           total
         })
@@ -79,6 +80,10 @@ const RegistrationModal = ({ isOpen, onClose, score, total, clase, unidad }) => 
               </div>
               <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '20px', padding: '0.75rem 2rem', display: 'inline-block', color: '#22c55e', fontWeight: 800, fontSize: '1.1rem' }}>
                 {porcentaje}% de respuestas correctas
+              </div>
+              <div style={{ marginTop: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.85rem', lineHeight: 2, color: '#64748b' }}>
+                <div><span style={{ fontWeight: 800, color: '#94a3b8' }}>Materia:</span> {materia || 'Fundamentos de Computación'}</div>
+                <div><span style={{ fontWeight: 800, color: '#94a3b8' }}>Unidad:</span> {unidad} &nbsp;·&nbsp; <span style={{ fontWeight: 800, color: '#94a3b8' }}>Clase:</span> {clase}</div>
               </div>
             </div>
 

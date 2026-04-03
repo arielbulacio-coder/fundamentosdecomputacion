@@ -182,8 +182,13 @@ const Dashboard = () => {
   });
 
   const exportCSV = () => {
-    const headers = ['Comisión', 'DNI', 'Apellido', 'Nombres', 'Clase', 'Unidad', 'Puntaje', 'Total', '%', 'Fecha'];
-    const rows = filtered.map(e => [e.numero_comision, e.dni, e.apellido, e.nombres, e.clase, e.unidad, e.puntaje, e.total, e.porcentaje, new Date(e.fecha).toLocaleString('es-AR')]);
+    const headers = ['Comisión', 'DNI', 'Apellido', 'Nombres', 'Materia', 'Unidad', 'Clase', 'Puntaje', 'Total', '%', 'Fecha'];
+    const rows = filtered.map(e => [
+      e.numero_comision, e.dni, e.apellido, e.nombres,
+      e.materia || 'Fundamentos de Computación', e.unidad, e.clase,
+      e.puntaje, e.total, e.porcentaje,
+      new Date(e.fecha).toLocaleString('es-AR')
+    ]);
     const csv = [headers, ...rows].map(r => r.join(';')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -303,7 +308,7 @@ const Dashboard = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                      {['Comisión', 'DNI', 'Apellido', 'Nombres', 'Clase', 'Puntaje', '%', 'Fecha'].map(h => (
+                      {['Comisión', 'DNI', 'Apellido', 'Nombres', 'Materia', 'Unidad', 'Clase', 'Puntaje', '%', 'Fecha'].map(h => (
                         <th key={h} style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
@@ -315,6 +320,8 @@ const Dashboard = () => {
                         <td style={{ padding: '1rem', fontFamily: 'monospace' }}>{e.dni}</td>
                         <td style={{ padding: '1rem', fontWeight: 700 }}>{e.apellido}</td>
                         <td style={{ padding: '1rem', color: '#94a3b8' }}>{e.nombres}</td>
+                        <td style={{ padding: '1rem', color: '#64748b', fontSize: '0.85rem' }}>{e.materia || 'Fundamentos de Computación'}</td>
+                        <td style={{ padding: '1rem', color: '#64748b', fontSize: '0.85rem' }}>{e.unidad}</td>
                         <td style={{ padding: '1rem', color: '#64748b', fontSize: '0.85rem' }}>{e.clase}</td>
                         <td style={{ padding: '1rem', textAlign: 'center' }}><span style={{ fontWeight: 900 }}>{e.puntaje}/{e.total}</span></td>
                         <td style={{ padding: '1rem', textAlign: 'center' }}>

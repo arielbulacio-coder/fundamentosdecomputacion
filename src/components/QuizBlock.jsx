@@ -13,13 +13,15 @@ import { prepareQuiz } from '../utils/quizUtils';
  *   questions: [{ q, opts, a, exp }]
  *   passingScore: number (default: 60% of total)
  *   accentColor: string (default '#3b82f6')
- *   clase: string (label for DB)
- *   unidad: string (label for DB)
+ *   materia: string (subject name, e.g. 'Fundamentos de Computación')
+ *   clase: string (label for DB, e.g. 'Clase 11: Seguridad Informática')
+ *   unidad: string (label for DB, e.g. 'Unidad 4')
  */
 const QuizBlock = ({
   questions,
   passingScore,
   accentColor = '#3b82f6',
+  materia = 'Fundamentos de Computación',
   clase = 'Sin asignar',
   unidad = 'Sin asignar'
 }) => {
@@ -138,6 +140,7 @@ const QuizBlock = ({
           onClose={() => setShowRegistration(false)}
           score={score}
           total={questions.length}
+          materia={materia}
           clase={clase}
           unidad={unidad}
         />

@@ -62,13 +62,16 @@ async function initDB() {
         dni VARCHAR(20) NOT NULL,
         apellido VARCHAR(100) NOT NULL,
         nombres VARCHAR(150) NOT NULL,
-        clase VARCHAR(150) NOT NULL,
+        materia VARCHAR(150) NOT NULL DEFAULT 'Fundamentos de Computación',
         unidad VARCHAR(50) NOT NULL,
+        clase VARCHAR(150) NOT NULL,
         puntaje INTEGER NOT NULL,
         total INTEGER NOT NULL,
         porcentaje NUMERIC(5,2) NOT NULL,
         fecha TIMESTAMPTZ DEFAULT NOW()
       );
+      -- Add materia column if upgrading from old schema
+      ALTER TABLE evaluaciones ADD COLUMN IF NOT EXISTS materia VARCHAR(150) NOT NULL DEFAULT 'Fundamentos de Computación';
     `);
 
     // Tabla de docentes
@@ -150,18 +153,19 @@ app.get('/api/auth/me', authMiddleware, (req, res) => res.json({ docente: req.do
 
 // Registrar evaluación aprobada (público, lo hace el alumno)
 app.post('/api/evaluaciones', async (req, res) => {
-  const { numero_comision, dni, apellido, nombres, clase, unidad, puntaje, total } = req.body;
+  const { numero_comision, dni, apellido, nombres, materia, unidad, clase, puntaje, total } = req.body;
   if (!numero_comision || !dni || !apellido || !nombres || !clase || !unidad)
     return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
   if (typeof puntaje !== 'number' || typeof total !== 'number')
     return res.status(400).json({ error: 'Puntaje y total deben ser números.' });
 
   const porcentaje = ((puntaje / total) * 100).toFixed(2);
+  const materiaFinal = (materia || 'Fundamentos de Computación').trim();
   try {
     const result = await pool.query(
-      `INSERT INTO evaluaciones (numero_comision, dni, apellido, nombres, clase, unidad, puntaje, total, porcentaje)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, fecha`,
-      [numero_comision.trim(), dni.trim(), apellido.trim().toUpperCase(), nombres.trim(), clase, unidad, puntaje, total, porcentaje]
+      `INSERT INTO evaluaciones (numero_comision, dni, apellido, nombres, materia, unidad, clase, puntaje, total, porcentaje)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, fecha`,
+      [numero_comision.trim(), dni.trim(), apellido.trim().toUpperCase(), nombres.trim(), materiaFinal, unidad, clase, puntaje, total, porcentaje]
     );
     res.status(201).json({ mensaje: '¡Evaluación registrada exitosamente!', id: result.rows[0].id, fecha: result.rows[0].fecha, porcentaje });
   } catch (err) {
