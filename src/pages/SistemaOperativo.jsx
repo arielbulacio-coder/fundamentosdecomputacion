@@ -1,123 +1,115 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
-import { Layers, Monitor, Cpu, HardDrive, Globe, Settings, Terminal, Database, Zap, Shield } from 'lucide-react';
+import { 
+  Server, Cpu, Database, Shield, Layers, Settings, Globe, 
+  Info, Smartphone, CheckCircle, Activity, Layout
+} from 'lucide-react';
 
-const QUESTIONS = [
-  { q: '¿Cuál es la función principal del Kernel del Sistema Operativo?', opts: ['Mostrar el escritorio', 'Gestionar el acceso al hardware y coordinar los procesos del sistema', 'Reproducir audio', 'Navegar por internet'], a: 1, exp: 'El Kernel es el núcleo del SO: gestiona la CPU, la memoria, los dispositivos de E/S y la seguridad de acceso al hardware.' },
-  { q: '¿Qué es el "scheduling" (planificación de procesos)?', opts: ['Programar alarmas del sistema', 'El algoritmo que decide qué proceso usa la CPU en cada momento', 'Formatear el disco', 'Ordenar archivos alfabéticamente'], a: 1, exp: 'El scheduler asigna tiempo de CPU a los procesos usando algoritmos como Round Robin, FIFO o por prioridades.' },
-  { q: '¿Qué tipo de Sistema Operativo usa la mayoría de los smartphones actuales?', opts: ['DOS (Disk Operating System)', 'UNIX monousuario', 'Móvil (Android/iOS), basado en Linux/Darwin', 'Windows 95'], a: 2, exp: 'Android se basa en el kernel Linux; iOS/iPadOS se basan en Darwin, derivado de BSD/Unix.' },
-  { q: 'La "memoria virtual" en los Sistemas Operativos permite:', opts: ['Agregar más RAM física automáticamente', 'Usar espacio de disco como extensión de la RAM para ejecutar más programas', 'Acelerar el procesador', 'Guardar contraseñas'], a: 1, exp: 'La memoria virtual usa una partición del disco (swap/paginación) para simular más RAM, aunque es mucho más lenta.' },
-  { q: '¿Qué es un "proceso zombie" en Linux/Unix?', opts: ['Un proceso con virus', 'Un proceso que terminó pero cuya entrada en la tabla de procesos aún existe', 'Un proceso que consume el 100% de la CPU', 'Un archivo corrupto'], a: 1, exp: 'Un proceso zombie ejecutó exit() pero su padre no leyó su código de salida. Ocupa una entrada en la tabla de procesos sin consumir CPU/memoria.' },
-  { q: 'El sistema de archivos FAT32 tiene como limitación principal:', opts: ['No funciona en Windows', 'No permite crear carpetas', 'Solo soporta archivos de máximo 4 GB', 'No permite más de 10 archivos'], a: 2, exp: 'FAT32 tiene un límite de 4 GB por archivo. Para discos modernos se usa NTFS (Windows) o exFAT (compatibilidad universal).' },
-  { q: '¿Qué diferencia a un Sistema Operativo de tiempo real (RTOS) de uno de propósito general?', opts: ['El RTOS es más bonito', 'El RTOS garantiza respuesta en un tiempo máximo predecible, crítico para sistemas embebidos', 'El RTOS solo corre en supercomputadoras', 'No hay diferencia'], a: 1, exp: 'En sistemas como control de vuelos, marcapasos o frenos ABS, el SO debe responder en microsegundos garantizados. FreeRTOS y VxWorks son ejemplos.' },
-  { q: '¿Qué es la "virtualización" en el contexto de los Sistemas Operativos?', opts: ['Crear efectos visuales en el escritorio', 'Ejecutar múltiples SOs independientes sobre un mismo hardware físico mediante un hypervisor', 'Comprimir archivos', 'Sincronizar archivos con la nube'], a: 1, exp: 'Hypervisores como VMware, VirtualBox o KVM permiten ejecutar Linux, Windows y otros SOs simultáneamente en el mismo hardware.' }
+const OS_QUESTS = [
+  { q: '¿Qué es un Sistema Operativo?', opts: ['Un programa para navegar por internet', 'Software que administra los recursos de hardware y sirve de base para las aplicaciones', 'Un tipo de hardware especial', 'Una base de datos'], a: 1, exp: 'Es el intermediario crítico entre el usuario/aplicaciones y los fierros de la computadora.' },
+  { q: '¿Cuál es la función del Kernel (Núcleo)?', opts: ['Dibujar las ventanas en la pantalla', 'Gestionar directamente la CPU, la memoria y los dispositivos', 'Cifrar archivos', 'Instalar juegos'], a: 1, exp: 'Es la parte central y más protegida del SO que tiene control absoluto del hardware.' },
+  { q: 'El "Modo Usuario" se diferencia del "Modo Kernel" por:', opts: ['Tiene más colores', 'Las aplicaciones no tienen acceso directo al hardware por razones de seguridad', 'Es más rápido', 'Solo funciona con mouse'], a: 1, exp: 'Previene que un error en una aplicación (como Chrome) cuelgue todo el sistema.' },
+  { q: '¿Qué es un Proceso en un SO?', opts: ['Un archivo guardado', 'Un programa en ejecución que consume recursos (CPU, RAM)', 'Una carpeta', 'Un virus'], a: 1, exp: 'Cuando haces clic en un icono, el programa pasa de ser algo estático en disco a ser un proceso vivo en RAM.' },
+  { q: 'La "Planificación de la CPU" sirve para:', opts: ['Bajar el brillo', 'Decidir qué proceso usa el procesador en cada momento para que parezca que todos corren a la vez', 'Organizar los archivos', 'Medir la batería'], a: 1, exp: 'Es el algoritmo que crea la ilusión de la multitarea.' },
+  { q: '¿Qué es el Sistema de Archivos (File System)?', opts: ['Un programa de oficina', 'La forma en que el SO organiza y almacena los datos en el disco (ej: NTFS, FAT32, ext4)', 'Una lista de contactos', 'El explorador de internet'], a: 1, exp: 'Determina cómo se nombran, guardan y recuperan los archivos.' },
+  { q: '¿Qué sucede durante una "Llamada al Sistema" (System Call)?', opts: ['Te llaman por teléfono', 'Una aplicación pide un servicio protegido al Kernel (como leer un archivo)', 'Se apaga la PC', 'Se reinicia el router'], a: 1, exp: 'Es el puente legal que cruzan las apps para hablar con el hardware.' },
+  { q: 'La técnica de "Paginación" en memoria sirve para:', opts: ['Hacer que el libro sea más corto', 'Dividir la memoria en trozos fijos para evitar la fragmentación externa', 'Cargar más rápido las páginas web', 'Tener más disco'], a: 1, exp: 'Permite que un proceso no necesite estar contiguo en toda la memoria RAM.' },
+  { q: '¿Qué es el Interbloqueo (Deadlock)?', opts: ['Cuando se rompe el teclado', 'Una situación donde dos procesos se esperan mutuamente para liberar un recurso y nadie avanza', 'Un virus que bloquea carpetas', 'Cuando se llena el disco'], a: 1, exp: 'Es el "abrazo mortal" que congela procesos.' },
+  { q: '¿Cuál es la función de los Controladores (Drivers)?', opts: ['Manejar camiones', 'Software que enseña al SO cómo hablar con un hardware específico (ej: impresora o GPU)', 'Acelerar la PC', 'Bajar drivers de red'], a: 1, exp: 'Sin ellos, el SO no sabría qué señales enviar a cada dispositivo diferente.' },
+  { q: '¿Qué significa que un SO sea Multitarea?', opts: ['Que tiene muchas carpetas', 'Que puede ejecutar (o parecer que ejecuta) varios procesos de forma simultánea', 'Que es para muchos usuarios', 'Que es muy grande'], a: 1, exp: 'Permite escuchar música mientras escribes y descargas archivos.' },
+  { q: 'La Interfaz de Línea de Comandos (CLI) es:', opts: ['Una pantalla con fotos', 'Una interfaz basada exclusivamente en texto donde el usuario escribe órdenes', 'El cable de video', 'Un tipo de procesador'], a: 1, exp: 'Es más eficiente y potente para administradores de sistemas (ej: Terminal, CMD).' },
+  { q: '¿Qué es un Hilo (Thread)?', opts: ['Un cable de conexión', 'La unidad de ejecución más pequeña dentro de un proceso', 'Una parte del disco', 'Un mensaje de chat'], a: 1, exp: 'Un solo proceso (como un navegador) puede tener muchos hilos trabajando a la vez.' },
+  { q: 'El "Spooling" se ejemplifica comúnmente con:', opts: ['Mirar un video', 'La cola de impresión que guarda los trabajos en disco hasta que la impresora esté lista', 'Mover carpetas', 'Instalar Windows'], a: 1, exp: 'Permite que la CPU se libere rápido aunque el periférico sea lento.' },
+  { q: 'Un Sistema Operativo de Tiempo Real (RTOS) es vital en:', opts: ['Oficinas', 'Sistemas críticos donde el tiempo de respuesta debe ser exacto (ej: frenos de autos, satélites)', 'Juegos casuales', 'Escuelas'], a: 1, exp: 'Aquí un retraso de milisegundos puede ser fatal.' },
+  { q: '¿Qué es la Shell del sistema?', opts: ['El caparazón del disco', 'El intérprete de comandos que sirve de interfaz entre el usuario y el Kernel', 'Un tipo de virus', 'El cooler del CPU'], a: 1, exp: 'Ejemplos son Bash en Linux o PowerShell en Windows.' },
+  { q: 'El "Monolithic Kernel" (Núcleo Monolítico) se caracteriza por:', opts: ['Ser muy pequeño', 'Tener todos los servicios del SO (drivers, redes) dentro del espacio de memoria del Kernel', 'No tener drivers', 'Ser virtual'], a: 1, exp: 'Es el diseño de Linux: muy rápido pero un error en un driver puede tirar todo el sistema.' },
+  { q: '¿Qué es una Interrupción de Software (Trap/Exception)?', opts: ['Que se cuelgue la PC', 'Una señal generada por un error (dividir por cero) o una petición especial de una app', 'Un mensaje de WhatsApp', 'Un cortocircuito'], a: 1, exp: 'El SO toma el control para manejar la situación o cerrar la app problemática.' },
+  { q: 'La Gestión de E/S (Entrada/Salida) en un SO usa "Buffering" para:', opts: ['Limpiar el disco', 'Sincronizar dispositivos de diferentes velocidades almacenando datos intermedios en RAM', 'Aumentar el volumen', 'Cargar fotos'], a: 1, exp: 'Evita que el sistema espere a cada bit que viene de un dispositivo lento.' },
+  { q: '¿Cuál es la función del Gestor de Arranque (Bootloader) en sistemas con varios SO?', opts: ['Borrar el disco', 'Permitir al usuario elegir qué sistema operativo cargar (ej: Windows o Ubuntu)', 'Instalar actualizaciones', 'Mejorar el rendimiento'], a: 1, exp: 'Permite el famoso "Dual Boot".' }
 ];
 
 const SistemaOperativo = () => {
-  const [activeLayer, setActiveLayer] = useState(null);
-
-  const layers = [
-    { title: 'Aplicaciones', color: '#3b82f6', desc: 'Chrome, Word, juegos. Todo lo que usás a diario.' },
-    { title: 'Shell / Interfaz', color: '#8b5cf6', desc: 'Bash, PowerShell, escritorio gráfico. El puente entre usuario y SO.' },
-    { title: 'Sistema Operativo', color: '#f59e0b', desc: 'Kernel, gestión de procesos, memoria y dispositivos.' },
-    { title: 'Controladores', color: '#ef4444', desc: 'Drivers que traducen entre el SO y el hardware específico.' },
-    { title: 'Hardware', color: '#10b981', desc: 'CPU, RAM, discos, pantalla. La capa física real.' }
-  ];
-
   return (
-    <LockedContent keyword="kernel" title="Clase 10: Sistema Operativo" unit={4}>
+    <LockedContent keyword="kernel" title="Clase 10: El Corazón del Software" unit={4}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1.5rem', fontWeight: 900 }}>
-              Sistema Operativo
+            <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', background: 'linear-gradient(to right, #4f46e5, #9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1.5rem', fontWeight: 900 }}>
+              Sistemas Operativos
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              El director invisible. Gestiona cada ciclo de CPU, cada byte de RAM y cada dispositivo de tu computadora sin que lo notes.
+              El gestor de recursos definitivo. Entiende cómo el software toma control del hardware para crear el entorno que usas cada día.
             </p>
           </motion.div>
         </header>
 
-        {/* Capas del SO */}
+        {/* Teoría Ampliada: Capas del Sistema */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
-            <div style={{ background: '#1e293b', padding: '3rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2rem', color: '#3b82f6' }}>Modelo de Capas</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {layers.map((layer, i) => (
-                  <motion.div
-                    key={i}
-                    onMouseEnter={() => setActiveLayer(i)}
-                    onMouseLeave={() => setActiveLayer(null)}
-                    style={{ padding: '1.5rem', borderRadius: '20px', border: '1.5px solid', borderColor: activeLayer === i ? layer.color : 'rgba(255,255,255,0.05)', background: activeLayer === i ? layer.color + '15' : '#0f172a', cursor: 'pointer', transition: '0.3s' }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: 800, fontSize: '1rem' }}>{layer.title}</span>
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: layer.color }} />
-                    </div>
-                    {activeLayer === i && <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.75rem' }}>{layer.desc}</p>}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            <div style={{ position: 'relative' }}>
-              <img src="/assets/operating_system_layers_glass_1775235566953.png" alt="OS Layers" style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(59,130,246,0.2)' }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+             {[
+               { title: 'Nucleo / Kernel', icon: <Cpu />, color: '#9333ea', desc: 'Es la parte vital. Maneja la memoria, el tiempo del procesador (Scheduling) y el acceso a los periféricos de forma segura.' },
+               { title: 'Gestión de Procesos', icon: <Activity />, color: '#4f46e5', desc: 'Un programa es algo muerto en disco. El SO lo convierte en un Proceso vivo, asignándole recursos y tiempo de ejecución.' },
+               { title: 'Sistema de Archivos', icon: <Database />, color: '#3b82f6', desc: 'Organiza la información en estructuras lógicas (directorios/archivos) sobre estructuras físicas (sectores del disco).' },
+               { title: 'Interfaz de Usuario', icon: <Layout />, color: '#10b981', desc: 'Ya sea gráfica (GUI) o de texto (CLI), es la capa que permite al ser humano comunicarse con el complejo mundo binario.' }
+             ].map((layer, i) => (
+               <div key={i} style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '40px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ color: layer.color, marginBottom: '1.25rem' }}>{layer.icon}</div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1rem' }}>{layer.title}</h3>
+                  <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.7 }}>{layer.desc}</p>
+               </div>
+             ))}
           </div>
         </section>
 
-        {/* Teoria Expandida */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4.5rem', fontWeight: 900 }}>Funciones Críticas del SO</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-            {[
-              { Icon: Cpu, color: '#3b82f6', title: 'Gestión de Procesos', desc: 'El scheduler asigna tiempo de CPU mediante algoritmos como Round Robin. Garantiza que ningún proceso monopolice el procesador.' },
-              { Icon: Database, color: '#8b5cf6', title: 'Gestión de Memoria', desc: 'Asigna bloques de RAM a los procesos, gestiona la memoria virtual (swap) y protege la memoria de un proceso de ser accedida por otro.' },
-              { Icon: HardDrive, color: '#f59e0b', title: 'Sistema de Archivos', desc: 'Organiza datos en jerarquías de directorios. Sistemas como NTFS, ext4, APFS proveen permisos, journaling y cifrado nativo.' },
-              { Icon: Globe, color: '#10b981', title: 'Gestión de Red', desc: 'Implementa la pila TCP/IP, gestiona sockets, interfaces de red y garantiza el flujo ordenado de paquetes de datos.' },
-              { Icon: Shield, color: '#ef4444', title: 'Seguridad y Permisos', desc: 'Control de acceso por roles (root/admin, usuario, invitado), listas de control de acceso (ACL) y aislamiento de procesos.' },
-              { Icon: Terminal, color: '#94a3b8', title: 'Llamadas al Sistema', desc: 'Los programas solicitan servicios al Kernel mediante syscalls (open, read, write, fork). Son la API reservada del hardware.' }
-            ].map((item, i) => (
-              <motion.div key={i} whileHover={{ y: -5 }} style={{ background: '#0f172a', padding: '2.5rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                <item.Icon size={32} color={item.color} style={{ marginBottom: '1.25rem' }} />
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '1rem' }}>{item.title}</h3>
-                <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem' }}>{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* OS Comparison */}
-        <section style={{ marginBottom: '6rem', background: '#111', padding: '4rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.04)' }}>
-          <h2 style={{ fontSize: '2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900 }}>Los Grandes Sistemas Operativos</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-            {[
-              { name: 'Windows', kernel: 'NT Kernel', cuota: '~70% desktop', color: '#0ea5e9', desc: 'Dominante en escritorio corporativo. NTFS, Active Directory, PowerShell.' },
-              { name: 'Linux', kernel: 'Monolítico modular', cuota: '~100% servidores', color: '#f59e0b', desc: 'Open source, base de Android, servidores web y supercomputadoras.' },
-              { name: 'macOS / iOS', kernel: 'Darwin (XNU)', cuota: '~25% laptop premium', color: '#ef4444', desc: 'Base BSD + Mach microkernel. Ecosistema Apple, M-series chips.' }
-            ].map((os, i) => (
-              <div key={i} style={{ padding: '2.5rem', background: os.color + '10', borderRadius: '30px', border: `1.5px solid ${os.color}30` }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: os.color, marginBottom: '0.5rem' }}>{os.name}</h3>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '1rem', fontWeight: 700 }}>Kernel: {os.kernel} · {os.cuota}</div>
-                <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7 }}>{os.desc}</p>
+        {/* Modelo de Capas Visual Ampliado */}
+        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3.5rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              <div>
+                 <h2 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '2rem' }}>Jerarquía de Abstracción</h2>
+                 <p style={{ color: '#94a3b8', lineHeight: 1.8, marginBottom: '2rem', fontSize: '1.1rem' }}>
+                   El Sistema Operativo nos oculta la complejidad del hardware. Para una aplicación, guardar un archivo es una simple orden (System Call), mientras que para el SO implica mover cabezales de disco o enviar voltajes a celdas SSD.
+                 </p>
+                 <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: '1rem' }}>
+                    {[
+                      { l: 'Memoria Virtual', d: 'Engaña a las apps con más recursos.' },
+                      { l: 'Multiprogramación', d: 'Muchos procesos en una sola CPU.' },
+                      { l: 'Protección', d: 'Nadie toca la memoria de otro.' },
+                      { l: 'Planificación', d: 'Justicia en el uso del procesador.' }
+                    ].map((item, idx) => (
+                      <li key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: '#1e293b', padding: '1rem', borderRadius: '15px' }}>
+                         <CheckCircle size={18} color="#9333ea" />
+                         <div>
+                            <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>{item.l}:</span>
+                            <span style={{ color: '#64748b', fontSize: '0.85rem' }}> {item.d}</span>
+                         </div>
+                      </li>
+                    ))}
+                 </ul>
               </div>
-            ))}
-          </div>
+              <div style={{ position: 'relative' }}>
+                 <img 
+                   src="/assets/operating_system_layers_glass_1775235566953.png" 
+                   alt="OS Layers Architecture" 
+                   style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(147,51,234,0.3)' }} 
+                 />
+                 <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
+              </div>
+           </div>
         </section>
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #9333ea', boxShadow: '0 30px 60px rgba(147,51,234,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <Layers size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Sistema Operativo</h2>
+            <Server size={52} color="#9333ea" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Sistemas Operativos</h2>
+            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>20 preguntas para validar tu conocimiento sobre la gestión de recursos del sistema.</p>
           </div>
-          <QuizBlock
-            questions={QUESTIONS}
-            accentColor="#3b82f6"
-            clase="Clase 10: Sistema Operativo"
+          <QuizBlock 
+            questions={OS_QUESTS} 
+            accentColor="#9333ea"
+            clase="Clase 10: Sistemas Operativos"
             unidad="Unidad 4"
             materia="Fundamentos de Computación"
           />

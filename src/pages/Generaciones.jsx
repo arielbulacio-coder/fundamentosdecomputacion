@@ -1,410 +1,117 @@
+import React from 'react';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
-import React, { useState, useEffect } from 'react';
 import QuizBlock from '../components/QuizBlock';
-import './Generaciones.css';
+import { 
+  History, Milestone, Cpu, Zap, Activity, Info, 
+  Database, Server, Globe, Bot
+} from 'lucide-react';
 
-const GENERACIONES = [
-  {
-    id: 1,
-    nombre: '1ª Generación',
-    periodo: '1940 – 1956',
-    tecnologia: 'Válvulas de Vacío',
-    color: '#004a99',
-    glow: 'rgba(0,74,153,0.4)',
-    emoji: '💡',
-    icon: 'ENIAC',
-    descripcion:
-      'Computadoras que utilizaban tubos de vacío como interruptores electrónicos. Eran enormes, consumían cantidades masivas de energía y generaban mucho calor. Se programaban en lenguaje de máquina.',
-    datos: [
-      { label: 'Tamaño', valor: '~167 m²', icon: '📐' },
-      { label: 'Peso', valor: '~27 toneladas', icon: '⚖️' },
-      { label: 'Consumo', valor: '150 kW', icon: '⚡' },
-      { label: 'Velocidad', valor: '5.000 op/seg', icon: '🚀' },
-      { label: 'Memoria', valor: 'Tarjetas perforadas', icon: '💾' },
-    ],
-    ejemplos: ['ENIAC (1945)', 'EDVAC', 'IBM 701'],
-    curiosidad: '¡La ENIAC necesitaba 18.000 válvulas! Atribuido a Grace Hopper, el término "bug" se popularizó en esta era al encontrar una polilla en un relé.',
-    simulacion: 'valvulas'
-  },
-  {
-    id: 2,
-    nombre: '2ª Generación',
-    periodo: '1956 – 1964',
-    tecnologia: 'Transistores',
-    color: '#0066cc',
-    glow: 'rgba(0,102,204,0.4)',
-    emoji: '🔬',
-    icon: 'IBM 1401',
-    descripcion:
-      'El transistor reemplazó a las válvulas de vacío. Fue un salto masivo en confiabilidad y reducción de tamaño. Aparecen los lenguajes de alto nivel como COBOL y FORTRAN.',
-    datos: [
-      { label: 'Tamaño', valor: 'Habitación', icon: '📐' },
-      { label: 'Peso', valor: '~1 tonelada', icon: '⚖️' },
-      { label: 'Consumo', valor: '~5 kW', icon: '⚡' },
-      { label: 'Velocidad', valor: '1 M op/seg', icon: '🚀' },
-      { label: 'Memoria', valor: 'Núcleos magnéticos', icon: '💾' },
-    ],
-    ejemplos: ['IBM 1401', 'CDC 1604', 'PDP-1'],
-    curiosidad: 'Los transistores permitieron que las computadoras fueran comerciales para empresas, no solo para gobiernos.',
-    simulacion: 'transistor'
-  },
-  {
-    id: 3,
-    nombre: '3ª Generación',
-    periodo: '1964 – 1971',
-    tecnologia: 'Circuitos Integrados',
-    color: '#3498db',
-    glow: 'rgba(52,152,219,0.4)',
-    emoji: '🔧',
-    icon: 'IBM 360',
-    descripcion:
-      'Múltiples transistores en una sola placa de silicio. Nace la industria del software estandarizado y los sistemas operativos modernos con multiprogramación.',
-    datos: [
-      { label: 'Tamaño', valor: 'Escritorio grande', icon: '📐' },
-      { label: 'Velocidad', valor: '10 M op/seg', icon: '🚀' },
-      { label: 'Consumo', valor: '500 W', icon: '⚡' },
-    ],
-    ejemplos: ['IBM System/360', 'PDP-8', 'CDC 6600'],
-    curiosidad: 'Jack Kilby y Robert Noyce inventaron el chip casi al mismo tiempo. Kilby ganó el Nobel por ello años después.',
-    simulacion: 'chip'
-  },
-  {
-    id: 4,
-    nombre: '4ª Generación',
-    periodo: '1971 – Presente',
-    tecnologia: 'Microprocesadores',
-    color: '#2980b9',
-    glow: 'rgba(41,128,185,0.4)',
-    emoji: '💻',
-    icon: 'Intel 4004',
-    descripcion:
-      'Toda la CPU en un único chip de silicio. Inicia la era de la computación personal (PC), las interfaces gráficas y la conectividad global (Internet).',
-    datos: [
-      { label: 'Tamaño', valor: 'Bolsillo / Laptop', icon: '📐' },
-      { label: 'Velocidad', valor: 'GHz (billones)', icon: '🚀' },
-      { label: 'Capacidad', valor: 'GB - TB', icon: '💾' },
-    ],
-    ejemplos: ['Apple II', 'IBM PC', 'Macintosh'],
-    curiosidad: 'El Intel 4004 tenía 2.300 transistores. Un procesador moderno de hoy puede tener más de 100.000 millones.',
-    simulacion: 'cpu'
-  },
-  {
-    id: 5,
-    nombre: '5ª Generación',
-    periodo: '1980 – Presente',
-    tecnologia: 'Inteligencia Artificial',
-    color: '#1a5276',
-    glow: 'rgba(26,82,118,0.4)',
-    emoji: '🧠',
-    icon: 'IA',
-    descripcion:
-      'Basada en el procesamiento paralelo masivo y la Inteligencia Artificial. Lenguaje natural, redes neuronales y robótica avanzada definen esta era.',
-    datos: [
-      { label: 'Paradigma', valor: 'Aprendizaje Automático', icon: '🧠' },
-      { label: 'Velocidad', valor: 'Petaflops', icon: '🚀' },
-      { label: 'Interfaz', valor: 'Voz / Natural', icon: '🗣️' },
-    ],
-    ejemplos: ['IA Generativa', 'Supercomputadoras', 'Watson'],
-    curiosidad: 'Deep Blue venciendo a Kasparov en 1997 fue el primer gran hito público de esta generación.',
-    simulacion: 'neural'
-  },
-  {
-    id: 6,
-    nombre: 'Futuro',
-    periodo: '2020 – ∞',
-    tecnologia: 'Computación Cuántica',
-    color: '#00a8ff',
-    glow: 'rgba(0,168,255,0.4)',
-    emoji: '⚛️',
-    icon: 'Qubit',
-    descripcion:
-      'Superposición y entrelazamiento. Los qubits permiten resolver problemas de optimización y criptografía que las computadoras clásicas tardarían milenios.',
-    datos: [
-      { label: 'Unidad', valor: 'Qubit', icon: '⚛️' },
-      { label: 'Temperatura', valor: '-273.15 °C', icon: '🌡️' },
-      { label: 'Estado', valor: 'Investigación', icon: '🔬' },
-    ],
-    curiosidad: 'Una computadora cuántica de pocos qubits puede ser más potente que la supercomputadora más grande del mundo para ciertas tareas.',
-    simulacion: 'quantum'
-  }
-];
-
-const QUESTIONS = [
-  { q: '¿Qué tecnología usaba la primera generación?', opts: ['Circuitos Integrados', 'Microchips', 'Válvulas de Vacío', 'Transistores'], a: 2, exp: 'Las válvulas de vacío eran tubos de vidrio que controlaban el flujo eléctrico, pero eran lentas y generaban mucho calor.' },
-  { q: '¿Qué componente reemplazó a las válvulas en la 2da generación?', opts: ['Transistor', 'Microprocesador', 'Válvula 2.0', 'Caché'], a: 0, exp: 'El transistor (inventado en los Laboratorios Bell) permitió hacer computadoras mucho más pequeñas, rápidas y eficientes.' },
-  { q: '¿Quiénes inventaron el circuito integrado?', opts: ['Turing y Von Neumann', 'Gates y Jobs', 'Moore y Bardeen', 'Kilby y Noyce'], a: 3, exp: 'Jack Kilby y Robert Noyce desarrollaron el chip de silicio de forma independiente casi al mismo tiempo.' },
-  { q: '¿Cuál fue el primer microprocesador comercial?', opts: ['Intel 8086', 'MOS 6502', 'Intel 4004', 'i9'], a: 2, exp: 'El Intel 4004 (1971) fue el primer procesador de un solo chip, diseñado inicialmente para calculadoras.' },
-  { q: 'La 3ra generación introdujo los...', opts: ['Circuitos Integrados', 'Tubos de vacío', 'Transistores', 'Qubits'], a: 0, exp: 'Los circuitos integrados permitieron colocar cientos de transistores en una sola placa de silicio.' },
-  { q: '¿Qué generación dio origen a la Computación Personal (PC)?', opts: ['Primera', 'Cuarta', 'Segunda', 'Tercera'], a: 1, exp: 'La 4ª generación, gracias al microprocesador, hizo posible que las computadoras cupieran en un escritorio.' },
-  { q: '¿En qué generación aparece el concepto de Inteligencia Artificial como eje central?', opts: ['Quinta', 'Cuarta', 'Sexta (Futuro)', 'Tercera'], a: 0, exp: 'La 5ª generación se define por el procesamiento paralelo y el desarrollo de sistemas con IA.' },
-  { q: '¿Qué es un Qubit?', opts: ['Un bit muy pequeño', 'Un bit de 1950', 'Un bit con superposición', 'Un registro de CPU'], a: 2, exp: 'A diferencia del bit clásico (0 o 1), el Qubit puede estar en una superposición de ambos estados simultáneamente.' },
-  { q: '¿Quién fundó Intel y formuló la ley sobre la densidad de transistores?', opts: ['Steve Wozniak', 'Gordon Moore', 'Ada Lovelace', 'Bill Gates'], a: 1, exp: 'Gordon Moore predijo que el número de transistores en un chip se duplicaría aproximadamente cada dos años.' },
-  { q: '¿Qué computadora de 1ra gen era del tamaño de una habitación?', opts: ['IBM PC', 'Macintosh', 'Apple I', 'ENIAC'], a: 3, exp: 'La ENIAC ocupaba más de 160 metros cuadrados y contenía 18.000 válvulas de vacío.' },
-  { q: '¿Qué lenguajes de alto nivel surgieron en la 2da generación?', opts: ['Ensamblador', 'Python y Java', 'Javascript y PHP', 'COBOL y FORTRAN'], a: 3, exp: 'Estos lenguajes permitieron programar de forma más humana sin lidiar directamente con el código de máquina.' },
-  { q: '¿En qué año se lanzó el IBM PC marcando la 4ta generación?', opts: ['1971', '2000', '1981', '1945'], a: 2, exp: 'El lanzamiento del IBM PC 5150 en 1981 estandarizó la arquitectura de las computadoras personales.' },
-  { q: '¿Qué temperatura requiere un procesador cuántico moderno?', opts: ['-273 °C (Cero Absoluto)', '0 °C', '100 °C', '25 °C'], a: 0, exp: 'Los qubits son muy inestables y requieren temperaturas cercanas al cero absoluto para evitar interferencias térmicas.' },
-  { q: '¿Cuál es la principal característica de la "5ta generación"?', opts: ['Uso exclusivo de tarjetas', 'Procesamiento paralelo e IA', 'Válvulas baratas', 'Menos memoria'], a: 1, exp: 'Se busca imitar el pensamiento humano y procesar múltiples instrucciones al mismo tiempo.' },
-  { q: '¿Qué es el "cuello de botella de Von Neumann"?', opts: ['Gasto de luz', 'Mucho calor', 'CPU muy grande', 'Lentitud por el bus compartido'], a: 3, exp: 'Es la limitación de velocidad causada por compartir un único bus para datos e instrucciones entre CPU y memoria.' },
+const GEN_QUESTS = [
+  { q: '¿Qué componente electrónico usaba la primera generación de computadoras?', opts: ['Transistores', 'Circuitos Integrados', 'Válvulas de vacío', 'Microchips'], a: 2, exp: 'Eran enormes, generaban mucho calor y se quemaban frecuentemente.' },
+  { q: '¿Cuál fue el invento que dio inicio a la segunda generación?', opts: ['Pantalla táctil', 'El transistor (1947)', 'El mouse', 'El diskette'], a: 1, exp: 'El transistor reemplazó a las válvulas, siendo más pequeño, rápido y frío.' },
+  { q: 'La tercera generación se caracteriza por el uso de:', opts: ['Válvulas', 'Inteligencia Artificial', 'Circuitos Integrados (Chips)', 'Redes sociales'], a: 2, exp: 'Permitieron meter cientos de componentes en una sola pieza de silicio.' },
+  { q: 'El microprocesador define a la:', opts: ['Primera Gen', 'Segunda Gen', 'Tercera Gen', 'Cuarta Generación'], a: 3, exp: 'Nació con el Intel 4004 (1971), integrando todo el CPU en un solo chip.' },
+  { q: '¿Cuál de estas fue una de las primeras computadoras programables electrónicas?', opts: ['Macintosh', 'Commodore 64', 'ENIAC', 'Deep Blue'], a: 2, exp: 'ENIAC (1946) ocupaba una habitación entera y usaba miles de válvulas.' },
+  { q: '¿Quién es considerada la primera programadora de la historia?', opts: ['Grace Hopper', 'Ada Lovelace', 'Bill Gates', 'Alan Turing'], a: 1, exp: 'Escribió el primer algoritmo para la Máquina Analítica de Babbage.' },
+  { q: 'La Quinta Generación se enfoca principalmente en:', opts: ['Hacer computadoras más grandes', 'IA, computación cuántica y procesamiento paralelo', 'Usar más transistores', 'Borrar Internet'], a: 1, exp: 'Busca imitar el razonamiento humano y manejar problemas masivos.' },
+  { q: '¿Qué dice la Ley de Moore?', opts: ['Que el precio baja cada mes', 'Que la cantidad de transistores en un chip se duplica cada 2 años aprox.', 'Que todo software falla', 'Que la batería dura menos'], a: 1, exp: 'Ha sido la regla que ha impulsado el avance tecnológico por décadas.' },
+  { q: '¿Cuál fue el precursor de Internet nacido en la era de los mainframes?', opts: ['Google', 'Facebook', 'ARPANET', 'Netflix'], a: 2, exp: 'Creado por el Departamento de Defensa de EE.UU. en los 60s.' },
+  { q: 'Jack Kilby y Robert Noyce son famosos por inventar:', opts: ['El mouse', 'El Circuito Integrado', 'El monitor de color', 'El teclado'], a: 1, exp: 'Kilby de TI y Noyce de Fairchild/Intel lo inventaron casi simultáneamente en 1958.' },
+  { q: 'La "Pascalina" era una máquina:', opts: ['Electrónica', 'Mecánica de suma y resta', 'De vapor', 'De aire'], a: 1, exp: 'Inventada por Blaise Pascal en el siglo XVII.' },
+  { q: 'Herman Hollerith diseñó la máquina tabuladora para el censo de EE.UU. usando:', opts: ['Discos rígidos', 'Tarjetas perforadas', 'Niveles de agua', 'Luz láser'], a: 1, exp: 'Su empresa fue una de las que luego formaría IBM.' },
+  { q: '¿En qué generación aparecieron por primera vez los Sistemas Operativos?', opts: ['1ra', '2da', '3ra', '4ta'], a: 2, exp: 'Con el O/S 360 de IBM en la era de los circuitos integrados.' },
+  { q: 'El primer lenguaje de alto nivel ampliamente usado fue:', opts: ['Python', 'JavaScript', 'FORTRAN', 'Java'], a: 2, exp: 'Surgió a finales de los 50 para cálculos científicos e ingeniería.' },
+  { q: '¿Qué invento de Xerox PARC revolucionó el uso de las computadoras en la 4ta Gen?', opts: ['La impresora', 'La Interfaz Gráfica de Usuario (GUI) y el mouse', 'El cable de red', 'El escáner'], a: 1, exp: 'Apple y Microsoft luego popularizaron estas ideas en el Macintosh y Windows.' },
+  { q: '¿Cuál era el principal problema de las computadoras de 1ra Generación?', opts: ['No tenían juegos', 'Su gran tamaño, alto consumo y frecuentes fallas de las válvulas', 'Eran muy baratas', 'No tenían teclado'], a: 1, exp: 'Literalmente atraían "bugs" (bichos) que causaban cortocircuitos.' },
+  { q: 'La tecnología VLSI (Very Large Scale Integration) permitió:', opts: ['Instalar Windows XP', 'Poner miles de transistores en un chip de la 4ta Gen', 'Limpiar el monitor', 'Tener Wi-Fi'], a: 1, exp: 'Fue la evolución que permitió el nacimiento del microprocesador moderno.' },
+  { q: '¿Qué computadora lideró el inicio de la computación personal hogareña en 1975?', opts: ['iPhone', 'IBM PC', 'Altair 8800', 'NASA Apollo Computer'], a: 2, exp: 'Se vendía como un kit para armar y usaba el Intel 8080.' },
+  { q: 'Alan Turing es conocido mundialmente por:', opts: ['Vender computadoras', 'Sentar las bases teóricas de la computación e IA', 'Pintar cuadros', 'Inventar el Wi-Fi'], a: 1, exp: 'Su máquina teórica define qué es lo que una computadora puede o no puede calcular.' },
+  { q: '¿Qué caracteriza la arquitectura Neuman-Ullman o computación actual?', opts: ['Unidad de control, memoria y ALU separados', 'Todo mezclado', 'Solo memoria', 'Uso de vapor'], a: 0, exp: 'Es el modelo estándar que seguimos usando desde hace 70 años.' }
 ];
 
 const Generaciones = () => {
-  const [genActiva, setGenActiva] = useState(0);
-  const [tab, setTab] = useState('info');
-  const [progreso, setProgreso] = useState(new Set());
-
-  const gen = GENERACIONES[genActiva];
-
-  useEffect(() => {
-    setProgreso(p => new Set([...p, gen.id]));
-  }, [genActiva]);
-
   return (
-    <LockedContent keyword="valvulas" title="Clase 1: Generaciones de Computadoras" unit={1}>
-      <div className="gen-page">
-      <header className="gen-header">
-        <div className="gen-header-content">
-          <h1 className="gen-title">Generaciones de Computadoras</h1>
-          <p className="gen-subtitle">Un viaje interactivo desde los tubos al vacío hasta el futuro cuántico.</p>
-          <img src="/generations_info.png" alt="Timeline Panorama" style={{ width: '100%', borderRadius: '24px', marginTop: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }} />
-          <div className="gen-progress-container">
-            <div className="gen-progress-bar">
-              <div className="gen-progress-fill" style={{ width: `${(progreso.size / GENERACIONES.length) * 100}%` }} />
-            </div>
-            <p className="gen-progress-text">{progreso.size} de {GENERACIONES.length} exploradas</p>
-          </div>
-        </div>
-      </header>
+    <LockedContent keyword="valvula" title="Clase 1: El Viaje Evolutivo" unit={1}>
+      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
+        <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', background: 'linear-gradient(to right, #0088ff, #00f2ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1.5rem', fontWeight: 900 }}>
+              Generaciones de Computadoras
+            </h1>
+            <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
+              Desde válvulas calientes hasta inteligencia artificial fría. Un viaje de transformación de 100 años resumido en 5 etapas.
+            </p>
+          </motion.div>
+        </header>
 
-      <div className="gen-layout">
-        <aside className="gen-timeline">
-          {GENERACIONES.map((g, i) => (
-            <button key={g.id} className={`timeline-item ${i === genActiva ? 'active' : ''}`} onClick={() => {setGenActiva(i); setTab('info');}}>
-              <span className="tl-emoji">{g.emoji}</span>
-              <div className="tl-details">
-                <span className="tl-name">{g.nombre}</span>
-                <span className="tl-year">{g.periodo}</span>
+        {/* Timeline Visual Ampliado */}
+        <section style={{ marginBottom: '6rem', position: 'relative' }}>
+          <div style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '2px', background: 'linear-gradient(to bottom, #0088ff, transparent)', opacity: 0.3 }} />
+          {[
+            { gen: '1ra Generación (1940-1956)', tech: 'Válvulas de Vacío', icon: <Zap />, desc: 'Computadoras del tamaño de una casa. Programadas en lenguaje de máquina puro (0 y 1). ENIAC y UNIVAC son los íconos.', color: '#0088ff' },
+            { gen: '2da Generación (1956-1963)', tech: 'Transistores', icon: <Milestone />, desc: 'Menor tamaño y calor. Aparecen COBOL y FORTRAN. Surge el concepto de almacenamiento en núcleos magnéticos.', color: '#00f2ff' },
+            { gen: '3ra Generación (1964-1971)', tech: 'Circuitos Integrados', icon: <Cpu />, desc: 'Chips de silicio. Nace el teclado y monitor. Los S.O. permiten ejecutar múltiples programas (Multiprocesamiento).', color: '#3b82f6' },
+            { gen: '4ta Generación (1971-Presente)', tech: 'Microprocesadores', icon: <Database />, desc: 'Todo el CPU en un chip. Nacen las PC (Apple, IBM), GUIs y las redes modernas. El mundo se conecta.', color: '#4f46e5' },
+            { gen: '5ta Generación (Futuro)', tech: 'IA y Quantum', icon: <Bot />, desc: 'Inteligencia artificial, lenguaje natural, robótica y supercomputación paralela. El software aprende de ti.', color: '#8b5cf6' }
+          ].map((g, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              style={{ marginBottom: '3rem', paddingLeft: '4rem', position: 'relative' }}
+            >
+              <div style={{ position: 'absolute', left: '10px', top: '0', width: '30px', height: '30px', background: g.color, borderRadius: '50%', border: '4px solid #0f172a', boxShadow: `0 0 15px ${g.color}60`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', zIndex: 2 }} />
+              <div style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '35px', border: '1.5px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h3 style={{ fontSize: '1.6rem', fontWeight: 900, margin: 0, color: g.color }}>{g.gen}</h3>
+                    <div style={{ padding: '0.4rem 1rem', background: `${g.color}30`, borderRadius: '10px', color: g.color, fontSize: '0.8rem', fontWeight: 900 }}>{g.tech}</div>
+                 </div>
+                 <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.05rem' }}>{g.desc}</p>
               </div>
-            </button>
+            </motion.div>
           ))}
-        </aside>
+        </section>
 
-        <main className="gen-main">
-          <div className="gen-card" style={{ '--gen-color': gen.color }}>
-            <div className="gen-card-header">
-              <div className="gen-badge">{gen.emoji}</div>
-              <div>
-                <h2>{gen.nombre}</h2>
-                <p>{gen.tecnologia}</p>
+        {/* Teoría Ampliada: Evolución del Pensamiento */}
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4.5rem', fontWeight: 900 }}>Del Ábaco al Microchip</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+            {[
+              { Icon: History, color: '#f59e0b', title: 'Era Pre-Electrónica', desc: 'Desde el Ábaco hasta las máquinas de Babbage y Hollerith. Máquinas mecánicas diseñadas para cálculos matemáticos específicos.' },
+              { Icon: Zap, color: '#3b82f6', title: 'Miniaturización', desc: 'El proceso clave del siglo XX. Cómo reducimos componentes de metros a nanómetros, aumentando la potencia y reduciendo el consumo exponencialmente.' },
+              { Icon: Globe, color: '#10b981', title: 'Era de la Información', desc: 'Con la 4ta generación, la computadora dejó de ser una "calculadora" para pasar a ser una herramienta de comunicación global.' },
+              { Icon: Bot, color: '#a855f7', title: 'IA y Cognición', desc: 'El estado actual. Las máquinas no solo calculan, sino que razonan, traducen y procesan datos masivos imitando redes neuronales.' }
+            ].map((item, i) => (
+              <div key={i} style={{ background: '#0f172a', padding: '2.5rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                <item.Icon size={32} color={item.color} style={{ marginBottom: '1.25rem' }} />
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1rem' }}>{item.title}</h3>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>{item.desc}</p>
               </div>
-            </div>
-
-            <div className="gen-tabs">
-              <button className={tab === 'info' ? 'tab-active' : ''} onClick={() => setTab('info')}>Información</button>
-              <button className={tab === 'sim' ? 'tab-active' : ''} onClick={() => setTab('sim')}>Simulador</button>
-            </div>
-
-            <div className="gen-content">
-              {tab === 'info' ? (
-                <div className="info-view">
-                  <p className="description">{gen.descripcion}</p>
-                  <div className="stats-grid">
-                    {gen.datos.map((d, i) => (
-                      <div key={i} className="stat-card">
-                        <span className="stat-icon">{d.icon}</span>
-                        <span className="stat-label">{d.label}</span>
-                        <span className="stat-value">{d.valor}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="curiosity">
-                    <strong>¿Sabías que?</strong>
-                    <p>{gen.curiosidad}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="sim-view">
-                  <Simulador type={gen.simulacion} />
-                </div>
-              )}
-            </div>
-          </div>
-
-          <section className="global-quiz-section" style={{ marginTop: '4rem', paddingBottom: '4rem' }}>
-            <h2 className="section-title">🎓 Evaluación de la Clase</h2>
-            <QuizBlock 
-              questions={QUESTIONS} 
-              accentColor="#004a99"
-              clase="Clase 1: Generaciones"
-              unidad="Unidad 1"
-              materia="Fundamentos de Computación"
-            />
-          </section>
-        </main>
-      </div>
-    </div>
-    </LockedContent>
-  );
-};
-
-// ... (Subcomponentes de simulación se mantienen igual)
-const SimulacionValvulas = () => {
-  const [encendidas, setEncendidas] = useState([true, false, true, false, true, false]);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setEncendidas(prev => prev.map(() => Math.random() > 0.3));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-  return (
-    <div className="sim-container">
-      <h4 className="sim-title">🔌 Válvulas de Vacío (1ª Gen)</h4>
-      <p className="sim-desc">Los interruptores originales. Generan calor y luz al procesar bits.</p>
-      <div className="valvulas-grid">
-        {encendidas.map((on, i) => (
-          <div key={i} className={`valvula ${on ? 'valvula-on' : 'valvula-off'}`}>
-            <div className="valvula-tubo"><div className="valvula-filamento" /><div className="valvula-glow" /></div>
-            <div className="valvula-base">V{i + 1}</div>
-            <div className={`valvula-bit ${on ? 'bit-1' : 'bit-0'}`}>{on ? '1' : '0'}</div>
-          </div>
-        ))}
-      </div>
-      <div className="sim-info">Patrón Binario: {encendidas.map(v => v ? '1' : '0').join('')}</div>
-    </div>
-  );
-};
-
-const SimulacionTransistor = () => {
-  const [voltaje, setVoltaje] = useState(0.3);
-  const on = voltaje >= 0.7;
-  return (
-    <div className="sim-container">
-      <h4 className="sim-title">🔬 El Transistor (2ª Gen)</h4>
-      <div className="transistor-diagram">
-        <div className="trans-label">COLECTOR</div>
-        <div className="trans-wire" style={{ background: on ? '#f39c12' : '#94a3b8' }} />
-        <div className="trans-chip" style={{ background: on ? '#1e293b' : '#334155', boxShadow: on ? '0 0 20px #f39c1244' : 'none' }}>NPN</div>
-        <div className="trans-wire" style={{ background: on ? '#f39c12' : '#94a3b8' }} />
-        <div className="trans-label">EMISOR</div>
-      </div>
-      <div style={{ width: '100%', maxWidth: '200px' }}>
-        <input type="range" min="0" max="1.2" step="0.1" value={voltaje} onChange={e => setVoltaje(parseFloat(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary)' }} />
-        <div style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '5px' }}>Voltaje Base: {voltaje.toFixed(1)}V</div>
-      </div>
-      <div className="trans-status" style={{ color: on ? '#16a34a' : '#dc2626', borderColor: on ? '#16a34a' : '#dc2626' }}>
-        {on ? 'BIT 1: FLUJO ACTIVO' : 'BIT 0: CORTE'}
-      </div>
-    </div>
-  );
-};
-
-const SimulacionChip = () => {
-  const [densidad, setDensidad] = useState(6);
-  return (
-    <div className="sim-container">
-      <h4 className="sim-title">🔧 Circuito Integrado (3ª Gen)</h4>
-      <div className="chip-visual">
-        <div className="chip-body">
-          <div className="chip-grid" style={{ gridTemplateColumns: `repeat(${densidad}, 1fr)` }}>
-            {Array.from({ length: densidad * densidad }).map((_, i) => (
-              <div key={i} className="chip-cell" style={{ background: 'var(--primary)', animationDelay: `${i * 0.05}s` }} />
             ))}
           </div>
-        </div>
-        <div className="chip-info-box">
-          <div className="chip-transistor-count">{(densidad * densidad * 64).toLocaleString()}</div>
-          <div className="chip-transistor-label">Componentes por cm²</div>
-          <input type="range" min="4" max="25" value={densidad} onChange={e => setDensidad(parseInt(e.target.value))} style={{ width: '100%', marginTop: '1rem', accentColor: 'var(--primary)' }} />
-        </div>
-      </div>
-    </div>
-  );
-};
+        </section>
 
-const SimulacionCPU = () => {
-  const [stage, setStage] = useState(0);
-  const stages = ['FETCH', 'DECODE', 'EXECUTE', 'WRITE-BACK'];
-  useEffect(() => {
-    const int = setInterval(() => setStage(s => (s + 1) % 4), 1200);
-    return () => clearInterval(int);
-  }, []);
-  return (
-    <div className="sim-container">
-      <h4 className="sim-title">💻 Microprocesador (4ª Gen)</h4>
-      <div className="cpu-diagram">
-        {stages.map((name, i) => (
-          <div key={name} className={`cpu-stage ${stage === i ? 'cpu-active' : ''}`} style={{ borderColor: stage === i ? 'var(--primary)' : 'var(--border)' }}>
-            <div className="cpu-stage-name">{i + 1}. {name}</div>
-            <div className="cpu-stage-data" style={{ color: stage === i ? 'var(--primary)' : 'var(--text-light)' }}>
-              {i === 0 && '>>> 0x2F (LOAD)'}
-              {i === 1 && '>>> MOV R1, #42'}
-              {i === 2 && '>>> REG[1] = 42'}
-              {i === 3 && '>>> OK / BUSY: 0'}
-            </div>
+        {/* Evaluación */}
+        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #0088ff', boxShadow: '0 30px 60px rgba(0,136,255,0.1)' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <History size={52} color="#0088ff" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Historia y Evolución</h2>
+            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>20 preguntas para validar tu dominio sobre la historia de la informática.</p>
           </div>
-        ))}
+          <QuizBlock 
+            questions={GEN_QUESTS} 
+            accentColor="#0088ff"
+            clase="Clase 1: Evolución"
+            unidad="Unidad 1"
+            materia="Fundamentos de Computación"
+          />
+        </section>
       </div>
-    </div>
+    </LockedContent>
   );
-};
-
-const SimulacionNeural = () => {
-  const [val, setVal] = useState(0.7);
-  return (
-    <div className="sim-container">
-      <h4 className="sim-title">🧠 Inteligencia Artificial (5ª Gen)</h4>
-      <div className="neural-diagram">
-        <div className="neural-node"><span className="neural-val">x1</span></div>
-        <div style={{ height: '2px', width: '30px', background: 'var(--border)' }} />
-        <div className="neural-node center-node" style={{ background: `radial-gradient(circle, var(--primary) ${val * 100}%, #1e293b)`, boxShadow: `0 0 20px rgba(0,74,153,${val})` }}>
-          <span className="neural-val">Σ</span>
-        </div>
-        <div style={{ height: '2px', width: '30px', background: 'var(--border)' }} />
-        <div className="neural-node" style={{ borderColor: val > 0.5 ? '#16a34a' : '#dc2626' }}>
-          <span className="neural-val" style={{ color: val > 0.5 ? '#16a34a' : '#dc2626' }}>{val > 0.5 ? '1' : '0'}</span>
-        </div>
-      </div>
-      <input type="range" min="0" max="1" step="0.1" value={val} onChange={e => setVal(parseFloat(e.target.value))} style={{ width: '150px', accentColor: 'var(--primary)' }} />
-      <p className="sim-desc">Activación de Neurona Artificial</p>
-    </div>
-  );
-};
-
-const SimulacionQuantum = () => {
-  const [angle, setAngle] = useState(0);
-  useEffect(() => {
-    const anim = setInterval(() => setAngle(a => (a + 5) % 360), 50);
-    return () => clearInterval(anim);
-  }, []);
-  return (
-    <div className="sim-container">
-      <h4 className="sim-title">⚛️ Computación Cuántica (Futuro)</h4>
-      <div className="bloch-sphere-container">
-        <svg width="150" height="150" viewBox="-80 -80 160 160">
-          <circle cx="0" cy="0" r="70" fill="none" stroke="rgba(0,168,255,0.2)" strokeWidth="1" strokeDasharray="4" />
-          <line x1="0" y1="-70" x2="0" y2="70" stroke="rgba(0,168,255,0.1)" strokeWidth="1" />
-          <line x1="-70" y1="0" x2="70" y2="0" stroke="rgba(0,168,255,0.1)" strokeWidth="1" />
-          <line x1="0" y1="0" x2={Math.cos(angle * Math.PI / 180) * 60} y2={Math.sin(angle * Math.PI / 180) * 60} stroke="#00a8ff" strokeWidth="3" strokeLinecap="round" />
-          <circle cx={Math.cos(angle * Math.PI / 180) * 60} cy={Math.sin(angle * Math.PI / 180) * 60} r="6" fill="#00a8ff" />
-        </svg>
-      </div>
-      <div className="quantum-formula">
-        ψ = α|0⟩ + β|1⟩
-        <span style={{ fontSize: '0.7rem', color: '#00a8ff' }}>Superposición Activa</span>
-      </div>
-    </div>
-  );
-};
-
-const Simulador = ({ type }) => {
-  switch (type) {
-    case 'valvulas': return <SimulacionValvulas />;
-    case 'transistor': return <SimulacionTransistor />;
-    case 'chip': return <SimulacionChip />;
-    case 'cpu': return <SimulacionCPU />;
-    case 'neural': return <SimulacionNeural />;
-    case 'quantum': return <SimulacionQuantum />;
-    default: return <div className="sim-placeholder">Próximamente</div>;
-  }
 };
 
 export default Generaciones;

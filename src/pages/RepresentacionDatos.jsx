@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
-import { Binary, Hash, FileJson, Music, Video, Calculator, Zap, ArrowDown } from 'lucide-react';
+import { Binary, Hash, FileJson, Music, Video, Calculator, Zap, Database, ArrowDown, Shield } from 'lucide-react';
 
 const QUESTIONS = [
   { q: '¿Cuál es la base del sistema binario?', opts: ['Base 10', 'Base 2 (0 y 1)', 'Base 16', 'Base 8'], a: 1, exp: 'Los circuitos digitales solo entienden dos estados: encendido (1) y apagado (0). Todo lo demás se construye sobre esta base.' },
@@ -12,7 +12,19 @@ const QUESTIONS = [
   { q: 'En el sistema hexadecimal, la letra "F" representa:', opts: ['10', '14', '15', '16'], a: 2, exp: 'Hex va de 0-9 y luego A(10), B(11), C(12), D(13), E(14), F(15). Un dígito hex representa 4 bits exactos.' },
   { q: '¿Qué es el código ASCII?', opts: ['Un lenguaje de programación', 'Un estándar que representa caracteres de texto como números (0-127)', 'Un tipo de procesador', 'Un sistema de compresión'], a: 1, exp: 'ASCII (1963) asigna números a letras: la "A" es 65, la "a" es 97. UTF-8 extiende esto a todos los idiomas del mundo.' },
   { q: '¿Cuántos colores puede representar una imagen con 8 bits por canal RGB?', opts: ['256', '65536', '16.777.216', '4.294.967.296'], a: 2, exp: '3 canales × 8 bits = 24 bits = 2²⁴ = 16.777.216 colores. Por eso se llama "color de 24 bits" o "True Color".' },
-  { q: '¿Qué tamaño tiene 1 KiB (Kibibyte)?', opts: ['1000 bytes exactos', '1024 bytes', '512 bytes', '2048 bytes'], a: 1, exp: 'En informática, los prefijos binarios usan potencias de 2: 1 KiB = 2¹⁰ = 1024 bytes. Los fabricantes de discos usan 1 KB = 1000 bytes.' }
+  { q: '¿Qué tamaño tiene 1 KiB (Kibibyte)?', opts: ['1000 bytes exactos', '1024 bytes', '512 bytes', '2048 bytes'], a: 1, exp: 'En informática, los prefijos binarios usan potencias de 2: 1 KiB = 2¹⁰ = 1024 bytes. Los fabricantes de discos usan 1 KB = 1000 bytes.' },
+  { q: 'El sistema "Complemento a 2" se utiliza principalmente en las CPUs para:', opts: ['Comprimir datos', 'Representar y operar con números enteros negativos', 'Acelerar el bus de datos', 'Corregir errores de transmisión'], a: 1, exp: 'Permite que la resta se realice utilizando el mismo circuito suma de la ALU.' },
+  { q: '¿Cuántos bits tiene un "Nibble"?', opts: ['1 bit', '4 bits', '8 bits', '2 bits'], a: 1, exp: 'Un nibble es medio byte. Equivale a un dígito hexadecimal (0-F).' },
+  { q: 'El desbordamiento (Overflow) ocurre cuando:', opts: ['Se llena el disco rígido', 'El resultado de una operación excede la capacidad de bits del registro', 'La CPU sobrepasa los 100 grados', 'Hay demasiados archivos en una carpeta'], a: 1, exp: 'Si intentamos guardar 256 en un registro de 8 bits (máx 255), el bit extra se pierde o activa el flag de overflow.' },
+  { q: '¿Qué estándar define el formato de los números de punto flotante (decimales) en computación?', opts: ['ASCII', 'ISO 9001', 'IEEE 754', 'Unicode'], a: 2, exp: 'Define cómo representar mantisa y exponente para manejar números muy grandes o muy pequeños.' },
+  { q: 'El sistema BCD (Binary Coded Decimal) consiste en:', opts: ['Codificar cada dígito decimal independientemente en 4 bits', 'Sumar todos los bits de un número', 'Un sistema de 10 bits', 'Cifrar datos'], a: 0, exp: 'Facilita la visualización en pantallas digitales simples de 7 segmentos.' },
+  { q: '¿Cuál es la función de un bit de paridad?', opts: ['Aumentar la velocidad', 'Detección de errores simples en la transmisión de datos', 'Cifrar passwords', 'Guardar el signo'], a: 1, exp: 'Indica si el número de bits encendidos es par o impar para detectar si un bit cambió accidentalmente.' },
+  { q: '¿Qué significa que un número sea "Unsigned" (sin signo) en programación?', opts: ['Que es negativo', 'Que solo puede representar valores positivos o cero', 'Que no tiene valor', 'Que es una constante'], a: 1, exp: 'Un entero sin signo de 8 bits va de 0 a 255, mientras que uno con signo va de -128 a 127.' },
+  { q: 'El término MSB (Most Significant Bit) se refiere al bit:', opts: ['Más a la derecha', 'De mayor valor posicional (más a la izquierda)', 'Que indica error', 'El que se borra primero'], a: 1, exp: 'En 1000, el 1 es el bit más significativo.' },
+  { q: '¿Cuántas combinaciones únicas se pueden lograr con 10 bits?', opts: ['10', '100', '1000', '1024'], a: 3, exp: '2^10 = 1024.' },
+  { q: '¿Por qué se usa el sistema Hexadecimal como taquigrafía del binario?', opts: ['Porque es más rápido para la CPU', 'Porque un dígito Hex representa exactamente 4 bits', 'Porque tiene letras', 'Porque es más antiguo'], a: 1, exp: 'Permite leer largos strings binarios de forma más humana (ej: 11111111 = FF).' },
+  { q: '¿Cuál es el equivalente hexadecimal de 255 decimal?', opts: ['EF', 'FF', 'AA', '00'], a: 1, exp: '255 = 1111 1111 en binario, que son dos F en hexadecimal.' },
+  { q: 'En el procesamiento de audio, la "Frecuencia de Muestreo" indica:', opts: ['El volumen del sonido', 'Cuántas veces por segundo se mide la amplitud de la onda sonora para digitalizarla', 'El peso del archivo mp3', 'La duración de la canción'], a: 1, exp: '44.1 kHz significa que se toman 44.100 muestras por segundo (estándar CD).' }
 ];
 
 const RepresentacionDatos = () => {
@@ -45,120 +57,101 @@ const RepresentacionDatos = () => {
               Representación de Datos
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              Todo lo digital son números binarios. Aprendé a convertir entre bases y a entender cómo el hardware interpreta texto, sonido e imágenes.
+              Todo lo digital son números binarios. Aprende a convertir entre bases y a entender cómo el hardware interpreta texto, sonido e imágenes.
             </p>
           </motion.div>
         </header>
 
-        {/* Teoría: Sistemas de Numeración */}
+        {/* Teoría Ampliada: Sistemas de Numeración */}
         <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem', fontWeight: 900 }}>Sistemas de Numeración</h2>
+          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem', fontWeight: 900 }}>Sistemas de Numeración e Información</h2>
           <p style={{ textAlign: 'center', color: '#94a3b8', maxWidth: '700px', margin: '0 auto 4rem', fontSize: '1.05rem', lineHeight: 1.7 }}>
-            Los sistemas de numeración posicionales asignan un valor diferente a cada dígito según su <strong style={{ color: '#10b981' }}>posición</strong>. En base 10, cada posición vale 10 veces la anterior. En binario (base 2), vale el doble.
+            Los sistemas de numeración posicionales asignan un valor diferente a cada dígito según su <strong style={{ color: '#10b981' }}>posición</strong>. Entender esto es la clave para comprender cómo se organizan los datos en la memoria.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {[
               { base: 'Decimal', b: 10, digits: '0-9', color: '#10b981', use: 'Uso humano cotidiano. Surgió por los 10 dedos de las manos.' },
-              { base: 'Binario', b: 2, digits: '0, 1', color: '#3b82f6', use: 'El lenguaje nativo del hardware digital: encendido o apagado.' },
-              { base: 'Octal', b: 8, digits: '0-7', color: '#f59e0b', use: 'Históricamente usado en sistemas Unix para permisos de archivos (chmod 755).' },
-              { base: 'Hexadecimal', b: 16, digits: '0-9, A-F', color: '#8b5cf6', use: 'Compacta los binarios: 1 hex = 4 bits. Usado en colores CSS, direcciones de memoria.' }
+              { base: 'Binario', b: 2, digits: '0, 1', color: '#3b82f6', use: 'El lenguaje nativo del hardware digital: señales eléctricas encendidas o apagadas.' },
+              { base: 'Hexadecimal', b: 16, digits: '0-9, A-F', color: '#8b5cf6', use: 'Compacta los binarios: 1 hex = 4 bits (un nibble). Usado en colores Web y direcciones IP.' },
+              { base: 'Octal', b: 8, digits: '0-7', color: '#f59e0b', use: 'Históricamente usado en UNIX para permisos y por simplicidad con palabras de 8 bits.' }
             ].map((s, i) => (
               <div key={i} style={{ background: '#0f172a', padding: '2.5rem', borderRadius: '30px', border: `1.5px solid ${s.color}30` }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 800, color: s.color, marginBottom: '0.75rem', letterSpacing: '2px' }}>BASE {s.b}</div>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>{s.base}</h3>
-                <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>Dígitos: {s.digits}</div>
+                <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>Símbolos: {s.digits}</div>
                 <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7 }}>{s.use}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Simulador: Divisiones Sucesivas */}
+        {/* Simulador: Decimal → Binario */}
         <section style={{ marginBottom: '6rem' }}>
           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
               <Calculator color="#10b981" size={42} style={{ margin: '0 auto 1rem' }} />
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Decimal → Binario</h2>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>De lo Humano a lo Digital</h2>
               <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '600px', margin: '1rem auto 0' }}>
-                <strong>Método: Divisiones Sucesivas.</strong> Dividimos por 2 repetidamente. Los restos, leídos de <em>abajo hacia arriba</em>, forman el número binario.
+                Utilizamos el método de <strong>divisiones sucesivas</strong>. Los restos leídos de abajo hacia arriba forman el código binario.
               </p>
             </div>
             <div style={{ maxWidth: '400px', margin: '0 auto 3rem' }}>
-              <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '0.75rem', color: '#64748b', fontWeight: 800 }}>DECIMAL:</label>
+              <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '0.75rem', color: '#64748b', fontWeight: 800 }}>DECIMAL (0-255):</label>
               <input type="number" min="0" max="255" value={num} onChange={e => setNum(parseInt(e.target.value) || 0)} style={{ width: '100%', background: '#0f172a', border: '2px solid #10b981', borderRadius: '15px', padding: '1.25rem', color: '#fff', fontSize: '2rem', fontWeight: 900, textAlign: 'center', boxSizing: 'border-box' }} />
             </div>
             <div style={{ display: 'flex', overflowX: 'auto', gap: '1rem', paddingBottom: '1rem', justifyContent: 'center' }}>
               {divisions.map((step, i) => (
-                <div key={i} style={{ minWidth: '120px', background: '#1e293b', padding: '1.5rem', borderRadius: '20px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.75rem' }}>Paso {i + 1}</div>
+                <div key={i} style={{ minWidth: '120px', background: '#1e293b', padding: '1.5rem', borderRadius: '20px', textAlign: 'center', flexShrink: 0 }}>
                   <div style={{ fontSize: '1.3rem', fontWeight: 800 }}>{step.n} ÷ 2</div>
                   <div style={{ height: '2px', background: '#10b981', margin: '0.75rem 0', opacity: 0.3 }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                    <div style={{ textAlign: 'left' }}><div style={{ color: '#64748b', fontSize: '0.7rem' }}>Cociente</div><strong>{step.q}</strong></div>
-                    <div style={{ textAlign: 'right', color: '#10b981' }}><div style={{ color: '#64748b', fontSize: '0.7rem' }}>Resto</div><strong style={{ fontSize: '1.1rem' }}>{step.r}</strong></div>
-                  </div>
+                  <div style={{ color: '#10b981', fontWeight: 900, fontSize: '1.2rem' }}>Resto: {step.r}</div>
                 </div>
               ))}
             </div>
-            <div style={{ textAlign: 'center', marginTop: '2.5rem', padding: '1.5rem', background: '#10b98115', borderRadius: '20px', border: '1px solid #10b98130' }}>
-              <div style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Restos de abajo hacia arriba →</div>
-              <code style={{ fontSize: '2.5rem', fontWeight: 900, color: '#10b981', letterSpacing: '4px' }}>
-                {divisions.map(d => d.r).reverse().join('')}
-              </code>
-              <div style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.5rem' }}>Verificación: {parseInt(divisions.map(d => d.r).reverse().join(''), 2)} en decimal</div>
-            </div>
           </div>
         </section>
 
-        {/* Simulador: Suma de Potencias */}
-        <section style={{ marginBottom: '6rem' }}>
-          <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-              <Zap color="#3b82f6" size={42} style={{ margin: '0 auto 1rem' }} />
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Binario → Decimal</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '600px', margin: '1rem auto 0' }}>
-                <strong>Método: Suma de Potencias de 2.</strong> Cada bit "1" activa su potencia de 2 según su posición (contando desde 0 a la derecha).
+        {/* Teoría Ampliada: Formatos Digitales */}
+        <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+           <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <FileJson size={32} color="#3b82f6" style={{ marginBottom: '1.5rem' }} />
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '1.2rem' }}>Codificación de Texto</h3>
+              <p style={{ color: '#94a3b8', lineHeight: 1.8 }}>
+                De <strong>ASCII</strong> (7 bits) a <strong>Unicode/UTF-8</strong>. Los caracteres son mapeados a números. La "A" es el 65, pero Unicode permite representar todo, desde caracteres árabes hasta emojis mediante extensiones de multibyte.
               </p>
-            </div>
-            <div style={{ maxWidth: '400px', margin: '0 auto 3rem' }}>
-              <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '0.75rem', color: '#64748b', fontWeight: 800 }}>BINARIO (solo 0 y 1):</label>
-              <input type="text" value={binaryStr} onChange={e => setBinaryStr(e.target.value.replace(/[^01]/g, '').slice(0, 8))} style={{ width: '100%', background: '#0f172a', border: '2px solid #3b82f6', borderRadius: '15px', padding: '1.25rem', color: '#fff', fontSize: '2rem', fontWeight: 900, textAlign: 'center', letterSpacing: '6px', boxSizing: 'border-box' }} />
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
-              {binaryStr.split('').map((bit, i) => {
-                const pos = binaryStr.length - 1 - i;
-                const val = Math.pow(2, pos);
-                return (
-                  <motion.div key={i} animate={{ scale: bit === '1' ? 1.05 : 1, opacity: bit === '1' ? 1 : 0.35 }} style={{ minWidth: '90px', padding: '1.25rem', background: bit === '1' ? '#3b82f615' : '#1e293b', borderRadius: '20px', border: bit === '1' ? '2px solid #3b82f6' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 900 }}>{bit}</div>
-                    <div style={{ color: '#64748b', fontSize: '0.65rem', margin: '0.25rem 0' }}>pos {pos}</div>
-                    <div style={{ fontWeight: 800, color: bit === '1' ? '#3b82f6' : '#475569', fontSize: '0.85rem' }}>2^{pos}={val}</div>
-                  </motion.div>
-                );
-              })}
-            </div>
-            <div style={{ textAlign: 'center', marginTop: '2.5rem', padding: '1.5rem', background: '#3b82f615', borderRadius: '20px', border: '1px solid #3b82f630' }}>
-              <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{binSum.components.map((c, i) => <span key={i}>{i > 0 ? ' + ' : ''}2^{c.pos}</span>)} = {binSum.components.map((c, i) => <span key={i}>{i > 0 ? ' + ' : ''}{c.val}</span>)}</div>
-              <code style={{ fontSize: '3rem', fontWeight: 900, color: '#3b82f6' }}>{binSum.sum}</code>
-            </div>
-          </div>
+           </div>
+           <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <Music size={32} color="#10b981" style={{ marginBottom: '1.5rem' }} />
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '1.2rem' }}>Digitalización de Sonido</h3>
+              <p style={{ color: '#94a3b8', lineHeight: 1.8 }}>
+                Se basa en el <strong>muestreo (Sampling)</strong>. Se mide la intensidad de la onda miles de veces por segundo. A mayor frecuencia de muestreo y bits por muestra, mayor fidelidad (calidad CD es 44.1kHz / 16bits).
+              </p>
+           </div>
+           <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <Video size={32} color="#ef4444" style={{ marginBottom: '1.5rem' }} />
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '1.2rem' }}>Imagen y Video</h3>
+              <p style={{ color: '#94a3b8', lineHeight: 1.8 }}>
+                Usa el modelo <strong>RGB</strong>. Cada píxel es la mezcla de Rojo, Verde y Azul. Cada color usa 8 bits (256 niveles). El video es una secuencia de estas imágenes comprimidas para ahorrar ancho de banda.
+              </p>
+           </div>
         </section>
 
-        {/* Tipos de Datos */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4.5rem', fontWeight: 900 }}>¿Cómo se Codifica el Mundo Real?</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-            {[
-              { icon: <FileJson />, title: 'Texto (Unicode/UTF-8)', color: '#10b981', desc: 'UTF-8 representa millones de caracteres de todos los idiomas. La "Ñ" es el código Unicode U+00D1. ASCII solo cubría el inglés con 128 caracteres.' },
-              { icon: <Music />, title: 'Audio (PCM Sampling)', color: '#3b82f6', desc: 'Se mide la amplitud de una onda de sonido 44.100 veces por segundo (44.1 kHz, calidad CD). Cada muestra es un número de 16 bits.' },
-              { icon: <Video />, title: 'Imágenes (Píxeles RGB)', color: '#ef4444', desc: 'Cada punto tiene 3 bytes: Rojo, Verde y Azul (0-255 cada uno). 1920×1080 píxeles × 3 bytes = más de 6 MB sin compresión.' }
-            ].map((item, i) => (
-              <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ color: item.color, marginBottom: '1.5rem' }}>{React.cloneElement(item.icon, { size: 40, style: { margin: '0 auto' } })}</div>
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 800 }}>{item.title}</h3>
-                <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.8 }}>{item.desc}</p>
-              </div>
-            ))}
+        {/* Conceptos Avanzados */}
+        <section style={{ marginBottom: '6rem', background: 'linear-gradient(135deg, #0f172a, #1e293b)', padding: '5rem', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '3.5rem', textAlign: 'center' }}>Domina la Información Digital</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
+            <div>
+              <h4 style={{ color: '#3b82f6', fontWeight: 800, marginBottom: '1rem' }}>Compresión</h4>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.7 }}>Reduce el tamaño redundante. Puede ser <strong>Lossless</strong> (sin pérdida como ZIP) o <strong>Lossy</strong> (con pérdida como JPG o MP3).</p>
+            </div>
+            <div>
+              <h4 style={{ color: '#10b981', fontWeight: 800, marginBottom: '1rem' }}>Redundancia</h4>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.7 }}>Datos repetidos que permiten la <strong>detección y corrección de errores</strong> mediante Checksums o bits de paridad adicionales.</p>
+            </div>
+            <div>
+              <h4 style={{ color: '#ef4444', fontWeight: 800, marginBottom: '1rem' }}>Digitalización</h4>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.7 }}>El proceso de convertir magnitudes físicas continuas (analógicas) en valores discretos (ceros y unos).</p>
+            </div>
           </div>
         </section>
 
@@ -167,6 +160,7 @@ const RepresentacionDatos = () => {
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Binary size={52} color="#10b981" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Representación Digital</h2>
+            <p style={{ color: '#64748b', marginTop: '1rem' }}>20 preguntas diseñadas para certificar tu dominio total de la información computacional.</p>
           </div>
           <QuizBlock
             questions={QUESTIONS}
