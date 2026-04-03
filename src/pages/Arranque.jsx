@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
+import QuizBlock from '../components/QuizBlock';
 import { 
-  Power, Settings, Layout, Database, 
-  Terminal, Globe, HardDrive, Layers, 
-  RefreshCw, Play, ArrowRight, CheckCircle,
-  Activity, Info, Cpu
+  Power, Settings, Layout, 
+  RefreshCw, Cpu, Activity, 
+  HardDrive
 } from 'lucide-react';
 
 const BOOT_QUESTS = [
   { q: '¿Qué es el POST (Power-On Self-Test)?', opts: ['Un mensaje en redes sociales', 'Un autodiagnóstico del hardware al encender la PC', 'Un tipo de memoria', 'El nombre del monitor'], a: 1, exp: 'El POST verifica que los componentes críticos (CPU, RAM, etc.) funcionen antes de arrancar.' },
-  { q: '¿Dónde reside tradicionalmente la BIOS/UEFI?', opts: ['En el disco rígido', 'En la memoria RAM', 'En un chip de memoria no volátil (ROM/Flash) en la placa base', 'En la nube'], a: 2, exp: 'Es un firmware persistente que arranca el hardware inicial.' },
+  { q: '¿Dónde reside tradicionalmente la BIOS/UEFI?', opts: ['En el disco rígido', 'En la memoria RAM', 'En un chip de memoria no volátil (ROM/Flash) en la placa base', 'En la nube'], a: 2, exp: 'Es un firmware persistente que arranca el hardware inicial antes que cualquier disco.' },
   { q: '¿Qué función cumple el Bootloader?', opts: ['Dibujar el fondo de pantalla', 'Cargar el núcleo (Kernel) del Sistema Operativo en RAM', 'Aumentar el voltaje', 'Limpiar el disco'], a: 1, exp: 'El Bootloader busca y ejecuta el sistema operativo encontrado en el disco.' },
   { q: '¿Cuál es la diferencia principal entre BIOS y UEFI?', opts: ['No hay diferencia', 'UEFI es el sucesor moderno que permite discos más grandes y arranque seguro', 'BIOS es más rápida', 'UEFI solo sirve para Linux'], a: 1, exp: 'UEFI reemplazó a BIOS con mejores capacidades, seguridad e interfaz gráfica.' },
-  { q: '¿Cuál es el último paso del arranque?', opts: ['Cargar el POST', 'La inicialización del kernel y el inicio de los servicios de usuario', 'Escribir en el teclado', 'Encender el LED de encendido'], a: 1, exp: 'Una vez el Kernel toma el control, el SO está listo para el usuario.' }
+  { q: '¿Cuál es el último paso del arranque?', opts: ['Cargar el POST', 'La inicialización del kernel y el inicio de los servicios de usuario', 'Escribir en el teclado', 'Encender el LED de encendido'], a: 1, exp: 'Una vez el Kernel toma el control, el SO está listo para que el usuario inicie sesión.' },
+  { q: '¿Qué sucede si el POST detecta una falla crítica en la memoria RAM?', opts: ['La pantalla se pone azul', 'El sistema emite pitidos de error y se detiene el proceso', 'Se borra el disco duro', 'Se apaga el aire acondicionado'], a: 1, exp: 'Sin RAM funcional, el procesador no puede operar, por lo que el firmware detiene el arranque para proteger el hardware.' },
+  { q: '¿A qué componente se le llama comúnmente "Firmware"?', opts: ['A la caja de la PC', 'Al Sistema Operativo', 'Al software básico embebido en el chip BIOS/UEFI', 'Al navegador Chrome'], a: 2, exp: 'El firmware es el nexo directo entre el hardware y el software de alto nivel.' },
+  { q: '¿Cuál es el orden correcto de la secuencia de arranque?', opts: ['Kernel -> POST -> BIOS', 'POST -> BIOS/UEFI -> Bootloader -> Kernel', 'Bootloader -> RAM -> POST', 'BIOS -> Desktop -> POST'], a: 1, exp: 'El hardware se prueba primero (POST), luego se busca el arranque (Firmware), se carga el cargador (Bootloader) y finalmente el núcleo (Kernel).' }
 ];
 
 const Arranque = () => {
   const [bootStep, setBootStep] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
 
   const steps = [
     { title: 'POST (Self-Test)', desc: 'Verificación del hardware: CPU, RAM y Video deben estar OK.', icon: <Cpu />, color: '#ef4444' },
@@ -32,7 +30,7 @@ const Arranque = () => {
   ];
 
   return (
-    <LockedContent keyword="encendido" title="Clase 5: Hardware y Arranque" unit={2}>
+    <LockedContent keyword="encendido" title="Clase 5: Hardware y Arranque" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -63,7 +61,7 @@ const Arranque = () => {
                     }}
                   >
                     <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                      <div style={{ color: bootStep === i ? step.color : '#475569' }}>{React.cloneElement(step.icon, { size: 24 })}</div>
+                      <div style={{ color: bootStep === i ? step.color : '#475569' }}>{step.icon}</div>
                       <div>
                         <h4 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>{step.title}</h4>
                         {bootStep === i && <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.5rem' }}>{step.desc}</p>}
@@ -104,7 +102,7 @@ const Arranque = () => {
               <HardDrive color="#3b82f6" size={40} style={{ marginBottom: '1.5rem' }} />
               <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1.5rem' }}>Evolución: UEFI</h2>
               <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
-                UEFI no solo es más bonito que la BIOS azul clásica; también protege el sistema contra virus de arranque (Bootkits) mediante el Arranque Seguro (Secure Boot).
+                UEFI no solo es más moderno que la BIOS azul clásica; también protege el sistema contra virus de arranque (Bootkits) mediante el Arranque Seguro (Secure Boot).
               </p>
             </div>
           </div>
@@ -112,63 +110,17 @@ const Arranque = () => {
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ef4444', boxShadow: '0 30px 60px rgba(239,68,68,0.1)' }}>
-          {!quizStarted ? (
-            <div style={{ textAlign: 'center' }}>
-              <Power size={56} color="#ef4444" style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Arranque</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Sabes qué ocurre cuando pulsas el botón de encendido?</p>
-              <button 
-                onClick={() => setQuizStarted(true)} 
-                style={{ 
-                  background: 'linear-gradient(to right, #ef4444, #f59e0b)', color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
-                }}
-              >
-                Comenzar Evaluación
-              </button>
-            </div>
-          ) : finished ? (
-            <div style={{ textAlign: 'center' }}>
-              <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {BOOT_QUESTS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🚀 ¡Especialista en Mantenimiento Pro!' : '📚 Revisa los pasos del POST y el Bootloader.'}</p>
-              <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
-            </div>
-          ) : (
-            <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: '#ef4444', fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>PASO {qIdx + 1} / {BOOT_QUESTS.length}</span>
-                <span>BOOT OK: {score}</span>
-              </div>
-              <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{BOOT_QUESTS[qIdx].q}</h3>
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {BOOT_QUESTS[qIdx].opts.map((opt, i) => (
-                  <motion.button 
-                    key={i}
-                    whileHover={{ x: 10, background: 'rgba(255,255,255,0.05)' }}
-                    onClick={() => { if(chosen === null) { setChosen(i); if(i === BOOT_QUESTS[qIdx].a) setScore(s => s + 1); } }}
-                    style={{ 
-                      padding: '1.8rem', textAlign: 'left', borderRadius: '25px', border: '2px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700,
-                      background: chosen === i ? (i === BOOT_QUESTS[qIdx].a ? '#22c55e' : '#ef4444') : (chosen !== null && i === BOOT_QUESTS[qIdx].a ? '#22c55e' : 'transparent'),
-                      color: '#fff',
-                      transition: '0.3s'
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {chosen !== null && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '4rem', padding: '3.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', borderLeft: '10px solid #ef4444' }}>
-                    <p style={{ margin: 0, lineHeight: 1.8, fontSize: '1.15rem', color: '#94a3b8' }}>{BOOT_QUESTS[qIdx].exp}</p>
-                    <button onClick={() => { if(qIdx + 1 < BOOT_QUESTS.length) { setQIdx(qIdx + 1); setChosen(null); } else { setFinished(true); } }} style={{ background: '#ef4444', color: '#fff', width: '100%', border: 'none', padding: '1.5rem', borderRadius: '25px', fontWeight: 900, marginTop: '3rem', cursor: 'pointer', fontSize: '1.1rem' }}>
-                      {qIdx + 1 < BOOT_QUESTS.length ? 'Siguiente Pregunta' : 'Finalizar Evaluación'}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Power size={52} color="#ef4444" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Encendido</h2>
+          </div>
+          <QuizBlock 
+            questions={BOOT_QUESTS} 
+            accentColor="#ef4444"
+            clase="Clase 5: Arranque"
+            unidad="Unidad 1"
+            materia="Fundamentos de Computación"
+          />
         </section>
       </div>
     </LockedContent>

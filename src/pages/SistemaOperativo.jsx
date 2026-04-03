@@ -119,6 +119,7 @@ const SistemaOperativo = () => {
             accentColor="#3b82f6"
             clase="Clase 10: Sistema Operativo"
             unidad="Unidad 4"
+            materia="Fundamentos de Computación"
           />
         </section>
       </div>

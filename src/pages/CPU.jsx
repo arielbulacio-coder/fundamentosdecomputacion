@@ -1,28 +1,25 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
+import QuizBlock from '../components/QuizBlock';
 import { 
-  Cpu, Settings, Database, Activity, 
-  Terminal, Globe, HardDrive, Layers, Maximize2,
-  RefreshCw, Play, ArrowRight, CheckCircle,
-  Zap, Info, CheckSquare, Clock
+  Cpu, Settings, Activity, 
+  RefreshCw, Clock
 } from 'lucide-react';
 
 const CPU_QUESTS = [
-  { q: '¿Qué componente de la CPU realiza las operaciones matemáticas?', opts: ['Unidad de Control', 'ALU (Unidad Aritmético-Lógica)', 'Memoria RAM', 'Bus de Datos'], a: 1, exp: 'La ALU es el motor de cálculo del procesador.' },
-  { q: '¿Cuál es la función de los Registros?', opts: ['Guardar archivos permanentemente', 'Almacenamiento ultra-rápido y temporal dentro de la CPU', 'Enfriar la placa base', 'Conectar a Internet'], a: 1, exp: 'Los registros guardan los datos inmediatos con los que la ALU está operando.' },
-  { q: '¿Qué marca el ritmo de procesamiento de la CPU?', opts: ['El tamaño del disco', 'La cantidad de núcleos', 'El Reloj (Clock)', 'El sistema operativo'], a: 2, exp: 'El reloj sincroniza todas las operaciones de la CPU mediante pulsos eléctricos.' },
-  { q: 'El ciclo FDE significa:', opts: ['Fast Data Entry', 'Fetch, Decode, Execute', 'Final Digital Edition', 'File Data Error'], a: 1, exp: 'Es el proceso cíclico de buscar, decodificar y ejecutar cada instrucción.' },
-  { q: '¿Qué hace la Unidad de Control (UC)?', opts: ['Suma números', 'Dirige el flujo de datos y coordina los otros componentes', 'Muestra imágenes', 'Ninguna'], a: 1, exp: 'La UC es el "director de orquesta" de la CPU.' }
+  { q: '¿Qué componente de la CPU realiza las operaciones matemáticas?', opts: ['Unidad de Control', 'ALU (Unidad Aritmético-Lógica)', 'Memoria RAM', 'Bus de Datos'], a: 1, exp: 'La ALU es el motor de cálculo del procesador encargado de sumas, restas y comparaciones.' },
+  { q: '¿Cuál es la función de los Registros?', opts: ['Guardar archivos permanentemente', 'Almacenamiento ultra-rápido y temporal dentro de la CPU', 'Enfriar la placa base', 'Conectar a Internet'], a: 1, exp: 'Los registros guardan los datos inmediatos con los que la ALU está operando en cada nanosegundo.' },
+  { q: '¿Qué marca el ritmo de procesamiento de la CPU?', opts: ['El tamaño del disco', 'La cantidad de núcleos', 'El Reloj (Clock)', 'El sistema operativo'], a: 2, exp: 'El reloj sincroniza todas las operaciones de la CPU mediante pulsos eléctricos constantes.' },
+  { q: 'El ciclo FDE significa:', opts: ['Fast Data Entry', 'Fetch, Decode, Execute', 'Final Digital Edition', 'File Data Error'], a: 1, exp: 'Es el proceso cíclico universal: buscar la instrucción, interpretarla y realizar la acción.' },
+  { q: '¿Qué hace la Unidad de Control (UC)?', opts: ['Suma números', 'Dirige el flujo de datos y coordina los otros componentes', 'Muestra imágenes', 'Ninguna'], a: 1, exp: 'La UC es el "director de orquesta" que indica a cada componente cuándo actuar.' },
+  { q: '¿En qué unidad se mide la velocidad del reloj de un procesador actual?', opts: ['MegaBytes (MB)', 'GigaHertz (GHz)', 'Watts (W)', 'Píxeles (px)'], a: 1, exp: '1 GHz significa que el procesador puede realizar mil millones de ciclos de reloj por segundo.' },
+  { q: '¿Qué componente de la ALU permite realizar comparaciones lógicas como "A es mayor que B"?', opts: ['Unidad de Punto Flotante', 'Circuitos de comparación lógica', 'Disco Duro', 'Memoria ROM'], a: 1, exp: 'La ALU tiene circuitos específicos para álgebra booleana y comparaciones binarias.' },
+  { q: '¿Qué sucede durante la fase de "Decode" (Decodificación)?', opts: ['Se borra la memoria', 'Se apaga la CPU', 'Se interpreta el código binario para saber qué instrucción ejecutar', 'Se imprime un documento'], a: 2, exp: 'La Unidad de Control traduce el código de operación (opcode) en señales eléctricas para los demás componentes.' }
 ];
 
 const CPU = () => {
   const [fdeStep, setFdeStep] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
 
   const steps = [
     { title: 'Fetch (Búsqueda)', desc: 'La CPU busca la siguiente instrucción en la memoria RAM y la trae a sus registros internos.', color: '#3b82f6' },
@@ -31,7 +28,7 @@ const CPU = () => {
   ];
 
   return (
-    <LockedContent keyword="procesador" title="Clase 3: La Unidad Central de Procesamiento" unit={2}>
+    <LockedContent keyword="procesador" title="Clase 3: La Unidad Central de Procesamiento" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -39,7 +36,7 @@ const CPU = () => {
               El Cerebro: La CPU
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              Descubre el componente mas complejo creado por el hombre. Miles de millones de transistores trabajando en perfecta sincronía.
+              Descubre el componente más complejo creado por el hombre. Miles de millones de transistores trabajando en perfecta sincronía.
             </p>
           </motion.div>
         </header>
@@ -107,63 +104,17 @@ const CPU = () => {
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
-          {!quizStarted ? (
-            <div style={{ textAlign: 'center' }}>
-              <Cpu size={56} color="#3b82f6" style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Arquitectura</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Entiendes cómo funciona el corazón de la computadora?</p>
-              <button 
-                onClick={() => setQuizStarted(true)} 
-                style={{ 
-                  background: 'linear-gradient(to right, #3b82f6, #a855f7)', color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
-                }}
-              >
-                Comenzar Evaluación
-              </button>
-            </div>
-          ) : finished ? (
-            <div style={{ textAlign: 'center' }}>
-              <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {CPU_QUESTS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🚀 ¡Ingeniero de Hardware nivel Junior!' : '📚 Revisa los componentes de la ALU e intenta de nuevo.'}</p>
-              <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
-            </div>
-          ) : (
-            <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: '#3b82f6', fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>REGISTRO {qIdx + 1} / {CPU_QUESTS.length}</span>
-                <span>ACIERTOS: {score}</span>
-              </div>
-              <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{CPU_QUESTS[qIdx].q}</h3>
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {CPU_QUESTS[qIdx].opts.map((opt, i) => (
-                  <motion.button 
-                    key={i}
-                    whileHover={{ x: 10, background: 'rgba(255,255,255,0.05)' }}
-                    onClick={() => { if(chosen === null) { setChosen(i); if(i === CPU_QUESTS[qIdx].a) setScore(s => s + 1); } }}
-                    style={{ 
-                      padding: '1.8rem', textAlign: 'left', borderRadius: '25px', border: '2px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700,
-                      background: chosen === i ? (i === CPU_QUESTS[qIdx].a ? '#22c55e' : '#ef4444') : (chosen !== null && i === CPU_QUESTS[qIdx].a ? '#22c55e' : 'transparent'),
-                      color: '#fff',
-                      transition: '0.3s'
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {chosen !== null && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '4rem', padding: '3.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', borderLeft: '10px solid #3b82f6' }}>
-                    <p style={{ margin: 0, lineHeight: 1.8, fontSize: '1.15rem', color: '#94a3b8' }}>{CPU_QUESTS[qIdx].exp}</p>
-                    <button onClick={() => { if(qIdx + 1 < CPU_QUESTS.length) { setQIdx(qIdx + 1); setChosen(null); } else { setFinished(true); } }} style={{ background: '#3b82f6', color: '#fff', width: '100%', border: 'none', padding: '1.5rem', borderRadius: '25px', fontWeight: 900, marginTop: '3rem', cursor: 'pointer', fontSize: '1.1rem' }}>
-                      {qIdx + 1 < CPU_QUESTS.length ? 'Siguiente Pregunta' : 'Finalizar Evaluación'}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Cpu size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: El Procesador</h2>
+          </div>
+          <QuizBlock 
+            questions={CPU_QUESTS} 
+            accentColor="#3b82f6"
+            clase="Clase 3: Procesador"
+            unidad="Unidad 1"
+            materia="Fundamentos de Computación"
+          />
         </section>
       </div>
     </LockedContent>

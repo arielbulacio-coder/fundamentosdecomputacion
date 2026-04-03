@@ -173,6 +173,7 @@ const RepresentacionDatos = () => {
             accentColor="#10b981"
             clase="Clase 8: Representación de Datos"
             unidad="Unidad 3"
+            materia="Fundamentos de Computación"
           />
         </section>
       </div>

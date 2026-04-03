@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
+import QuizBlock from '../components/QuizBlock';
 import { 
   Box, Cpu, Database, Laptop, 
   Smartphone, Monitor, CheckCircle,
-  Activity, ArrowRight
+  Activity
 } from 'lucide-react';
 
 const C = {
@@ -21,18 +22,15 @@ const QUESTIONS = [
   { q: '¿Cuál de estos dispositivos usa típicamente arquitectura Harvard?', opts: ['Una PC de escritorio', 'Un laptop con Windows', 'Un microcontrolador Arduino', 'Un servidor web'], a: 2, exp: 'El ATmega328 de Arduino usa arquitectura Harvard pura con Flash separada de RAM.' },
   { q: '¿Qué ventaja principal ofrece Harvard sobre Von Neumann?', opts: ['Menor costo', 'Usa menos energía', 'Tiene más RAM', 'Puede acceder a instrucciones y datos simultáneamente'], a: 3, exp: 'Al tener buses separados, puede leer instrucciones y datos al mismo tiempo, sin cuello de botella.' },
   { q: '¿Qué tipo de memoria usa Harvard para guardar el programa en microcontroladores?', opts: ['Memoria Flash (ROM)', 'RAM volátil', 'Disco rígido', 'Memoria caché'], a: 0, exp: 'Los programas se graban en Flash/ROM persistente, mientras los datos van en la RAM interna.' },
-  { q: '¿Qué es la "Arquitectura Harvard Modificada"?', opts: ['Una variante con dos núcleos', 'Una arquitectura sin unidad de control', 'Una variante que permite acceder a instrucciones como datos en ciertos contextos', 'Una versión que unifica los buses de direcciones'], a: 2, exp: 'Harvard Modificada usa cachés L1 divididos (instrucciones y datos) pero memoria principal unificada.' }
+  { q: '¿Qué es la "Arquitectura Harvard Modificada"?', opts: ['Una variante con dos núcleos', 'Una arquitectura sin unidad de control', 'Una variante que permite acceder a instrucciones como datos en ciertos contextos', 'Una versión que unifica los buses de direcciones'], a: 2, exp: 'Harvard Modificada usa cachés L1 divididos (instrucciones y datos) pero memoria principal unificada.' },
+  { q: '¿Cuál es el principal inconveniente de la arquitectura Harvard para computadoras de propósito general?', opts: ['Es muy lenta', 'El doble de cableado y buses aumenta el costo y complejidad del hardware principal', 'No permite instalar Windows', 'Consume demasiada RAM'], a: 1, exp: 'Tener buses físicos separados para todo el sistema es caro, por eso en PCs se prefiere Von Neumann con cachés Harvard.' },
+  { q: '¿Qué componente de la arquitectura Harvard permite realizar lecturas paralelas?', opts: ['La unidad de control dual', 'Buses de direcciones y datos independientes para cada memoria', 'El uso de discos SSD', 'La conexión a internet'], a: 1, exp: 'Al tener juegos de cables independientes, no hay competencia por el bus entre datos e instrucciones.' },
+  { q: 'En un sistema Harvard, ¿se puede borrar accidentalmente el programa mientras se guardan datos?', opts: ['Sí, siempre', 'Solo si no hay batería', 'No, porque están en memorias físicas o lógicas distintas y protegidas', 'Depende del monitor'], a: 2, exp: 'La separación física o de permisos impide que las constantes del programa sean sobrescritas por variables de datos.' }
 ];
 
 const Harvard = () => {
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
-
   return (
-    <LockedContent keyword="arquitectura" title="Clase 2 suplemento: Harvard" unit={2}>
+    <LockedContent keyword="arquitectura" title="Clase 2 suplemento: Harvard" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: C.text }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -101,64 +99,18 @@ const Harvard = () => {
         </section>
 
         {/* Evaluación */}
-        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: '2px solid rgba(59,130,246,0.2)', boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
-          {!quizStarted ? (
-            <div style={{ textAlign: 'center' }}>
-              <CheckCircle size={56} color={C.primary} style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Arquitectura</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Sabes elegir la arquitectura correcta para cada problema?</p>
-              <button 
-                onClick={() => setQuizStarted(true)} 
-                style={{ 
-                  background: 'linear-gradient(to right, #3b82f6, #06b6d4)', color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
-                }}
-              >
-                Comenzar Evaluación
-              </button>
-            </div>
-          ) : finished ? (
-            <div style={{ textAlign: 'center' }}>
-              <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {QUESTIONS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🎓 ¡Ingeniero de Sistemas nivel Junior!' : '📚 Revisa el diagrama de buses e intenta de nuevo.'}</p>
-              <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: 'linear-gradient(to right, #3b82f6, #06b6d4)', color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
-            </div>
-          ) : (
-            <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: C.secondary, fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>REGISTRO {qIdx + 1} / {QUESTIONS.length}</span>
-                <span>ACIERTOS: {score}</span>
-              </div>
-              <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{QUESTIONS[qIdx].q}</h3>
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {QUESTIONS[qIdx].opts.map((opt, i) => (
-                  <motion.button 
-                    key={i}
-                    whileHover={{ x: 10, background: 'rgba(255,255,255,0.05)' }}
-                    onClick={() => { if(chosen === null) { setChosen(i); if(i === QUESTIONS[qIdx].a) setScore(s => s + 1); } }}
-                    style={{ 
-                      padding: '1.8rem', textAlign: 'left', borderRadius: '25px', border: '2px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700,
-                      background: chosen === i ? (i === QUESTIONS[qIdx].a ? '#22c55e' : '#ff4757') : (chosen !== null && i === QUESTIONS[qIdx].a ? '#22c55e' : 'transparent'),
-                      color: '#fff',
-                      transition: '0.3s'
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {chosen !== null && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '4rem', padding: '3.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', borderLeft: `10px solid ${C.primary}` }}>
-                    <p style={{ margin: 0, lineHeight: 1.8, fontSize: '1.15rem', color: '#94a3b8' }}>{QUESTIONS[qIdx].exp}</p>
-                    <button onClick={() => { if(qIdx + 1 < QUESTIONS.length) { setQIdx(qIdx + 1); setChosen(null); } else { setFinished(true); } }} style={{ background: 'linear-gradient(to right, #3b82f6, #06b6d4)', color: '#fff', width: '100%', border: 'none', padding: '1.5rem', borderRadius: '25px', fontWeight: 900, marginTop: '3rem', cursor: 'pointer', fontSize: '1.1rem' }}>
-                      {qIdx + 1 < QUESTIONS.length ? 'Siguiente Pregunta' : 'Finalizar Evaluación'}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `3px solid ${C.secondary}`, boxShadow: '0 30px 60px rgba(6,182,212,0.1)' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <CheckCircle size={52} color={C.secondary} style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Arquitectura Harvard</h2>
+          </div>
+          <QuizBlock 
+            questions={QUESTIONS} 
+            accentColor={C.secondary}
+            clase="Clase 2: Arquitectura Harvard"
+            unidad="Unidad 1"
+            materia="Fundamentos de Computación"
+          />
         </section>
       </div>
     </LockedContent>

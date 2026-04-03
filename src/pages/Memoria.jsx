@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
+import QuizBlock from '../components/QuizBlock';
 import { 
-  Database, Zap, Save, RefreshCw, Layers, 
-  Cpu, HardDrive, Info, CheckCircle, 
-  ArrowRight, Maximize2
+  Database, Zap, Save, RefreshCw, 
+  Cpu, HardDrive
 } from 'lucide-react';
 
 const MEM_QUESTS = [
   { q: '¿Qué significa que la memoria RAM sea "volátil"?', opts: ['Que es muy rápida', 'Que pierde los datos al apagar la energía', 'Que puede explotar', 'Que se puede mover'], a: 1, exp: 'La RAM necesita electricidad para mantener la información; es almacenamiento temporal.' },
   { q: '¿Cuál es la memoria más rápida de la computadora?', opts: ['Memoria RAM', 'Disco Rígido (HDD)', 'Registros de la CPU', 'Memoria Caché'], a: 2, exp: 'Los registros están dentro de la CPU y operan a su misma velocidad.' },
-  { q: '¿Para qué sirve la memoria Caché?', opts: ['Para guardar fotos', 'Para acelerar el acceso a datos usados frecuentemente', 'Para conectar el mouse', 'Para enfriar el procesador'], a: 1, exp: 'La caché guarda copias de datos de la RAM para que la CPU no tenga que esperar tanto.' },
+  { q: '¿Para qué sirve la memoria Caché?', opts: ['Para guardar fotos', 'Para acelerar el acceso a datos usados frecuentemente', 'Para conectar el mouse', 'Para enfriar el procesador'], a: 1, exp: 'La caché guarda copias de datos de la RAM para que la CPU no tenga que esperar tanto tiempo de acceso.' },
   { q: '¿En qué nivel de la jerarquía está el Disco Rígido?', opts: ['Nivel 1 (más rápido)', 'Nivel Intermedio', 'Nivel de Almacenamiento Masivo (lento/barato)', 'Dentro de la CPU'], a: 2, exp: 'El disco es lento comparado con la RAM pero muy grande y no volátil.' },
-  { q: 'La jerarquía de memoria busca el equilibrio entre:', opts: ['Color y forma', 'Velocidad, capacidad y costo', 'Software y Hardware', 'Ninguna'], a: 1, exp: 'Buscamos tener mucha capacidad barata (disco) y poca capacidad ultra-rápida (registros/caché).' }
+  { q: 'La jerarquía de memoria busca el equilibrio entre:', opts: ['Color y forma', 'Velocidad, capacidad y costo', 'Software y Hardware', 'Ninguna'], a: 1, exp: 'Buscamos tener mucha capacidad barata (disco) y poca capacidad ultra-rápida (registros/caché).' },
+  { q: '¿Qué es la "Localidad Temporal" en el uso de memoria?', opts: ['Guardar datos solo por 5 minutos', 'Tendencia a reutilizar datos que se usaron recientemente', 'Memoria que viaja en el tiempo', 'Borrar datos viejos'], a: 1, exp: 'Si la CPU usa un dato ahora, es muy probable que lo vuelva a usar en breves instantes; la Caché aprovecha esto.' },
+  { q: '¿Cuál es la principal ventaja de un SSD frente a un HDD?', opts: ['Es más pesado', 'Usa discos giratorios', 'No tiene partes móviles y es mucho más rápido', 'Es más ruidoso'], a: 2, exp: 'Al ser memoria de estado sólido, el tiempo de acceso es casi instantáneo comparado con el mecánico HDD.' },
+  { q: '¿Por qué no usamos solo memoria de tipo "Registros" o "L1" para todo?', opts: ['Porque no caben en la caja', 'Porque son extremadamente caras y ocupan mucho espacio físico en el chip', 'Porque Windows no las reconoce', 'Porque se calientan'], a: 1, exp: 'La tecnología de estas memorias (SRAM) es muy costosa; por eso usamos jerarquías combinadas.' }
 ];
 
 const Memoria = () => {
   const [activeLevel, setActiveLevel] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
 
   const levels = [
     { title: 'Registros', speed: 'Extrema (1 ciclo)', capacity: 'Bytes', Icon: Cpu, color: '#ef4444' },
-    { title: 'Caché (L1-L3)', speed: 'Muy Alta', capacity: 'MegaBytes', Icon: zap, color: '#f59e0b' },
+    { title: 'Caché (L1-L3)', speed: 'Muy Alta', capacity: 'MegaBytes', Icon: Zap, color: '#f59e0b' },
     { title: 'Memoria RAM', speed: 'Alta', capacity: 'GigaBytes', Icon: RefreshCw, color: '#3b82f6' },
     { title: 'Disco (SSD/HDD)', speed: 'Baja', capacity: 'TeraBytes', Icon: HardDrive, color: '#16a34a' }
   ];
 
   return (
-    <LockedContent keyword="jerarquia" title="Clase 4: Jerarquía de Memoria" unit={2}>
+    <LockedContent keyword="jerarquia" title="Clase 4: Jerarquía de Memoria" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -39,7 +37,7 @@ const Memoria = () => {
               Jerarquía de Memoria
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              De los registros a la nube. Entiende por qué no toda la memoria es igual y cómo se organiza para optimizar el rendimiento.
+              De los registros al almacenamiento masivo. Entiende por qué no toda la memoria es igual y cómo se organiza para optimizar el rendimiento.
             </p>
           </motion.div>
         </header>
@@ -108,63 +106,17 @@ const Memoria = () => {
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ef4444', boxShadow: '0 30px 60px rgba(239,68,68,0.1)' }}>
-          {!quizStarted ? (
-            <div style={{ textAlign: 'center' }}>
-              <Database size={56} color="#ef4444" style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Memoria</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Sabes dónde se guardan tus datos en cada instante?</p>
-              <button 
-                onClick={() => setQuizStarted(true)} 
-                style={{ 
-                  background: 'linear-gradient(to right, #ef4444, #f59e0b)', color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
-                }}
-              >
-                Comenzar Evaluación
-              </button>
-            </div>
-          ) : finished ? (
-            <div style={{ textAlign: 'center' }}>
-              <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {MEM_QUESTS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🚀 ¡Especialista en Almacenamiento!' : '📚 Revisa el concepto de volatilidad y reintenta.'}</p>
-              <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
-            </div>
-          ) : (
-            <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: '#ef4444', fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>NIVEL {qIdx + 1} / {MEM_QUESTS.length}</span>
-                <span>CACHE OK: {score}</span>
-              </div>
-              <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{MEM_QUESTS[qIdx].q}</h3>
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {MEM_QUESTS[qIdx].opts.map((opt, i) => (
-                  <motion.button 
-                    key={i}
-                    whileHover={{ x: 10, background: 'rgba(255,255,255,0.05)' }}
-                    onClick={() => { if(chosen === null) { setChosen(i); if(i === MEM_QUESTS[qIdx].a) setScore(s => s + 1); } }}
-                    style={{ 
-                      padding: '1.8rem', textAlign: 'left', borderRadius: '25px', border: '2px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700,
-                      background: chosen === i ? (i === MEM_QUESTS[qIdx].a ? '#22c55e' : '#ef4444') : (chosen !== null && i === MEM_QUESTS[qIdx].a ? '#22c55e' : 'transparent'),
-                      color: '#fff',
-                      transition: '0.3s'
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {chosen !== null && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '4rem', padding: '3.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', borderLeft: '10px solid #ef4444' }}>
-                    <p style={{ margin: 0, lineHeight: 1.8, fontSize: '1.15rem', color: '#94a3b8' }}>{MEM_QUESTS[qIdx].exp}</p>
-                    <button onClick={() => { if(qIdx + 1 < MEM_QUESTS.length) { setQIdx(qIdx + 1); setChosen(null); } else { setFinished(true); } }} style={{ background: '#ef4444', color: '#fff', width: '100%', border: 'none', padding: '1.5rem', borderRadius: '25px', fontWeight: 900, marginTop: '3rem', cursor: 'pointer', fontSize: '1.1rem' }}>
-                      {qIdx + 1 < MEM_QUESTS.length ? 'Siguiente Pregunta' : 'Finalizar Evaluación'}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Database size={52} color="#ef4444" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Memorias</h2>
+          </div>
+          <QuizBlock 
+            questions={MEM_QUESTS} 
+            accentColor="#ef4444"
+            clase="Clase 4: Memorias"
+            unidad="Unidad 1"
+            materia="Fundamentos de Computación"
+          />
         </section>
       </div>
     </LockedContent>

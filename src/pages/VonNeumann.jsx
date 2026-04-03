@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
+import QuizBlock from '../components/QuizBlock';
 import { 
-  Cpu, Database, LayoutGrid, Sliders, Play, 
-  RotateCcw, Info, CheckCircle, Smartphone, 
-  Laptop, Monitor, Activity, ArrowRight, Zap,
+  Cpu, Database, LayoutGrid, Play, 
+  RotateCcw, CheckCircle, Zap,
   Layers, HardDrive
 } from 'lucide-react';
 
@@ -22,25 +22,23 @@ const QUESTIONS = [
   { q: '¿Qué realiza la ALU?', opts: ['Almacena archivos', 'Controla periféricos', 'Enfría la CPU', 'Cálculos matemáticos y lógicos'], a: 3, exp: 'La Unidad Aritmético-Lógica es el procesador matemático del sistema.' },
   { q: '¿Qué componente coordina el flujo dentro de la CPU?', opts: ['RAM', 'Disco Rígido', 'Unidad de Control', 'Bus de Datos'], a: 2, exp: 'La Unidad de Control es el cerebro que dirige el ciclo de instrucción.' },
   { q: 'El "cuello de botella de Von Neumann" se debe a…', opts: ['Falta de RAM', 'Bus compartido entre instrucciones y datos', 'Calor de la CPU', 'Monitor lento'], a: 1, exp: 'Al usar un solo camino para todo, la CPU debe esperar a que los datos lleguen de la memoria.' },
-  { q: '¿Qué bus apunta la posición de memoria a leer?', opts: ['Bus de Datos', 'Bus de Control', 'Bus USB', 'Bus de Direcciones'], a: 3, exp: 'El bus de direcciones indica el "número de puerta" donde están los datos.' }
+  { q: '¿Qué bus apunta la posición de memoria a leer?', opts: ['Bus de Datos', 'Bus de Control', 'Bus USB', 'Bus de Direcciones'], a: 3, exp: 'El bus de direcciones indica el "número de puerta" donde están los datos.' },
+  { q: '¿Cómo se llama el bus que transporta los datos reales procesados?', opts: ['Bus de Direcciones', 'Bus de Control', 'Bus de Datos', 'Bus Serial'], a: 2, exp: 'El bus de datos es la autopista por donde viaja la información entre la CPU y la memoria.' },
+  { q: '¿Cuál es el concepto clave del "Programa Almacenado"?', opts: ['Guardar programas en CD', 'Instrucciones y datos en la misma memoria principal', 'Tener mucha RAM', 'Usar internet'], a: 1, exp: 'Permite que la computadora sea flexible y pueda ejecutar cualquier tarea cambiando el software sin modificar el hardware.' },
+  { q: '¿Qué componente guarda resultados temporales de alta velocidad en la CPU?', opts: ['Registros', 'Disco SSD', 'Monitor', 'Teclado'], a: 0, exp: 'Los registros son las celdas de memoria más rápidas y caras, ubicadas dentro del procesador.' }
 ];
 
 const phases = [
   { id: 'IDLE', label: 'Inactivo', color: '#94a3b8' },
-  { id: 'FETCH', label: 'Búsqueda', color: C.primary },
-  { id: 'DECODE', label: 'Decodificación', color: C.secondary },
-  { id: 'EXECUTE', label: 'Ejecución', color: '#f59e0b' },
-  { id: 'STORE', label: 'Escritura', color: '#10b981' }
+  { id: 'FETCH', label: 'Búsqueda (Fetch)', color: C.primary, desc: 'La CPU trae la instrucción desde la memoria RAM.' },
+  { id: 'DECODE', label: 'Decodificación', color: C.secondary, desc: 'La Unidad de Control interpreta qué operación realizar.' },
+  { id: 'EXECUTE', label: 'Ejecución', color: '#f59e0b', desc: 'La ALU realiza el cálculo o la operación lógica.' },
+  { id: 'STORE', label: 'Escritura', color: '#10b981', desc: 'El resultado se guarda de nuevo en la memoria o registros.' }
 ];
 
 const VonNeumann = () => {
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [cycles, setCycles] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
 
   const nextPhase = () => {
     setPhaseIdx((prev) => (prev + 1) % phases.length);
@@ -48,7 +46,7 @@ const VonNeumann = () => {
   };
 
   return (
-    <LockedContent keyword="arquitectura" title="Clase 2: Modelo de Von Neumann" unit={2}>
+    <LockedContent keyword="arquitectura" title="Clase 2: Modelo de Von Neumann" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: C.text }}>
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -83,7 +81,8 @@ const VonNeumann = () => {
                 </div>
                 <div style={{ background: '#0f172a', padding: '2rem', borderRadius: '25px', border: '1px solid rgba(255,255,255,0.02)' }}>
                   <h4 style={{ color: phases[phaseIdx].color, fontWeight: 900, fontSize: '1.1rem', marginBottom: '0.5rem' }}>{phases[phaseIdx].label}</h4>
-                  <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>Ciclos completados: {cycles}</p>
+                  <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0 }}>{phases[phaseIdx].desc || 'Esperando inicio de ciclo.'}</p>
+                  <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '1rem' }}>Ciclos completados: {cycles}</p>
                 </div>
               </div>
 
@@ -108,75 +107,28 @@ const VonNeumann = () => {
             </p>
           </div>
           <div style={{ background: 'rgba(255,255,255,0.02)', padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '1.25rem' }}>Optimización Moderna</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '1.25rem' }}>¿Cómo lo solucionamos hoy?</h3>
             <ul style={{ display: 'grid', gap: '1rem', padding: 0, listStyle: 'none' }}>
-              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Niveles de Memoria Caché L1/L2/L3</li>
-              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Segmentación (Pipelining)</li>
-              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Buses de alta velocidad (DDR)</li>
+              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Niveles de Memoria Caché L1/L2/L3 (Puente rápido)</li>
+              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Arquitecturas híbridas (Caché separada para instrucciones)</li>
+              <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><CheckCircle size={18} color={C.primary} /> Pipelining (Procesar varias fases a la vez)</li>
             </ul>
           </div>
         </section>
 
         {/* Evaluación */}
-        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `2px solid ${C.primary}40`, boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
-          {!quizStarted ? (
-            <div style={{ textAlign: 'center' }}>
-              <LayoutGrid size={56} color={C.primary} style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Fundamentos</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>Demuestra que entiendes el flujo de datos que mueve al mundo.</p>
-              <button 
-                onClick={() => setQuizStarted(true)} 
-                style={{ 
-                  background: C.primary, color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem',
-                  boxShadow: `0 15px 30px ${C.primary}30`
-                }}
-              >
-                Comenzar Test
-              </button>
-            </div>
-          ) : finished ? (
-            <div style={{ textAlign: 'center' }}>
-              <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {QUESTIONS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🎓 ¡Maestro de la Arquitectura!' : '📚 Sigue practicando los componentes internos.'}</p>
-              <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: C.primary, color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
-            </div>
-          ) : (
-            <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: C.primary, fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>REGISTRO {qIdx + 1} / {QUESTIONS.length}</span>
-                <span>SCO: {score}</span>
-              </div>
-              <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{QUESTIONS[qIdx].q}</h3>
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {QUESTIONS[qIdx].opts.map((opt, i) => (
-                  <motion.button 
-                    key={i}
-                    whileHover={{ x: 10, background: 'rgba(255,255,255,0.05)' }}
-                    onClick={() => { if(chosen === null) { setChosen(i); if(i === QUESTIONS[qIdx].a) setScore(s => s + 1); } }}
-                    style={{ 
-                      padding: '1.8rem', textAlign: 'left', borderRadius: '25px', border: '2px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700,
-                      background: chosen === i ? (i === QUESTIONS[qIdx].a ? '#22c55e' : '#ff4757') : (chosen !== null && i === QUESTIONS[qIdx].a ? '#22c55e' : 'transparent'),
-                      color: '#fff',
-                      transition: '0.3s'
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {chosen !== null && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '4rem', padding: '3.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', borderLeft: `10px solid ${C.primary}` }}>
-                    <p style={{ margin: 0, lineHeight: 1.8, fontSize: '1.15rem', color: '#94a3b8' }}>{QUESTIONS[qIdx].exp}</p>
-                    <button onClick={() => { if(qIdx + 1 < QUESTIONS.length) { setQIdx(qIdx + 1); setChosen(null); } else { setFinished(true); } }} style={{ background: C.primary, color: '#fff', width: '100%', border: 'none', padding: '1.5rem', borderRadius: '25px', fontWeight: 900, marginTop: '3rem', cursor: 'pointer', fontSize: '1.1rem' }}>
-                      {qIdx + 1 < QUESTIONS.length ? 'Siguiente Instrucción' : 'Ver Resultados'}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `3px solid ${C.primary}`, boxShadow: '0 30px 60px rgba(14,165,233,0.1)' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Cpu size={52} color={C.primary} style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Modelo Von Neumann</h2>
+          </div>
+          <QuizBlock 
+            questions={QUESTIONS} 
+            accentColor={C.primary}
+            clase="Clase 2: Modelo Von Neumann"
+            unidad="Unidad 1"
+            materia="Fundamentos de Computación"
+          />
         </section>
       </div>
     </LockedContent>

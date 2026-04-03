@@ -157,6 +157,7 @@ const SeguridadInformatica = () => {
             accentColor="#ef4444"
             clase="Clase 11: Seguridad Informática"
             unidad="Unidad 4"
+            materia="Fundamentos de Computación"
           />
         </section>
       </div>

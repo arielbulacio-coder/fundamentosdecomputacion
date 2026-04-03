@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
+import QuizBlock from '../components/QuizBlock';
 import { 
-  Box, Cpu, Settings, Database, Activity, 
-  Terminal, Globe, HardDrive, Layers, Maximize2,
-  RefreshCw, Play, ArrowRight, CheckCircle,
-  Zap, Info, CheckSquare
+  Box, Zap, CheckSquare
 } from 'lucide-react';
 
 const LOGIC_QUESTS = [
-  { q: '¿Qué entrada produce una salida 1 en una compuerta "AND"?', opts: ['1 y 1', '1 y 0', '0 y 0', 'Ninguna'], a: 0, exp: 'AND solo da verdadero si ambas entradas son verdaderas.' },
-  { q: '¿Qué hace la compuerta "NOT"?', opts: ['Suma las entradas', 'Multiplica las entradas', 'Invierte la entrada (0->1, 1->0)', 'Apaga el sistema'], a: 2, exp: 'NOT es una negación lógica.' },
-  { q: '¿Cuál es el resultado de (1 OR 0)?', opts: ['0', '1', 'Error', 'Depende del voltaje'], a: 1, exp: 'OR da verdadero si al menos una entrada es verdadera.' },
-  { q: 'El Álgebra de Boole es la base de:', opts: ['La medicina', 'Los circuitos digitales y la programación', 'La cocina', 'La historia'], a: 1, exp: 'George Boole definió las bases de la lógica binaria moderna.' },
-  { q: '¿Qué es una tabla de verdad?', opts: ['Un libro de filosofía', 'Una representación de todas las salidas posibles de una compuerta', 'Una lista de contraseñas', 'Un componente físico'], a: 1, exp: 'Permite visualizar el comportamiento lógico de cualquier combinación de entradas.' }
+  { q: '¿Qué entrada produce una salida 1 en una compuerta "AND"?', opts: ['1 y 1', '1 y 0', '0 y 0', 'Cualquier combinación'], a: 0, exp: 'AND solo da verdadero (1) si AMBAS entradas son verdaderas.' },
+  { q: '¿Qué hace la compuerta "NOT"?', opts: ['Suma las entradas', 'Multiplica las entradas', 'Invierte la entrada (0->1, 1->0)', 'Apaga el sistema'], a: 2, exp: 'NOT es una negación lógica del bit de entrada.' },
+  { q: '¿Cuál es el resultado de la operación lógica (1 OR 0)?', opts: ['0', '1', 'Error', 'Depende de la CPU'], a: 1, exp: 'OR da verdadero si al menos una de las entradas es 1.' },
+  { q: 'El Álgebra de Boole es la base fundamental de:', opts: ['La medicina', 'Los circuitos digitales y la programación', 'La cocina', 'La historia'], a: 1, exp: 'George Boole definió las bases de la lógica binaria que usan todos los chips actuales.' },
+  { q: '¿Qué es una "Tabla de Verdad"?', opts: ['Un libro de ética', 'Una representación de todas las salidas posibles para cada combinación de entradas', 'Una lista de contraseñas', 'Un componente físico'], a: 1, exp: 'Permite visualizar matemáticamente cómo se comporta una compuerta o circuito.' },
+  { q: '¿Cuál es el resultado de una compuerta XOR si sus entradas son 1 y 1?', opts: ['1', '0', '2', 'Indeterminado'], a: 1, exp: 'XOR (OR Exclusiva) da 1 solo si las entradas son DIFERENTES entre sí.' },
+  { q: '¿Qué compuerta lógica representa la afirmación: "Es verdad solo si A no es verdad"?', opts: ['AND', 'OR', 'NOT', 'XOR'], a: 2, exp: 'NOT invierte el valor lógico (¬A).' },
+  { q: 'En electrónica digital, el valor "0" suele representar...', opts: ['Voltaje alto', 'Ausencia de voltaje o voltaje bajo (tierra)', 'Mucha memoria', 'Un error crítico'], a: 1, exp: 'Usualmente 0 es 0V (o cercano) y 1 es 3.3V/5V.' }
 ];
 
 const LogicaDigital = () => {
   const [inA, setInA] = useState(0);
   const [inB, setInB] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
 
   const andOut = inA && inB;
   const orOut = inA || inB;
@@ -111,63 +107,17 @@ const LogicaDigital = () => {
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #f59e0b', boxShadow: '0 30px 60px rgba(234,179,8,0.1)' }}>
-          {!quizStarted ? (
-            <div style={{ textAlign: 'center' }}>
-              <CheckSquare size={56} color="#f59e0b" style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Lógica</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Puedes predecir la salida de un circuito digital?</p>
-              <button 
-                onClick={() => setQuizStarted(true)} 
-                style={{ 
-                  background: 'linear-gradient(to right, #f59e0b, #ef4444)', color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
-                }}
-              >
-                Comenzar Evaluación
-              </button>
-            </div>
-          ) : finished ? (
-            <div style={{ textAlign: 'center' }}>
-              <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {LOGIC_QUESTS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🚀 ¡Pensamiento Lógico nivel Boole!' : '📚 Revisa el simulador y las tablas de verdad.'}</p>
-              <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
-            </div>
-          ) : (
-            <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: '#f59e0b', fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>ESTADO {qIdx + 1} / {LOGIC_QUESTS.length}</span>
-                <span>OK: {score}</span>
-              </div>
-              <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{LOGIC_QUESTS[qIdx].q}</h3>
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {LOGIC_QUESTS[qIdx].opts.map((opt, i) => (
-                  <motion.button 
-                    key={i}
-                    whileHover={{ x: 10, background: 'rgba(255,255,255,0.05)' }}
-                    onClick={() => { if(chosen === null) { setChosen(i); if(i === LOGIC_QUESTS[qIdx].a) setScore(s => s + 1); } }}
-                    style={{ 
-                      padding: '1.8rem', textAlign: 'left', borderRadius: '25px', border: '2px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700,
-                      background: chosen === i ? (i === LOGIC_QUESTS[qIdx].a ? '#22c55e' : '#ef4444') : (chosen !== null && i === LOGIC_QUESTS[qIdx].a ? '#22c55e' : 'transparent'),
-                      color: '#fff',
-                      transition: '0.3s'
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {chosen !== null && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '4rem', padding: '3.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', borderLeft: '10px solid #f59e0b' }}>
-                    <p style={{ margin: 0, lineHeight: 1.8, fontSize: '1.15rem', color: '#94a3b8' }}>{LOGIC_QUESTS[qIdx].exp}</p>
-                    <button onClick={() => { if(qIdx + 1 < LOGIC_QUESTS.length) { setQIdx(qIdx + 1); setChosen(null); } else { setFinished(true); } }} style={{ background: '#f59e0b', color: '#fff', width: '100%', border: 'none', padding: '1.5rem', borderRadius: '25px', fontWeight: 900, marginTop: '3rem', cursor: 'pointer', fontSize: '1.1rem' }}>
-                      {qIdx + 1 < LOGIC_QUESTS.length ? 'Siguiente Pregunta' : 'Finalizar Evaluación'}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <CheckSquare size={52} color="#f59e0b" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Lógica Digital</h2>
+          </div>
+          <QuizBlock 
+            questions={LOGIC_QUESTS} 
+            accentColor="#f59e0b"
+            clase="Clase 9: Lógica digital"
+            unidad="Unidad 3"
+            materia="Fundamentos de Computación"
+          />
         </section>
       </div>
     </LockedContent>

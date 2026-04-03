@@ -1,5 +1,6 @@
 import LockedContent from '../components/LockedContent';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import QuizBlock from '../components/QuizBlock';
 import './Generaciones.css';
 
 const GENERACIONES = [
@@ -129,52 +130,33 @@ const GENERACIONES = [
 ];
 
 const QUESTIONS = [
-  { q: '¿Qué tecnología usaba la primera generación?', opts: ['Circuitos Integrados', 'Microchips', 'Válvulas de Vacío', 'Transistores'], a: 2 },
-  { q: '¿Qué componente reemplazó a las válvulas en la 2da generación?', opts: ['Transistor', 'Microprocesador', 'Válvula 2.0', 'Caché'], a: 0 },
-  { q: '¿Quiénes inventaron el circuito integrado?', opts: ['Turing y Von Neumann', 'Gates y Jobs', 'Moore y Bardeen', 'Kilby y Noyce'], a: 3 },
-  { q: '¿Cuál fue el primer microprocesador comercial?', opts: ['Intel 8086', 'MOS 6502', 'Intel 4004', 'i9'], a: 2 },
-  { q: 'La 3ra generación introdujo los...', opts: ['Circuitos Integrados', 'Tubos de vacío', 'Transistores', 'Qubits'], a: 0 },
-  { q: '¿Qué generación dio origen a la Computación Personal (PC)?', opts: ['Primera', 'Cuarta', 'Segunda', 'Tercera'], a: 1 },
-  { q: '¿En qué generación aparece el concepto de Inteligencia Artificial como eje central?', opts: ['Quinta', 'Cuarta', 'Sexta (Futuro)', 'Tercera'], a: 0 },
-  { q: '¿Qué es un Qubit?', opts: ['Un bit muy pequeño', 'Un bit de 1950', 'Un bit con superposición', 'Un registro de CPU'], a: 2 },
-  { q: '¿Quién fundó Intel y formuló la ley sobre la densidad de transistores?', opts: ['Steve Wozniak', 'Gordon Moore', 'Ada Lovelace', 'Bill Gates'], a: 1 },
-  { q: '¿Qué computadora de 1ra gen era del tamaño de una habitación?', opts: ['IBM PC', 'Macintosh', 'Apple I', 'ENIAC'], a: 3 },
-  { q: '¿Qué lenguajes de alto nivel surgieron en la 2da generación?', opts: ['Ensamblador', 'Python y Java', 'Javascript y PHP', 'COBOL y FORTRAN'], a: 3 },
-  { q: '¿En qué año se lanzó el IBM PC marcando la 4ta generación?', opts: ['1971', '2000', '1981', '1945'], a: 2 },
-  { q: '¿Qué temperatura requiere un procesador cuántico moderno?', opts: ['-273 °C (Cero Absoluto)', '0 °C', '100 °C', '25 °C'], a: 0 },
-  { q: '¿Cuál es la principal característica de la "5ta generación"?', opts: ['Uso exclusivo de tarjetas', 'Procesamiento paralelo e IA', 'Válvulas baratas', 'Menos memoria'], a: 1 },
-  { q: '¿Qué es el "cuello de botella de Von Neumann"?', opts: ['Gasto de luz', 'Mucho calor', 'CPU muy grande', 'Lentitud por el bus compartido'], a: 3 },
-  { q: 'Los transistores permitieron reducir el tamaño de las computadoras...', opts: ['Dramáticamente (de m² a cm²)', 'Un 50%', 'Un 10%', 'Nada'], a: 0 },
-  { q: '¿A qué generación pertenece el descubrimiento de la técnica de multiprogramación?', opts: ['Primera', 'Tercera', 'Segunda', 'Cuarta'], a: 1 },
-  { q: '¿Qué tecnología habilita la miniaturización de la 4ta generación?', opts: ['Válvulas nano', 'Cables de oro', 'LSI y VLSI', 'Caché external'], a: 2 },
-  { q: '¿Qué genera mucho calor en la 1ra generación?', opts: ['El teclado', 'Los transistores', 'El aire acondicionado', 'Las válvulas de vacío'], a: 3 },
-  { q: 'En el futuro, ¿qué unidad reemplazará al bit clásico?', opts: ['El byte', 'El Qubit', 'El tera', 'El bit 2.0'], a: 1 },
+  { q: '¿Qué tecnología usaba la primera generación?', opts: ['Circuitos Integrados', 'Microchips', 'Válvulas de Vacío', 'Transistores'], a: 2, exp: 'Las válvulas de vacío eran tubos de vidrio que controlaban el flujo eléctrico, pero eran lentas y generaban mucho calor.' },
+  { q: '¿Qué componente reemplazó a las válvulas en la 2da generación?', opts: ['Transistor', 'Microprocesador', 'Válvula 2.0', 'Caché'], a: 0, exp: 'El transistor (inventado en los Laboratorios Bell) permitió hacer computadoras mucho más pequeñas, rápidas y eficientes.' },
+  { q: '¿Quiénes inventaron el circuito integrado?', opts: ['Turing y Von Neumann', 'Gates y Jobs', 'Moore y Bardeen', 'Kilby y Noyce'], a: 3, exp: 'Jack Kilby y Robert Noyce desarrollaron el chip de silicio de forma independiente casi al mismo tiempo.' },
+  { q: '¿Cuál fue el primer microprocesador comercial?', opts: ['Intel 8086', 'MOS 6502', 'Intel 4004', 'i9'], a: 2, exp: 'El Intel 4004 (1971) fue el primer procesador de un solo chip, diseñado inicialmente para calculadoras.' },
+  { q: 'La 3ra generación introdujo los...', opts: ['Circuitos Integrados', 'Tubos de vacío', 'Transistores', 'Qubits'], a: 0, exp: 'Los circuitos integrados permitieron colocar cientos de transistores en una sola placa de silicio.' },
+  { q: '¿Qué generación dio origen a la Computación Personal (PC)?', opts: ['Primera', 'Cuarta', 'Segunda', 'Tercera'], a: 1, exp: 'La 4ª generación, gracias al microprocesador, hizo posible que las computadoras cupieran en un escritorio.' },
+  { q: '¿En qué generación aparece el concepto de Inteligencia Artificial como eje central?', opts: ['Quinta', 'Cuarta', 'Sexta (Futuro)', 'Tercera'], a: 0, exp: 'La 5ª generación se define por el procesamiento paralelo y el desarrollo de sistemas con IA.' },
+  { q: '¿Qué es un Qubit?', opts: ['Un bit muy pequeño', 'Un bit de 1950', 'Un bit con superposición', 'Un registro de CPU'], a: 2, exp: 'A diferencia del bit clásico (0 o 1), el Qubit puede estar en una superposición de ambos estados simultáneamente.' },
+  { q: '¿Quién fundó Intel y formuló la ley sobre la densidad de transistores?', opts: ['Steve Wozniak', 'Gordon Moore', 'Ada Lovelace', 'Bill Gates'], a: 1, exp: 'Gordon Moore predijo que el número de transistores en un chip se duplicaría aproximadamente cada dos años.' },
+  { q: '¿Qué computadora de 1ra gen era del tamaño de una habitación?', opts: ['IBM PC', 'Macintosh', 'Apple I', 'ENIAC'], a: 3, exp: 'La ENIAC ocupaba más de 160 metros cuadrados y contenía 18.000 válvulas de vacío.' },
+  { q: '¿Qué lenguajes de alto nivel surgieron en la 2da generación?', opts: ['Ensamblador', 'Python y Java', 'Javascript y PHP', 'COBOL y FORTRAN'], a: 3, exp: 'Estos lenguajes permitieron programar de forma más humana sin lidiar directamente con el código de máquina.' },
+  { q: '¿En qué año se lanzó el IBM PC marcando la 4ta generación?', opts: ['1971', '2000', '1981', '1945'], a: 2, exp: 'El lanzamiento del IBM PC 5150 en 1981 estandarizó la arquitectura de las computadoras personales.' },
+  { q: '¿Qué temperatura requiere un procesador cuántico moderno?', opts: ['-273 °C (Cero Absoluto)', '0 °C', '100 °C', '25 °C'], a: 0, exp: 'Los qubits son muy inestables y requieren temperaturas cercanas al cero absoluto para evitar interferencias térmicas.' },
+  { q: '¿Cuál es la principal característica de la "5ta generación"?', opts: ['Uso exclusivo de tarjetas', 'Procesamiento paralelo e IA', 'Válvulas baratas', 'Menos memoria'], a: 1, exp: 'Se busca imitar el pensamiento humano y procesar múltiples instrucciones al mismo tiempo.' },
+  { q: '¿Qué es el "cuello de botella de Von Neumann"?', opts: ['Gasto de luz', 'Mucho calor', 'CPU muy grande', 'Lentitud por el bus compartido'], a: 3, exp: 'Es la limitación de velocidad causada por compartir un único bus para datos e instrucciones entre CPU y memoria.' },
 ];
 
 const Generaciones = () => {
   const [genActiva, setGenActiva] = useState(0);
   const [tab, setTab] = useState('info');
   const [progreso, setProgreso] = useState(new Set());
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
-  const [chosen, setChosen] = useState(null);
-  const [finished, setFinished] = useState(false);
 
   const gen = GENERACIONES[genActiva];
 
   useEffect(() => {
     setProgreso(p => new Set([...p, gen.id]));
   }, [genActiva]);
-
-  const nextQ = () => {
-    if (qIdx + 1 < QUESTIONS.length) {
-      setQIdx(q => q + 1);
-      setChosen(null);
-    } else {
-      setFinished(true);
-    }
-  };
 
   return (
     <LockedContent keyword="valvulas" title="Clase 1: Generaciones de Computadoras" unit={1}>
@@ -247,42 +229,15 @@ const Generaciones = () => {
             </div>
           </div>
 
-          {/* Unified Global Quiz Section */}
-          <section className="global-quiz-section">
-            <h2 className="section-title">🎓 Desafío Final: 20 Preguntas</h2>
-            <div className="unified-quiz-card">
-              {!quizStarted ? (
-                <div className="quiz-start">
-                  <p>Pon a prueba tus conocimientos sobre todas las generaciones de computación.</p>
-                  <button className="btn-primary" onClick={() => setQuizStarted(true)}>Comenzar Test Global</button>
-                </div>
-              ) : finished ? (
-                <div className="quiz-result">
-                  <h3>Puntaje Final: {score} / {QUESTIONS.length}</h3>
-                  <p>{score >= 15 ? '¡Excelente dominio de la historia!' : 'Sigue explorando las generaciones para mejorar.'}</p>
-                  <button className="btn-primary" onClick={() => {setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0);}}>Reiniciar</button>
-                </div>
-              ) : (
-                <div className="quiz-active">
-                  <div className="q-status">Pregunta {qIdx + 1} de {QUESTIONS.length} | ✅ {score}</div>
-                  <h3>{QUESTIONS[qIdx].q}</h3>
-                  <div className="options-grid">
-                    {QUESTIONS[qIdx].opts.map((opt, i) => (
-                      <button 
-                        key={i} 
-                        className={`opt-btn ${chosen === i ? (i === QUESTIONS[qIdx].a ? 'correct' : 'wrong') : ''}`}
-                        onClick={() => { if(chosen === null) { setChosen(i); if(i === QUESTIONS[qIdx].a) setScore(s => s+1); } }}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                  {chosen !== null && (
-                    <button className="btn-next" onClick={nextQ}>Siguiente →</button>
-                  )}
-                </div>
-              )}
-            </div>
+          <section className="global-quiz-section" style={{ marginTop: '4rem', paddingBottom: '4rem' }}>
+            <h2 className="section-title">🎓 Evaluación de la Clase</h2>
+            <QuizBlock 
+              questions={QUESTIONS} 
+              accentColor="#004a99"
+              clase="Clase 1: Generaciones"
+              unidad="Unidad 1"
+              materia="Fundamentos de Computación"
+            />
           </section>
         </main>
       </div>
@@ -291,6 +246,7 @@ const Generaciones = () => {
   );
 };
 
+// ... (Subcomponentes de simulación se mantienen igual)
 const SimulacionValvulas = () => {
   const [encendidas, setEncendidas] = useState([true, false, true, false, true, false]);
   useEffect(() => {
