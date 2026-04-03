@@ -4,7 +4,7 @@ import LockedContent from '../components/LockedContent';
 import { 
   Cloud, Radio, Cpu, Share2, Globe, Laptop, 
   Users, CheckCircle, Smartphone, Rocket,
-  RefreshCcw, Play, ArrowRight
+  RefreshCcw, Play, ArrowRight, Activity
 } from 'lucide-react';
 
 const C = {
@@ -25,10 +25,10 @@ const CULTURA_QUESTS = [
 ];
 
 const ticsEvolution = [
-  { title: 'Escritorio', desc: 'Sistemas aislados, almacenamiento físico (disquetes/CD).', icon: <Laptop /> },
-  { title: 'Conectividad', desc: 'Aparición de internet, correo electrónico y navegación.', icon: <Globe /> },
-  { title: 'Nube & Móvil', desc: 'Acceso desde cualquier dispositivo, datos siempre en línea.', icon: <Cloud /> },
-  { title: 'Inteligencia', desc: 'Internet de las cosas (IoT) e IA generativa autónoma.', icon: <Radio /> }
+  { title: 'Escritorio', desc: 'Sistemas aislados y almacenamiento físico.', icon: <Laptop /> },
+  { title: 'Conectividad', desc: 'Aparición de internet y navegación global.', icon: <Globe /> },
+  { title: 'Nube & Móvil', desc: 'Acceso ubicuo desde cualquier dispositivo.', icon: <Cloud /> },
+  { title: 'Inteligencia', desc: 'Sistemas autónomos e hiperconectividad.', icon: <Radio /> }
 ];
 
 const CulturaDigital = () => {
@@ -48,32 +48,46 @@ const CulturaDigital = () => {
               Cultura Digital
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              La evolución desde la PC aislada hasta la hiperconectividad global. Entiende la nube y la transformación que redefine industrias.
+              Desde la PC aislada hasta la hiperconectividad global. Entiende cómo la tecnología redefine nuestra forma de vivir y trabajar.
             </p>
           </motion.div>
         </header>
 
-        {/* Evolución TICs */}
+        {/* Evolución TICs e Imagen */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '3rem', textAlign: 'center' }}>Línea de Tiempo TICs</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2rem' }}>
-              {ticsEvolution.map((era, i) => (
-                <motion.div 
-                  key={i}
-                  onMouseEnter={() => setActiveEra(i)}
-                  style={{ 
-                    padding: '2.5rem', borderRadius: '35px', border: '1.5px solid',
-                    borderColor: i === activeEra ? C.cloud : 'rgba(255,255,255,0.05)',
-                    background: i === activeEra ? C.cloud + '10' : 'transparent',
-                    transition: '0.3s', textAlign: 'center', cursor: 'pointer'
-                  }}
-                >
-                  <div style={{ color: i === activeEra ? C.cloud : '#475569', marginBottom: '1.5rem' }}>{era.icon}</div>
-                  <h4 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '1rem' }}>{era.title}</h4>
-                  <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.6 }}>{era.desc}</p>
-                </motion.div>
-              ))}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+            <div style={{ position: 'relative' }}>
+              <img 
+                src="/assets/cultura_digital_transformation.png" 
+                alt="Digital Transformation" 
+                style={{ width: '100%', borderRadius: '40px', boxShadow: `0 20px 50px ${C.transform}20` }} 
+              />
+              <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle, transparent 40%, ${C.bg} 100%)`, borderRadius: '40px' }} />
+            </div>
+            <div style={{ background: C.card, padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+              <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '2.5rem', textAlign: 'center' }}>Hitos Tecnológicos</h2>
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                {ticsEvolution.map((era, i) => (
+                  <motion.div 
+                    key={i}
+                    onMouseEnter={() => setActiveEra(i)}
+                    style={{ 
+                      padding: '1.5rem', borderRadius: '25px', border: '1px solid',
+                      borderColor: i === activeEra ? C.cloud : 'rgba(255,255,255,0.05)',
+                      background: i === activeEra ? C.cloud + '10' : 'transparent',
+                      transition: '0.3s', cursor: 'pointer'
+                    }}
+                  >
+                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                      <div style={{ color: i === activeEra ? C.cloud : '#475569' }}>{React.cloneElement(era.icon, { size: 24 })}</div>
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>{era.title}</h4>
+                        {activeEra === i && <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.5rem' }}>{era.desc}</p>}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -82,48 +96,32 @@ const CulturaDigital = () => {
         <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
           <div style={{ background: 'linear-gradient(135deg, ' + C.card + ', #000)', padding: '4rem', borderRadius: '45px', borderLeft: `8px solid ${C.transform}` }}>
             <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1.5rem', color: C.transform }}>Transformación Digital</h2>
-            <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem', marginBottom: '2.5rem' }}>
-              No es solo comprar tecnología; es repensar el modelo de negocio para centrarse en los datos y la agilidad.
+            <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
+              No es solo comprar tecnología; es repensar el modelo de negocio para centrarse en los datos, la agilidad y la colaboración ubicua.
             </p>
-            <div style={{ display: 'grid', gap: '1.25rem' }}>
-              {[
-                { title: 'SaaS', desc: 'Software vía suscripción en internet (Netflix, Office 365)' },
-                { title: 'Big Data', desc: 'Toma de decisiones basada en análisis masivo de datos' },
-                { title: 'Colaboración', desc: 'Edición multiusuario en tiempo real desde la nube' }
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ background: C.transform + '20', color: C.transform, padding: '0.5rem', borderRadius: '10px' }}><CheckCircle size={16} /></div>
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>{item.title}</div>
-                    <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>{item.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
-          <div style={{ background: C.card, padding: '4rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
+          <div style={{ background: C.card, padding: '4rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
             <Rocket size={56} color={C.cloud} style={{ margin: '0 auto 2rem' }} />
             <h3 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '1.5rem' }}>Impacto Industrial</h3>
             <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
-              La <strong>Industria 4.0</strong> conecta sensores, robots e IA para crear fábricas inteligentes que se auto-optimizan cada segundo.
+              La <strong>Industria 4.0</strong> conecta sensores, robots e IA para crear procesos de producción infinitamente más eficientes.
             </p>
           </div>
         </section>
 
         {/* Evaluación */}
-        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `2px solid ${C.cloud}40`, boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
+        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `3px solid ${C.cloud}`, boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
           {!quizStarted ? (
             <div style={{ textAlign: 'center' }}>
-              <Globe size={56} color={C.cloud} style={{ marginBottom: '1.5rem' }} />
+              <Globe size={56} color={C.cloud} style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
               <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Desafío de Cultura</h2>
               <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Qué tan preparado estás para la economía digital del siglo XXI?</p>
               <button 
                 onClick={() => setQuizStarted(true)} 
                 style={{ 
                   background: C.cloud, color: '#000', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem',
-                  boxShadow: `0 15px 30px ${C.cloud}30`
+                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
                 }}
               >
                 Comenzar Evaluación

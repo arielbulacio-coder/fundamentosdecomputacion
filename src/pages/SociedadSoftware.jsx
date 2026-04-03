@@ -4,7 +4,7 @@ import LockedContent from '../components/LockedContent';
 import { 
   Database, Users, Settings, Share2, Layers, 
   Code, PlayCircle, Info, CheckCircle, 
-  Briefcase, Cloud, Shield
+  Briefcase, Cloud, Shield, Globe
 } from 'lucide-react';
 
 const C = {
@@ -45,55 +45,65 @@ const SociedadSoftware = () => {
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', background: `linear-gradient(to right, ${C.info}, ${C.software})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1.5rem', fontWeight: 900 }}>
-              Sistemas de Información
+              Sociedad y Software
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              Desde el dato aislado hasta el conocimiento estratégico. Entiende cómo el software orquesta la sociedad moderna.
+              Desde el dato aislado hasta la orquestación global. Entiende cómo el software actúa como el tejido que conecta nuestra civilización moderna.
             </p>
           </motion.div>
         </header>
 
-        {/* Componentes del SI */}
+        {/* Componentes del SI e Imagen */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-            {[
-              { icon: <Users size={32} />, title: 'Humanware', color: C.people, desc: 'Usuarios, desarrolladores y administradores: el corazón del sistema.' },
-              { icon: <Layers size={32} />, title: 'Hardware', color: C.info, desc: 'Dispositivos físicos que sustentan el procesamiento y almacenamiento.' },
-              { icon: <Code size={32} />, title: 'Software', color: C.software, desc: 'Lógica y algoritmos que habilitan las funciones del sistema.' },
-              { icon: <Database size={32} />, title: 'Dataware', color: '#10b981', desc: 'Datos brutos y bases de datos: el combustible de la información.' }
-            ].map((item, i) => (
-              <motion.div 
-                key={i}
-                whileHover={{ y: -10 }}
-                style={{ background: C.card, padding: '2.5rem', borderRadius: '35px', border: '1.5px solid rgba(255,255,255,0.05)' }}
-              >
-                <div style={{ color: item.color, marginBottom: '1.5rem' }}>{item.icon}</div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>{item.title}</h3>
-                <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.6 }}>{item.desc}</p>
-              </motion.div>
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              {[
+                { icon: <Users />, title: 'Humanware', color: C.people, desc: 'Usuarios y admins.' },
+                { icon: <Layers />, title: 'Hardware', color: C.info, desc: 'Soporte físico.' },
+                { icon: <Code />, title: 'Software', color: C.software, desc: 'Lógica aplicada.' },
+                { icon: <Database />, title: 'Dataware', color: '#10b981', desc: 'Combustible informativo.' }
+              ].map((item, i) => (
+                <motion.div 
+                  key={i}
+                  whileHover={{ y: -10 }}
+                  style={{ background: C.card, padding: '2rem', borderRadius: '30px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}
+                >
+                  <div style={{ color: item.color, marginBottom: '1rem' }}>{React.cloneElement(item.icon, { size: 24, style: { margin: '0 auto' } })}</div>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>{item.title}</h4>
+                  <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+            <div style={{ position: 'relative' }}>
+              <img 
+                src="/assets/sociedad_software_networks.png" 
+                alt="Social Networks" 
+                style={{ width: '100%', borderRadius: '40px', boxShadow: `0 20px 50px ${C.software}20` }} 
+              />
+              <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle, transparent 40%, ${C.bg} 100%)`, borderRadius: '40px' }} />
+            </div>
           </div>
         </section>
 
-        {/* Ciclo de Vida */}
-        <section style={{ marginBottom: '6rem', background: 'rgba(255,255,255,0.02)', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4.5rem', fontWeight: 900 }}>Ciclo de la Información</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '800px', margin: '0 auto' }}>
+        {/* Ciclo de Vida interactivo */}
+        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>Ciclo de la Información</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '800px', margin: '0 auto' }}>
             {steps.map((step, i) => (
               <motion.div 
                 key={i}
                 onMouseEnter={() => setActiveStep(i)}
                 style={{ 
-                  display: 'flex', alignItems: 'center', gap: '2rem', padding: '2rem', borderRadius: '30px',
-                  background: activeStep === i ? 'rgba(255,255,255,0.05)' : 'transparent',
-                  border: `1.5px solid ${activeStep === i ? C.info : 'rgba(255,255,255,0.05)'}`,
+                  display: 'flex', gap: '2rem', padding: '2rem', borderRadius: '30px',
+                  background: activeStep === i ? '#ffffff05' : 'transparent',
+                  border: activeStep === i ? `2px solid ${C.info}` : '1.5px solid #ffffff05',
                   transition: '0.3s', cursor: 'pointer'
                 }}
               >
-                <div style={{ color: activeStep === i ? C.info : '#475569' }}>{step.icon}</div>
+                <div style={{ color: activeStep === i ? C.info : '#475569' }}>{React.cloneElement(step.icon, { size: 32 })}</div>
                 <div>
-                  <h4 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0 }}>{step.title}</h4>
-                  <p style={{ margin: '0.5rem 0 0', color: '#94a3b8', fontSize: '0.95rem' }}>{step.desc}</p>
+                  <h4 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>{step.title}</h4>
+                  <p style={{ color: '#94a3b8', fontSize: '1rem', marginTop: '0.5rem' }}>{step.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -101,18 +111,17 @@ const SociedadSoftware = () => {
         </section>
 
         {/* Evaluación */}
-        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `2px solid ${C.info}40`, boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
+        <section style={{ background: C.card, padding: '4rem', borderRadius: '50px', border: `3px solid ${C.info}`, boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
           {!quizStarted ? (
             <div style={{ textAlign: 'center' }}>
-              <CheckCircle size={56} color={C.info} style={{ marginBottom: '1.5rem' }} />
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Prueba de Ecosistema</h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Cómo interactúan los componentes de la información en tu día a día?</p>
+              <Globe size={56} color={C.info} style={{ marginBottom: '1.5rem', margin: '0 auto' }} />
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '1.25rem', fontWeight: 900 }}>Desafío de Sociedad</h2>
+              <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '3rem' }}>¿Cómo interactúan los componentes en nuestro ecosistema?</p>
               <button 
                 onClick={() => setQuizStarted(true)} 
                 style={{ 
                   background: C.info, color: '#fff', border: 'none', 
-                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem',
-                  boxShadow: `0 15px 30px ${C.info}30`
+                  padding: '1.5rem 4rem', borderRadius: '25px', fontWeight: 900, cursor: 'pointer', fontSize: '1.2rem'
                 }}
               >
                 Comenzar Evaluación
@@ -121,14 +130,14 @@ const SociedadSoftware = () => {
           ) : finished ? (
             <div style={{ textAlign: 'center' }}>
               <motion.h2 initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ fontSize: '4rem', fontWeight: 900, marginBottom: '1.5rem' }}>{score} / {SOCIEDAD_QUESTS.length}</motion.h2>
-              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🚀 ¡Analista de Sistemas en potencia!' : '📚 Revisa los componentes del Humanware e intenta de nuevo.'}</p>
+              <p style={{ fontSize: '1.4rem', color: '#94a3b8', marginBottom: '3rem' }}>{score >= 4 ? '🚀 ¡Analista Digital Nivel Pro!' : '📚 Revisa los componentes del Humanware.'}</p>
               <button onClick={() => { setQuizStarted(false); setFinished(false); setQIdx(0); setScore(0); setChosen(null); }} style={{ background: C.info, color: '#fff', border: 'none', padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: 900, cursor: 'pointer', fontSize: '1.1rem' }}>Reiniciar Sesión</button>
             </div>
           ) : (
             <div style={{ maxWidth: '850px', margin: '0 auto' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2.5rem', color: C.info, fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
-                <span>REGISTRO {qIdx + 1} / {SOCIEDAD_QUESTS.length}</span>
-                <span>ACIERTOS: {score}</span>
+                <span>NODO {qIdx + 1} / {SOCIEDAD_QUESTS.length}</span>
+                <span>SCO: {score}</span>
               </div>
               <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '3.5rem', lineHeight: 1.5, fontWeight: 800 }}>{SOCIEDAD_QUESTS[qIdx].q}</h3>
               <div style={{ display: 'grid', gap: '1.5rem' }}>
