@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Cpu, Landmark, History, Home, Database, Power, Share2 } from 'lucide-react';
+import { Menu, X, Cpu, Landmark, History, Home, Database, Power, Share2, Shield } from 'lucide-react';
 import logo from '../assets/logo_unpilar.png';
 
 const NavBar = () => {
