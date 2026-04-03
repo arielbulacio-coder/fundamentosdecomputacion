@@ -29,21 +29,30 @@ const Home = () => {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1rem' }}>
-      <header style={{ textAlign: 'center', padding: '4rem 0' }}>
-        <motion.h2 
+      <header style={{ textAlign: 'center', padding: '4rem 0 2.5rem' }}>
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ fontSize: 'clamp(2.2rem, 6vw, 4rem)', color: 'var(--primary)', fontWeight: 900, marginBottom: '1.25rem' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', background: '#e8f0fb', borderRadius: '30px', padding: '0.5rem 1.25rem', fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '1.5rem', letterSpacing: '0.5px' }}
         >
-          Fundamentos de <span style={{ color: '#aaa' }}>Computación</span>
-        </motion.h2>
-        <motion.p 
+          <span style={{ background: 'var(--primary)', color: '#fff', borderRadius: '20px', padding: '0.2rem 0.75rem', fontSize: '0.7rem' }}>MATERIA</span>
+          Fundamentos de Computación
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: 'var(--primary)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-1px' }}
+        >
+          SimuUnpilar
+        </motion.h1>
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          style={{ fontSize: '1.25rem', color: 'var(--text-light)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}
+          style={{ fontSize: '1.1rem', color: 'var(--text-light)', maxWidth: '650px', margin: '0 auto 1.5rem', lineHeight: 1.6 }}
         >
-          Plataforma educativa de última generación para el aprendizaje de hardware, software y sistemas integrados.
+          Recursos interactivos para el aprendizaje. Simuladores, evaluaciones y contenido teórico para todas las unidades.
         </motion.p>
       </header>
 

@@ -46,8 +46,8 @@ const NavBar = () => {
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
           <img src="/logo_unpilar.png" alt="UNPilar Logo" style={{ height: '38px' }} />
           <div>
-            <h1 style={{ fontSize: '1.25rem', color: 'var(--primary)', fontWeight: 900, margin: 0, letterSpacing: '-0.5px' }}>Fundamentos</h1>
-            <p style={{ fontSize: '0.65rem', opacity: 0.6, margin: 0, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>EduRed · UNPilar</p>
+            <h1 style={{ fontSize: '1.25rem', color: 'var(--primary)', fontWeight: 900, margin: 0, letterSpacing: '-0.5px' }}>SimuUnpilar</h1>
+            <p style={{ fontSize: '0.65rem', opacity: 0.6, margin: 0, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Recursos Interactivos · UNPilar</p>
           </div>
         </Link>
 

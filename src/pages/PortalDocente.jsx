@@ -37,7 +37,7 @@ const LoginScreen = () => {
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <Shield size={56} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
           <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff', margin: 0 }}>Portal Docente</h1>
-          <p style={{ color: '#64748b', marginTop: '0.75rem', fontSize: '1rem' }}>Fundamentos de Computación — UNLP</p>
+          <p style={{ color: '#64748b', marginTop: '0.75rem', fontSize: '1rem' }}>SimuUnpilar — Universidad Nacional de Pilar</p>
         </div>
 
         <form onSubmit={handleSubmit}>
