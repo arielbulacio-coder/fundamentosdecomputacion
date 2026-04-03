@@ -1,5 +1,6 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -15,8 +16,21 @@ import RepresentacionDatos from './pages/RepresentacionDatos';
 import LogicaDigital from './pages/LogicaDigital';
 import SistemaOperativo from './pages/SistemaOperativo';
 import SeguridadInformatica from './pages/SeguridadInformatica';
+import PortalDocente from './pages/PortalDocente';
 
-function App() {
+// The portal takes over the full screen (no NavBar/Footer)
+function AppLayout() {
+  const location = useLocation();
+  const isPortal = location.pathname === '/portal-docente';
+
+  if (isPortal) {
+    return (
+      <Routes>
+        <Route path="/portal-docente" element={<PortalDocente />} />
+      </Routes>
+    );
+  }
+
   return (
     <div className="app-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <NavBar />
@@ -39,6 +53,14 @@ function App() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppLayout />
+    </AuthProvider>
   );
 }
 
