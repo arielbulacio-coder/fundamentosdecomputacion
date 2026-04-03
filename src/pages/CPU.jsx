@@ -5,7 +5,7 @@ import QuizBlock from '../components/QuizBlock';
 import RepasoClave from '../components/RepasoClave';
 import { 
   Cpu, Zap, Activity, Clock, Layers, Database, 
-  Settings, ChevronRight, Play, Info, CheckCircle
+  Settings, ChevronRight, Play, Info, CheckCircle, RefreshCw
 } from 'lucide-react';
 
 const CPU_QUESTS = [
@@ -31,35 +31,45 @@ const CPU_QUESTS = [
   { q: '¿Qué es el Overclocking?', opts: ['Bajar la velocidad para ahorrar luz', 'Forzar al procesador a funcionar a una velocidad superior a la de fábrica', 'Limpiar el procesador', 'Instalar más RAM'], a: 1, exp: 'Aumenta el rendimiento pero genera más calor y puede reducir la vida útil.' }
 ];
 
-const CPU_STAGES = [
-  { id: 'fetch', name: 'Fetch (Búsqueda)', desc: 'La UC trae la instrucción desde la memoria RAM hacia el IR.', icon: <Database /> },
-  { id: 'decode', name: 'Decode (Decodificación)', desc: 'La UC interpreta los 0s y 1s para saber qué operación hacer.', icon: <Layers /> },
-  { id: 'execute', name: 'Execute (Ejecución)', desc: 'La ALU realiza el cálculo o la operación lógica solicitada.', icon: <Play /> }
-];
+const PHASE_LABELS = ['IDLE', 'FETCH', 'DECODE', 'EXECUTE', 'WRITE-BACK'];
+const PHASE_DESCS = {
+  IDLE: 'Esperando siguiente orden...',
+  FETCH: 'Buscando instrucción en la dirección PC: 0x0A...',
+  DECODE: 'LA UC interpreta el código de operación: ADD R1, R2...',
+  EXECUTE: 'La ALU realiza la suma binaria de los registros...',
+  'WRITE-BACK': 'Guardando el resultado final en el ACUMULADOR (ACC).'
+};
+
+// ─── CPU PAGE ───────────────────────────────────────────────────────
 
 const CPU = () => {
-  const [cycle, setCycle] = useState('idle');
-  const [stepIdx, setStepIdx] = useState(0);
+  const [phaseIdx, setPhaseIdx] = useState(0);
+  const [pc, setPc] = useState(10);
+  const [acc, setAcc] = useState(0);
+  const [ir, setIr] = useState('---');
+  const [running, setRunning] = useState(false);
 
-  const startCycle = () => {
-    setCycle('running');
-    setStepIdx(0);
+  const currentPhase = PHASE_LABELS[phaseIdx];
+
+  const advance = () => {
+    if (running) return;
+    setRunning(true);
+    let idx = 0;
+    const interval = setInterval(() => {
+      idx++;
+      if (idx < PHASE_LABELS.length) {
+        setPhaseIdx(idx);
+        // Effects per phase
+        if (PHASE_LABELS[idx] === 'FETCH') setIr('0x10110');
+        if (PHASE_LABELS[idx] === 'EXECUTE') setAcc(prev => (prev + 1) % 255);
+        if (PHASE_LABELS[idx] === 'WRITE-BACK') setPc(prev => prev + 1);
+      } else {
+        clearInterval(interval);
+        setRunning(false);
+        setPhaseIdx(0);
+      }
+    }, 1200);
   };
-
-  useEffect(() => {
-    if (cycle === 'running') {
-      const timer = setInterval(() => {
-        setStepIdx(prev => {
-          if (prev >= CPU_STAGES.length - 1) {
-            setCycle('complete');
-            return prev;
-          }
-          return prev + 1;
-        });
-      }, 2000);
-      return () => clearInterval(timer);
-    }
-  }, [cycle]);
 
   return (
     <LockedContent keyword="fetch" title="Clase 3: El Cerebro del Sistema" unit={1}>
@@ -70,102 +80,89 @@ const CPU = () => {
               CPU: El Director de Orquesta
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              Desde el contador de programa hasta la ALU. Entiende cómo billones de transistores ejecutan cada clic de tu mouse.
+              Desde el contador de programa hasta la ALU. Entiende cómo billones de transistores ejecutan cada instrucción en nanosegundos.
             </p>
           </motion.div>
         </header>
 
-        {/* Simulador de Ciclo Fetch-Decode-Execute */}
+        {/* Simulador Avanzado Reconstruido */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
-            <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)', boxShadow: '0 30px 60px rgba(0,0,0,0.3)' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <Clock color="#3b82f6" /> Ciclo de Instrucción
-              </h2>
-              
-              <div style={{ marginBottom: '3rem' }}>
-                {CPU_STAGES.map((s, i) => (
-                  <motion.div 
-                    key={s.id}
-                    animate={{ 
-                      opacity: cycle === 'running' && i === stepIdx ? 1 : 0.4,
-                      x: cycle === 'running' && i === stepIdx ? 20 : 0,
-                      scale: cycle === 'running' && i === stepIdx ? 1.05 : 1
-                    }}
-                    style={{ 
-                      padding: '1.5rem', 
-                      borderRadius: '20px', 
-                      background: cycle === 'running' && i === stepIdx ? '#3b82f620' : 'transparent',
-                      borderLeft: `5px solid ${cycle === 'running' && i === stepIdx ? '#3b82f6' : '#334155'}`,
-                      marginBottom: '1rem'
-                    }}
-                  >
-                    <h4 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem', fontWeight: 800 }}>{s.name}</h4>
-                    {cycle === 'running' && i === stepIdx && <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>{s.desc}</p>}
-                  </motion.div>
-                ))}
-              </div>
+          <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '4rem' }}>
+             
+             <div>
+                <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2rem', color: '#3b82f6', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                   <Clock /> Ciclo de Procesamiento
+                </h2>
+                
+                <div style={{ display: 'grid', gap: '1rem', marginBottom: '2.5rem' }}>
+                   {PHASE_LABELS.map((p, i) => (
+                     <div key={p} style={{
+                        padding: '1.25rem', borderRadius: '20px', borderLeft: '4px solid', transition: '0.3s',
+                        borderColor: phaseIdx === i ? '#3b82f6' : 'rgba(255,255,255,0.05)',
+                        background: phaseIdx === i ? '#3b82f610' : '#1e293b50',
+                        opacity: phaseIdx === i ? 1 : 0.4,
+                        transform: phaseIdx === i ? 'translateX(10px)' : 'none'
+                     }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                           <span style={{ fontWeight: 900, fontSize: '0.9rem' }}>{p}</span>
+                           {phaseIdx === i && <Activity size={16} color="#3b82f6" />}
+                        </div>
+                        {phaseIdx === i && <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '0.5rem 0 0' }}>{PHASE_DESCS[p]}</p>}
+                     </div>
+                   ))}
+                </div>
 
-              <button 
-                onClick={startCycle}
-                disabled={cycle === 'running'}
-                style={{ 
-                  width: '100%', 
-                  background: '#3b82f6', 
-                  color: '#fff', 
-                  border: 'none', 
-                  padding: '1.25rem', 
-                  borderRadius: '20px', 
-                  fontWeight: 900, 
-                  cursor: cycle === 'running' ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.75rem',
-                  fontSize: '1rem'
-                }}
-              >
-                {cycle === 'running' ? 'Procesando...' : <><Play size={18} /> Iniciar Pulso de Reloj</>}
-              </button>
-            </div>
+                <button onClick={advance} disabled={running} style={{
+                   width: '100%', background: '#3b82f6', color: '#fff', border: 'none', padding: '1.25rem',
+                   borderRadius: '20px', fontWeight: 900, cursor: running ? 'not-allowed' : 'pointer', fontSize: '1rem', display: 'flex', justifyContent: 'center', gap: '10px'
+                }}>
+                   {running ? <RefreshCw className="spin" size={20} /> : <><Play size={20} /> Iniciar Secuencia</>}
+                </button>
+             </div>
 
-            <div style={{ position: 'relative' }}>
-              <img 
-                src="/assets/cpu_architecture_modern_1775235433327.png" 
-                alt="CPU Internals" 
-                style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(59,130,246,0.2)' }} 
-              />
-              <AnimatePresence>
-                {cycle === 'running' && (
-                  <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    exit={{ opacity: 0 }}
-                    style={{ position: 'absolute', inset: 0, borderRadius: '50px', border: '4px solid #3b82f6', boxShadow: 'inset 0 0 100px rgba(59,130,246,0.4)' }}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
+             <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#3b82f6', marginBottom: '2rem', textAlign: 'center' }}>Registros Internos (Die)</h3>
+                
+                <div style={{ display: 'grid', gap: '1.5rem' }}>
+                   {[
+                     { label: 'PC (Program Counter)', val: `0x${pc.toString(16).padStart(4, '0').toUpperCase()}`, color: '#10b981' },
+                     { label: 'IR (Instruction Register)', val: ir, color: '#3b82f6' },
+                     { label: 'ACC (Acumulador)', val: acc, color: '#ec4899', big: true }
+                   ].map((reg, i) => (
+                     <div key={i} style={{ background: '#1e293b', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, marginBottom: '0.5rem' }}>{reg.label}</div>
+                        <div style={{
+                           fontSize: reg.big ? '2.5rem' : '1.5rem', fontWeight: 900, color: reg.color, fontFamily: 'monospace'
+                        }}>{reg.val}</div>
+                     </div>
+                   ))}
+                </div>
+
+                <div style={{ marginTop: '2.5rem', padding: '1rem', background: '#020617', borderRadius: '15px', textAlign: 'center' }}>
+                   <span style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: 800 }}>ALU STATUS: </span>
+                   <span style={{ fontSize: '0.8rem', color: phaseIdx === 3 ? '#10b981' : '#64748b' }}>
+                      {phaseIdx === 3 ? 'SUMANDO DATOS...' : 'EN ESPERA'}
+                   </span>
+                </div>
+             </div>
+
           </div>
         </section>
 
-        {/* Anatomía Ampliada */}
+        {/* Sección de Teoría Restante (Manteniendo el diseño moderno) */}
         <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>Las Piezas del Rompecabezas</h2>
+          <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>Anatomía del Procesador</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
             {[
-              { Icon: Activity, color: '#3b82f6', title: 'Unidad de Control (UC)', desc: 'Es el cerebro táctico. Decodifica las instrucciones y genera señales de control para que el resto de los componentes sepan qué hacer.' },
-              { Icon: Zap, color: '#f59e0b', title: 'Aritmético-Lógica (ALU)', desc: 'La fuerza bruta. Realiza sumas, restas y comparaciones lógicas (Si A > B). Todo cálculo matemático pasa por aquí.' },
-              { Icon: Database, color: '#10b981', title: 'Registros Internos', desc: 'Pequeñas celdas de memoria super-rápidas donde se guardan los datos intermedios de cada operación. El PC y el IR son vitales.' },
-              { Icon: Layers, color: '#8b5cf6', title: 'Memoria Caché', desc: 'Un buffer entre la CPU y la RAM. Almacena los datos que se usan frecuentemente para evitar cuellos de botella con la lentitud de la RAM.' },
-              { Icon: Clock, color: '#ef4444', title: 'Reloj del Sistema', desc: 'Marca el ritmo al que late el procesador. Un pulso de reloj permite dar un "paso" en el ciclo de ejecución.' },
-              { Icon: Settings, color: '#94a3b8', title: 'Instruction Set (ISA)', desc: 'El conjunto de instrucciones que la CPU es capaz de entender (ej: Sumar, Mover, Saltar). El software usa este lenguaje.' }
+              { Icon: Activity, color: '#3b82f6', title: 'Unidad de Control', desc: 'Coordina el flujo de datos. Decodifica las instrucciones y genera las señales de habilitación para el resto.' },
+              { Icon: Zap, color: '#f59e0b', title: 'ALU', desc: 'El músculo del sistema. Realiza cada suma, resta y comparación lógica necesaria para que tu código funcione.' },
+              { Icon: Layers, color: '#8b5cf6', title: 'Pipeline', desc: 'Técnica que permite procesar varias instrucciones a la vez, solapando las fases de Fetch, Decode y Execute.' }
             ].map((item, i) => (
-              <motion.div key={i} whileHover={{ y: -5 }} style={{ background: '#0f172a', padding: '2.5rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.04)' }}>
+              <div key={i} style={{ background: '#0f172a', padding: '2.5rem', borderRadius: '35px', border: '1px solid rgba(255,255,255,0.04)' }}>
                 <item.Icon size={32} color={item.color} style={{ marginBottom: '1.25rem' }} />
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1rem' }}>{item.title}</h3>
                 <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>{item.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
@@ -174,21 +171,20 @@ const CPU = () => {
           accentColor="#3b82f6"
           title="El Procesador (CPU)"
           facts={[
-            { icon: '🔄', term: 'Ciclo FDE', def: 'Fetch (buscar instrucción del PC) → Decode (la UC la interpreta) → Execute (la ALU la ejecuta). Repetido miles de millones de veces por segundo.' },
-            { icon: '🧮', term: 'ALU', def: 'Arithmetic Logic Unit: realiza operaciones matemáticas (+,-,×,÷) y lógicas (AND, OR, NOT, XOR) sobre los datos.' },
-            { icon: '🎮', term: 'Unidad de Control (UC)', def: 'Dirige el flujo de datos entre componentes. Decodifica instrucciones y genera las señales de control correspondientes.' },
-            { icon: '⚡', term: 'Pipeline', def: 'Técnica de superposición de instrucciones: mientras se ejecuta una, ya se decodifica la siguiente. Aumenta el IPC (instrucciones por ciclo).' },
-            { icon: '🕐', term: 'Frecuencia de Reloj', def: '1 GHz = 1.000 millones de ciclos por segundo. Más GHz no siempre significa más rendimiento: depende de la arquitectura y el IPC.' },
-            { icon: '📦', term: 'Registros', def: 'Memoria ultrarrápida dentro de la CPU (<1ns). Incluyen: Program Counter (PC), Stack Pointer (SP) y registros de propósito general.' },
+            { icon: '🔄', term: 'Ciclo FDE', def: 'Fetch (traer instrucción) → Decode (interpretar) → Execute (ejecutar). Se repite billones de veces por segundo.' },
+            { icon: '🧮', term: 'ALU', def: 'Realiza cálculos aritméticos y decisiones lógicas basándose en bits.' },
+            { icon: '⚡', term: 'Reloj del Sistema', def: 'Marca el pulso. 1 GHz significa 1.000 millones de ciclos de procesamiento por segundo.' },
+            { icon: '📦', term: 'Registros', def: 'Memoria ultrarrápida integrada en el silicio para guardar datos inmediatos.' },
+            { icon: '🏙️', term: 'Arquitectura ISA', def: 'El lenguaje que el hardware "entiende". Define qué instrucciones puede ejecutar (RISC/CISC).' },
+            { icon: '🏗️', term: 'Pipelining', def: 'Segmentación de instrucciones para aumentar el rendimiento sin subir la frecuencia de reloj.' },
           ]}
         />
 
-        {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Cpu size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: El Procesador</h2>
-            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>20 preguntas para certificar tu conocimiento sobre el corazón de la informática.</p>
+            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Valida tus conocimientos sobre la CPU con 20 preguntas aleatorias.</p>
           </div>
           <QuizBlock 
             questions={CPU_QUESTS} 
@@ -199,6 +195,11 @@ const CPU = () => {
           />
         </section>
       </div>
+
+       <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+      `}</style>
     </LockedContent>
   );
 };

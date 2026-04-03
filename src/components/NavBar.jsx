@@ -136,6 +136,10 @@ const NavBar = () => {
               </div>
             )}
           </div>
+
+          <Link to="/portal-docente" className={`nav-link ${location.pathname === '/portal-docente' ? 'active' : ''}`} style={{ marginLeft: '1rem', borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem', color: '#3b82f6' }}>
+            <Shield size={18} /> Acceso Docente
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -178,6 +182,12 @@ const NavBar = () => {
               {link.name}
             </Link>
           ))}
+
+          <div style={{ margin: '1.5rem 0.5rem 0.5rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+            <Link to="/portal-docente" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: '#3b82f6', fontWeight: 900, padding: '1rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '15px' }}>
+              <Shield size={20} /> Acceso Portal Docente
+            </Link>
+          </div>
         </div>
       )}
 

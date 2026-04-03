@@ -363,6 +363,19 @@ const SeguridadInformatica = () => {
         {/* Laboratorio de Criptografía */}
         <CipherSimulator />
 
+        <RepasoClave
+          accentColor="#ef4444"
+          title="Ciberseguridad y Ética"
+          facts={[
+            { icon: '🛡️', term: 'Tríada CIA', def: 'Confidencialidad (solo autorizados ven los datos) + Integridad (no alterados) + Disponibilidad (accesibles cuando se necesitan).' },
+            { icon: '🎣', term: 'Phishing', def: 'Suplantación de identidad por correo o web falsa para robar credenciales. Es la técnica de Ingeniería Social más extendida.' },
+            { icon: '💰', term: 'Ransomware', def: 'Cifra los archivos del usuario y exige pago (criptomonedas) para recuperarlos. Uno de los ataques más lucrativos y devastadores.' },
+            { icon: '🔑', term: 'Cifrado Simétrico vs Asimétrico', def: 'Simétrico: misma clave para cifrar/descifrar (rápido). Asimétrico: par clave pública/privada (base de HTTPS y firmas digitales).' },
+            { icon: '🔢', term: 'Función Hash', def: 'Convierte datos en cadena de longitud fija. Irreversible. Efecto avalancha: un mínimo cambio en la entrada cambia todo el hash.' },
+            { icon: '📱', term: '2FA (Doble Factor)', def: 'Segunda capa de verificación: algo que sabes (contraseña) + algo que tenés (código al celular). Reduce hackeos en ~99%.' },
+          ]}
+        />
+
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ef4444', boxShadow: '0 30px 60px rgba(239,68,68,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>

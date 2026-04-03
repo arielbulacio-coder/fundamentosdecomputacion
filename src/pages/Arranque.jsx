@@ -1,11 +1,11 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
 import RepasoClave from '../components/RepasoClave';
 import { 
   Power, Zap, Activity, ShieldCheck, Database, 
-  Settings, ChevronRight, Info, CheckCircle, Smartphone, ExternalLink, HardDrive
+  Settings, ChevronRight, Info, CheckCircle, Smartphone, ExternalLink, HardDrive, Play, RefreshCw, Terminal
 } from 'lucide-react';
 
 const BOOT_QUESTS = [
@@ -31,7 +31,35 @@ const BOOT_QUESTS = [
   { q: '¿Qué pasa si cambias el modo de disco de "IDE" a "AHCI" en el BIOS después de instalar Windows?', opts: ['La PC vuela', 'Es probable que el sistema no arranque y dé un pantallazo azul (BSOD)', 'Se borran las fotos', 'No pasa nada'], a: 1, exp: 'El cambio de drivers de almacenamiento requiere que el SO esté preparado.' }
 ];
 
+const BOOT_STAGES = [
+  { id: 'POWER', label: '1. POWER ON', icon: <Power />, desc: 'Suministro eléctrico activado. Los voltajes se estabilizan.' },
+  { id: 'POST', label: '2. P.O.S.T.', icon: <CheckCircle />, desc: 'BIOS verifica Hardware crítico: CPU, RAM y Video.' },
+  { id: 'BIOS', label: '3. BIOS/UEFI', icon: <Settings />, desc: 'Se cargan ajustes y se inicializan buses (PCIe, USB).' },
+  { id: 'BOOTLOADER', label: '4. BOOTLOADER', icon: <HardDrive />, desc: 'Buscando el sector de arranque en el Disco (MBR/EFI).' },
+  { id: 'KERNEL', label: '5. KERNEL', icon: <Database />, desc: 'El sistema operativo se carga y toma el control absoluto.' },
+  { id: 'DONE', label: '6. READY', icon: <Smartphone />, desc: 'Desktop listo para el usuario.' }
+];
+
 const Arranque = () => {
+  const [stage, setStage] = useState(0);
+  const [running, setRunning] = useState(false);
+
+  const startBoot = () => {
+    if (running) return;
+    setRunning(true);
+    setStage(0);
+    let current = 0;
+    const interval = setInterval(() => {
+      current++;
+      if (current < BOOT_STAGES.length) {
+        setStage(current);
+      } else {
+        clearInterval(interval);
+        setRunning(false);
+      }
+    }, 1500);
+  };
+
   return (
     <LockedContent keyword="bios" title="Clase 5: Iniciando el Sistema" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
@@ -46,68 +74,73 @@ const Arranque = () => {
           </motion.div>
         </header>
 
-        {/* El Proceso de Arranque Step-by-Step Ampliado */}
+        {/* Simulador de Arranque */}
         <section style={{ marginBottom: '6rem' }}>
-           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '4rem', textAlign: 'center' }}>Los 5 Segundos Críticos</h2>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-              {[
-                { step: '1', title: 'Energía y POST', icon: <Power />, desc: 'La fuente activa los voltajes y el CPU ejecuta el POST desde el BIOS para validar que la RAM, el Video y el Procesador estén presentes.' },
-                { step: '2', title: 'Setup y BIOS/UEFI', icon: <Settings />, desc: 'Se cargan las configuraciones del usuario (orden de booteo, velocidad de RAM). El sistema inicializa periféricos básicos.' },
-                { step: '3', title: 'Búsqueda del Bootloader', icon: <HardDrive />, desc: 'Se lee el primer sector del disco elegido para encontrar el cargador de arranque (como GRUB o Windows Boot Manager).' },
-                { step: '4', title: 'Carga del Kernel', icon: <Database />, desc: 'El programa más importante del Sistema Operativo se copia a la RAM y toma el mando absoluto del hardware.' },
-                { step: '5', title: 'Entorno de Usuario', icon: <Smartphone />, desc: 'Se cargan los controladores (drivers), servicios de red internos y finalmente la pantalla de bienvenida o Login.' }
-              ].map((s, i) => (
-                <motion.div 
-                  key={i}
-                  whileHover={{ y: -10 }}
-                  style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '40px', border: '1.5px solid rgba(255,255,255,0.05)', position: 'relative' }}
-                >
-                  <div style={{ position: 'absolute', top: '-15px', left: '30px', width: '40px', height: '40px', background: '#ff4757', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, boxShadow: '0 5px 15px rgba(255,71,87,0.4)' }}>{s.step}</div>
-                  <div style={{ color: '#ff4757', marginBottom: '1.5rem' }}>{s.icon}</div>
-                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1rem' }}>{s.title}</h3>
-                  <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>{s.desc}</p>
-                </motion.div>
-              ))}
+           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+              <Terminal size={40} color="#ff4757" style={{ margin: '0 auto 1.5rem' }} />
+              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2.5rem' }}>Secuenciador de Inicio</h2>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
+                 {BOOT_STAGES.map((s, i) => (
+                   <div key={s.id} style={{
+                      padding: '1.5rem 1rem', borderRadius: '20px', border: '2px solid', transition: '0.3s',
+                      borderColor: stage >= i ? '#ff4757' : '#1e293b',
+                      background: stage === i ? '#ff475720' : '#0f172a',
+                      opacity: stage >= i ? 1 : 0.3
+                   }}>
+                      <div style={{ color: stage >= i ? '#ff4757' : '#475569', marginBottom: '0.5rem' }}>{s.icon}</div>
+                      <div style={{ fontSize: '0.7rem', fontWeight: 900 }}>{s.label}</div>
+                   </div>
+                 ))}
+              </div>
+
+              <div style={{ background: '#0f172a', padding: '2rem', borderRadius: '25px', marginBottom: '2.5rem', minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <AnimatePresence mode="wait">
+                    <motion.p key={stage} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} style={{ color: '#94a3b8', fontSize: '1.1rem', margin: 0 }}>
+                       {BOOT_STAGES[stage].desc}
+                    </motion.p>
+                 </AnimatePresence>
+              </div>
+
+              <button onClick={startBoot} disabled={running} style={{
+                 background: '#ff4757', color: '#fff', border: 'none', padding: '1.25rem 3rem', borderRadius: '20px',
+                 fontWeight: 900, fontSize: '1.1rem', cursor: running ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto'
+              }}>
+                 {running ? <RefreshCw className="spin" /> : <Play />} {stage === 5 ? 'Reiniciar Secuencia' : 'Iniciar Sistema'}
+              </button>
            </div>
         </section>
 
-        {/* Teoría Ampliada: Puertos e Interrupciones */}
-        <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem' }}>
-           <div style={{ background: '#111', padding: '4rem', borderRadius: '50px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-              <h3 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#ff4757' }}>Interrupciones (IRQ)</h3>
-              <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
-                El procesador no adivina cuándo presionas una tecla. El hardware envía una <strong>Interrupción</strong> que congela temporalmente la tarea actual de la CPU para atender al dispositivo. Es la base de los sistemas multi-tarea modernos.
-              </p>
-              <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#1e293b', borderRadius: '20px', borderLeft: '5px solid #ff4757' }}>
-                 <p style={{ margin: 0, fontSize: '0.9rem', color: '#fff', fontWeight: 700 }}>Dato Pro:</p>
-                 <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>El DMA permite que el disco duro mande un archivo a la RAM sin que la CPU tenga que mover cada byte manualmente.</p>
-              </div>
-           </div>
-           
-           <div style={{ position: 'relative' }}>
-              <img 
-                src="/assets/pc_boot_process_bios_glow_1775235626969.png" 
-                alt="PC Boot Process" 
-                style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(255,71,87,0.2)' }} 
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
+        {/* Teoría Ampliada */}
+        <section style={{ marginBottom: '6rem' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+              {[
+                { title: 'El POST', icon: <ShieldCheck />, color: '#ff4757', desc: 'Power-On Self-Test. El diagnóstico inicial que asegura que la CPU, la memoria y la tarjeta gráfica están vivas.' },
+                { title: 'MBR vs GPT', icon: <Database />, color: '#3b82f6', desc: 'Master Boot Record es el estándar clásico. GPT es el moderno que permite discos de petabytes y 128 particiones.' },
+                { icon: <ExternalLink />, title: 'Controladores', color: '#10b981', desc: 'Son los traductores. Permiten que el Sistema Operativo sepa cómo usar cada marca y modelo de hardware diferente.' }
+              ].map((s, i) => (
+                <div key={i} style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '40px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ color: s.color, marginBottom: '1.5rem' }}>{s.icon}</div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1rem' }}>{s.title}</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>{s.desc}</p>
+                </div>
+              ))}
            </div>
         </section>
 
         <RepasoClave
           accentColor="#ff4757"
-          title="Proceso de Arranque"
+          title="Hardware y Arranque"
           facts={[
-            { icon: '⚡', term: 'POST', def: 'Power On Self Test: primer proceso al encender. Verifica CPU, RAM, GPU, teclado y periféricos antes de cargar el SO.' },
-            { icon: '🔧', term: 'BIOS vs UEFI', def: 'BIOS: firmware legacy de 16 bits, limitado a discos ≤2TB/MBR. UEFI: 64 bits, Secure Boot, GUI, soporte GPT y arranque rápido.' },
-            { icon: '💾', term: 'MBR vs GPT', def: 'MBR: máximo 2TB, 4 particiones primarias. GPT: discos de cualquier tamaño, hasta 128 particiones, más confiable y moderno.' },
-            { icon: '🚀', term: 'Bootloader', def: 'Programa que carga el kernel del SO en RAM. GRUB (Linux), Windows Boot Manager (Windows). Permite el Dual Boot.' },
-            { icon: '🔋', term: 'Batería CMOS', def: 'Pila CR2032 en la placa madre que mantiene la configuración del BIOS y el reloj del sistema (RTC) cuando se apaga la PC.' },
-            { icon: '🔐', term: 'Secure Boot', def: 'Característica UEFI que verifica la firma digital del bootloader para bloquear malware de inicio (bootkits y rootkits).' },
+            { icon: '🔌', term: 'Pasos de Inicio', def: 'Power On → POST → BIOS/UEFI → Bootloader → Kernel → SO habilitado.' },
+            { icon: '🧬', term: 'BIOS/UEFI', def: 'Basic Input/Output System. El firmware encargado de despertar el hardware.' },
+            { icon: '🔍', term: 'POST', def: 'Autodiagnóstico inicial. Si falla, la PC emite códigos de error (BEEP codes).' },
+            { icon: '🗺️', term: 'Particionamiento', def: 'MBR (Legacy) vs GPT (Moderno). GPT es necesario para Windows 11 y discos grandes.' },
+            { icon: '🔋', term: 'CMOS/Pila', def: 'Mantiene la hora y los ajustes del BIOS cuando la PC no recibe energía externa.' },
+            { icon: '👮', term: 'Secure Boot', def: 'Función UEFI que solo deja arrancar software firmado digitalmente por seguridad.' },
           ]}
         />
 
-        {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ff4757', boxShadow: '0 30px 60px rgba(255,71,87,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Zap size={52} color="#ff4757" style={{ margin: '0 auto 1.5rem' }} />
@@ -123,6 +156,11 @@ const Arranque = () => {
           />
         </section>
       </div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+      `}</style>
     </LockedContent>
   );
 };

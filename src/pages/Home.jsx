@@ -54,6 +54,13 @@ const Home = () => {
         >
           Recursos interactivos para el aprendizaje. Simuladores, evaluaciones y contenido teórico para todas las unidades.
         </motion.p>
+        <motion.div
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}
+        >
+           v2.1 - SimuUnpilar - Actualizado
+        </motion.div>
       </header>
 
       {/* Unidad 1 */}

@@ -1,11 +1,11 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
 import RepasoClave from '../components/RepasoClave';
 import { 
   Cpu, Zap, Database, ArrowRightLeft, Layers, 
-  Settings, ChevronRight, Info, CheckCircle, Smartphone
+  Settings, ChevronRight, Info, CheckCircle, Smartphone, Play, RefreshCw, Box
 } from 'lucide-react';
 
 const VN_QUESTS = [
@@ -31,7 +31,35 @@ const VN_QUESTS = [
   { q: '¿Por qué Von Neumann es más simple de fabricar?', opts: ['Porque usa menos silicio', 'Porque requiere menos pines de conexión en el procesador al compartir el bus de memoria', 'Porque es más vieja', 'Porque no usa cables'], a: 1, exp: 'Menos buses implican menos complejidad física en la placa madre y el chip.' }
 ];
 
+const STAGES = [
+  { id: 'IDLE', label: 'IDLE', desc: 'Esperando inicio del ciclo.' },
+  { id: 'FETCH_ADDR', label: 'FETCH: ADDRESS', desc: 'Colocando dirección del PC en el Bus de Direcciones.' },
+  { id: 'FETCH_DATA', label: 'FETCH: DATA', desc: 'Leyendo instrucción de Memoria al Bus de Datos.' },
+  { id: 'DECODE', label: 'DECODE', desc: 'La Unidad de Control interpreta la instrucción.' },
+  { id: 'EXECUTE', label: 'EXECUTE', desc: 'La ALU o Registros ejecutan la operación.' },
+  { id: 'STORE', label: 'STORE', desc: 'Guardando el resultado si es necesario.' }
+];
+
 const VonNeumann = () => {
+  const [step, setStep] = useState(0);
+  const [running, setRunning] = useState(false);
+
+  const nextStep = () => {
+    if (running) return;
+    setRunning(true);
+    setStep(0);
+    let curr = 0;
+    const interval = setInterval(() => {
+      curr++;
+      if (curr < STAGES.length) {
+        setStep(curr);
+      } else {
+        clearInterval(interval);
+        setRunning(false);
+      }
+    }, 1200);
+  };
+
   return (
     <LockedContent keyword="harvard" title="Clase 2: Modelos Arquitectónicos" unit={1}>
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
@@ -45,6 +73,53 @@ const VonNeumann = () => {
             </p>
           </motion.div>
         </header>
+
+        {/* Simulador de Ciclo de Bus Von Neumann */}
+        <section style={{ marginBottom: '6rem' }}>
+           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+              <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '3rem' }}>Simulador de Ciclo de Bus (Von Neumann)</h2>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: '4rem', position: 'relative' }}>
+                 {/* CPU CARD */}
+                 <div style={{ width: '250px', padding: '2rem', background: '#0f172a', border: '2px solid #0088ff', borderRadius: '25px', textAlign: 'center' }}>
+                    <Cpu color="#0088ff" size={40} style={{ margin: '0 auto 1rem' }} />
+                    <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>C.P.U.</div>
+                    <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#64748b' }}>Registros: PC=0x01, ACC=42</div>
+                 </div>
+
+                 {/* BUSES CONNECTOR */}
+                 <div style={{ flex: 1, position: 'relative', height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '0 2rem' }}>
+                    <div style={{ height: '4px', background: step === 1 ? '#0088ff' : '#1e293b', width: '100%', position: 'relative', boxShadow: step === 1 ? '0 0 10px #0088ff' : 'none' }}>
+                       <span style={{ position: 'absolute', top: '-20px', left: '0', fontSize: '0.6rem', color: '#64748b' }}>BUS DIRECCIONES</span>
+                       {step === 1 && <motion.div initial={{ left: 0 }} animate={{ left: '100%' }} transition={{ duration: 1 }} style={{ position: 'absolute', top: '-5px', width: '10px', height: '14px', background: '#0088ff', borderRadius: '2px' }} />}
+                    </div>
+                    <div style={{ height: '4px', background: step === 2 ? '#3b82f6' : '#1e293b', width: '100%', position: 'relative', boxShadow: step === 2 ? '0 0 10px #3b82f6' : 'none' }}>
+                       <span style={{ position: 'absolute', top: '-20px', left: '0', fontSize: '0.6rem', color: '#64748b' }}>BUS DATOS (Bidireccional)</span>
+                       {step === 2 && <motion.div initial={{ right: 0 }} animate={{ right: '100%' }} transition={{ duration: 1 }} style={{ position: 'absolute', top: '-5px', width: '10px', height: '14px', background: '#3b82f6', borderRadius: '2px' }} />}
+                    </div>
+                 </div>
+
+                 {/* RAM CARD */}
+                 <div style={{ width: '250px', padding: '2rem', background: '#0f172a', border: '2px solid #3b82f6', borderRadius: '25px', textAlign: 'center' }}>
+                    <Database color="#3b82f6" size={40} style={{ margin: '0 auto 1rem' }} />
+                    <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>RAM (Unificada)</div>
+                    <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#64748b' }}>[0x01] : LOAD 42</div>
+                 </div>
+              </div>
+
+              <div style={{ background: '#0f172a', padding: '2rem', borderRadius: '25px', margin: '0 auto 3rem', maxWidth: '600px' }}>
+                 <div style={{ fontSize: '0.8rem', color: '#0088ff', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '2px' }}>{STAGES[step].label}</div>
+                 <p style={{ color: '#94a3b8', fontSize: '1.1rem', margin: 0 }}>{STAGES[step].desc}</p>
+              </div>
+
+              <button onClick={nextStep} disabled={running} style={{
+                 background: '#0088ff', color: '#fff', border: 'none', padding: '1.25rem 3rem', borderRadius: '20px',
+                 fontWeight: 900, fontSize: '1.1rem', cursor: running ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto'
+              }}>
+                 {running ? <RefreshCw className="spin" /> : <Play />} Iniciar Ciclo de Instrucción
+              </button>
+           </div>
+        </section>
 
         {/* Comparativa Visual Ampliada */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '4rem', marginBottom: '6rem' }}>
@@ -79,7 +154,7 @@ const VonNeumann = () => {
               <h2 style={{ fontSize: '2rem', fontWeight: 900 }}>Arquitectura Harvard</h2>
             </div>
             <p style={{ color: '#94a3b8', marginBottom: '2.5rem', lineHeight: 1.8, fontSize: '1.1rem' }}>
-              Diseñada para la velocidad. Utiliza <strong style={{ color: '#8b5cf6' }}>caminos separados</strong>. El CPU puede leer el código y procesar datos al mismo tiempo sin esperas.
+              Diseñada para la velocidad. Utiliza <strong style={{ color: '#8b5cf6' }}>caminos separados</strong> para instrucción y datos, permitiendo acceso doble simultáneo.
             </p>
             <div style={{ display: 'grid', gap: '1rem' }}>
               {[
@@ -103,7 +178,7 @@ const VonNeumann = () => {
             <div style={{ padding: '2rem' }}>
                <h3 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '1.5rem', color: '#fff' }}>El Modelo Híbrido</h3>
                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
-                 Tus procesadores actuales (Intel/ARM) no son puramente uno u otro. Usan <strong style={{ color: '#3b82f6' }}>Harvard Interno</strong> (L1 Cache de Código y L1 Cache de Datos separadas) para máxima velocidad dentro del núcleo, pero se comunican con la RAM externa mediante un modelo <strong style={{ color: '#3b82f6' }}>Von Neumann</strong> unificado por simplicidad de placa madre.
+                 Tus procesadores actuales (Intel/ARM) no son puramente uno u otro. Usan <strong style={{ color: '#3b82f6' }}>Harvard Interno</strong> (L1 Cache dividida) para máxima velocidad dentro del núcleo, pero se comunican con la RAM externa mediante un modelo <strong style={{ color: '#3b82f6' }}>Von Neumann</strong> unificado por simplicidad.
                </p>
             </div>
             <div style={{ position: 'relative' }}>
@@ -112,10 +187,6 @@ const VonNeumann = () => {
                  alt="Architecture Comparison" 
                  style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 50px rgba(59,130,246,0.3)' }} 
                />
-               <div style={{ position: 'absolute', bottom: '2rem', right: '2rem', background: '#0f172a', padding: '1rem', borderRadius: '15px', border: '1px solid #3b82f6' }}>
-                  <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 900 }}>CORE i9 / APPLE M3</p>
-                  <p style={{ margin: 0, fontSize: '0.7rem', color: '#64748b' }}>Inside: Modified Harvard</p>
-               </div>
             </div>
           </div>
         </section>
@@ -125,20 +196,20 @@ const VonNeumann = () => {
           title="Von Neumann vs Harvard"
           facts={[
             { icon: '🧠', term: 'Von Neumann', def: 'Memoria unificada para datos e instrucciones. Base de la mayoría de las PCs. Concepto de "programa almacenado" (1945).' },
-            { icon: '⚠️', term: 'Bottleneck de Von Neumann', def: 'El bus compartido crea un cuello de botella: CPU y memoria compiten por el mismo canal de comunicación.' },
-            { icon: '🏫', term: 'Harvard Pura', def: 'Buses físicos separados para instrucciones y datos. Permite acceso simultáneo, mayor velocidad pero más costoso.' },
-            { icon: '⚙️', term: 'Harvard Modificada', def: 'Híbrido moderno: caché separada internamente (velocidad) + memoria RAM unificada externamente. Usado en CPUs actuales.' },
-            { icon: '📡', term: 'Usos de Harvard', def: 'Microcontroladores (Arduino, PIC), DSPs y sistemas embebidos donde el rendimiento determinístico es crítico.' },
-            { icon: '💾', term: 'Programa Almacenado', def: 'Concepto clave de Von Neumann: instrucciones y datos coexisten en la misma memoria RAM, permitiendo reprogramar la máquina.' },
+            { icon: '⚠️', term: 'Bottleneck de Von Neumann', def: 'El bus compartido crea un cuello de botella: CPU y memoria compiten por el mismo canal.' },
+            { icon: '🏫', term: 'Harvard Pura', def: 'Buses físicos separados para instrucciones y datos. Permite acceso simultáneo.' },
+            { icon: '⚙️', term: 'Harvard Modificada', def: 'Híbrido moderno: caché separada internamente + RAM unificada externamente.' },
+            { icon: '📡', term: 'Buses', def: 'Direcciones (donde), Datos (qué) y Control (cuándo). El sistema circulatorio digital.' },
+            { icon: '💾', term: 'Programa Almacenado', def: 'Las instrucciones coexisten en la RAM como si fueran datos, permitiendo reprogramación dinámica.' },
           ]}
         />
 
         {/* Evaluación */}
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-             <ArrowRightLeft size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
-             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Modelos de Computación</h2>
-             <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Valida tu dominio de las arquitecturas Von Neumann y Harvard con 20 preguntas.</p>
+            <ArrowRightLeft size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Modelos de Computación</h2>
+            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Valida tu dominio de las arquitecturas Von Neumann y Harvard con 20 preguntas.</p>
           </div>
           <QuizBlock 
             questions={VN_QUESTS} 
@@ -149,6 +220,10 @@ const VonNeumann = () => {
           />
         </section>
       </div>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+      `}</style>
     </LockedContent>
   );
 };
