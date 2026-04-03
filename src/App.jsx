@@ -9,6 +9,12 @@ import Generaciones from './pages/Generaciones';
 import CPU from './pages/CPU';
 import Memoria from './pages/Memoria';
 import Arranque from './pages/Arranque';
+import SociedadSoftware from './pages/SociedadSoftware';
+import CulturaDigital from './pages/CulturaDigital';
+import RepresentacionDatos from './pages/RepresentacionDatos';
+import LogicaDigital from './pages/LogicaDigital';
+import SistemaOperativo from './pages/SistemaOperativo';
+import SeguridadInformatica from './pages/SeguridadInformatica';
 
 function App() {
   return (
@@ -23,6 +29,12 @@ function App() {
           <Route path="/cpu" element={<CPU />} />
           <Route path="/memoria" element={<Memoria />} />
           <Route path="/arranque" element={<Arranque />} />
+          <Route path="/sociedad-software" element={<SociedadSoftware />} />
+          <Route path="/cultura-digital" element={<CulturaDigital />} />
+          <Route path="/representacion-datos" element={<RepresentacionDatos />} />
+          <Route path="/logica-digital" element={<LogicaDigital />} />
+          <Route path="/sistema-operativo" element={<SistemaOperativo />} />
+          <Route path="/seguridad-informatica" element={<SeguridadInformatica />} />
         </Routes>
       </main>
       <Footer />

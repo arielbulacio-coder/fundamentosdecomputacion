@@ -1,0 +1,68 @@
+# ==========================================
+# SIMUTEC — dominio real con HTTPS automático (Let's Encrypt)
+# ==========================================
+
+simutec.com.ar {
+    reverse_proxy simutec_frontend:80
+}
+
+# ==========================================
+# EDURED — dominio real con HTTPS automático
+# ==========================================
+
+edured.com.ar, www.edured.com.ar {
+    reverse_proxy academia_frontend:80
+}
+
+auth.edured.com.ar {
+    reverse_proxy academia_auth:3001
+}
+
+courses.edured.com.ar {
+    reverse_proxy academia_courses:3002
+}
+
+# ==========================================
+# ACCESO por nip.io — HTTPS con cert interno (self-signed)
+# El browser puede bypassear la advertencia con "Advanced → Proceed"
+# ==========================================
+
+simutec.149.50.130.160.nip.io {
+    tls internal
+    reverse_proxy simutec_frontend:80
+}
+
+academia.149.50.130.160.nip.io {
+    tls internal
+    reverse_proxy academia_frontend:80
+}
+
+auth.149.50.130.160.nip.io {
+    tls internal
+    reverse_proxy academia_auth:3001
+}
+
+courses.149.50.130.160.nip.io {
+    tls internal
+    reverse_proxy academia_courses:3002
+}
+
+golf.149.50.130.160.nip.io {
+    tls internal
+    reverse_proxy golf_frontend:80
+}
+
+fundamentos.149.50.130.160.nip.io {
+    tls internal
+    reverse_proxy fundamentos-app:80
+}
+
+# ==========================================
+# HTTP plano — fallback para IP directa
+# ==========================================
+
+:80 {
+    handle {
+        respond "Proxy OK — usá https://" 200
+    }
+}

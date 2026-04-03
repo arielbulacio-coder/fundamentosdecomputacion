@@ -1,22 +1,39 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Cpu, Landmark, History, ArrowRight } from 'lucide-react';
+import { Cpu, Landmark, History, ArrowRight, Database, Power, Share2, Server, Shield } from 'lucide-react';
 
 const Home = () => {
-  const cards = [
-    { title: 'Arquitectura Von Neumann', desc: 'Descubre el modelo de memoria compartida que define a la informática moderna.', icon: <Cpu />, path: '/von-neumann', color: '#004a99' },
-    { title: 'Arquitectura Harvard', desc: 'Aprende sobre el paralelismo y la separación de buses para un alto rendimiento.', icon: <Landmark />, path: '/harvard', color: '#0066cc' },
-    { title: 'Generaciones de Computadoras', desc: 'Un viaje por la evolución tecnológica desde las válvulas de vacío hasta la IA.', icon: <History />, path: '/generaciones', color: '#0088ff' },
+  const unidad1 = [
+    { title: 'Clase 1: Generaciones', desc: 'Viaje por la evolución: válvulas, transistores, microprocesadores e IA.', icon: <History />, path: '/generaciones', color: '#0088ff' },
+    { title: 'Clase 2: Von Neumann vs Harvard', desc: 'Los dos modelos arquitectónicos que definen la computación actual.', icon: <Landmark />, path: '/von-neumann', color: '#0066cc' },
+    { title: 'Clase 3: Cerebro CPU', desc: 'Simulación del ciclo de instrucción (Fetch-Decode-Execute) y la ALU.', icon: <Cpu />, path: '/cpu', color: '#004a99' },
+    { title: 'Clase 4: Gestión de Memoria', desc: 'Pirámide de jerarquía, RAM, Caché y Memoria Virtual.', icon: <Database />, path: '/memoria', color: '#a855f7' },
+    { title: 'Clase 5: Hardware y Arranque', desc: 'Puertos de I/O, Interrupciones y el proceso BIOS/UEFI/POST.', icon: <Power />, path: '/arranque', color: '#ff4757' },
+  ];
+
+  const unidad2 = [
+    { title: 'Clase 6: Sociedad y Software', desc: 'Sistemas de información, ciclo de vida de datos y clasificación de software.', icon: <Database />, path: '/sociedad-software', color: '#00f2ff' },
+    { title: 'Clase 7: Transformación Digital', desc: 'Evolución de TICs, automatización industrial y colaboración en la nube.', icon: <Share2 />, path: '/cultura-digital', color: '#2ed573' },
+  ];
+
+  const unidad3 = [
+    { title: 'Clase 8: Representación Datos', desc: 'Sistemas binarios, hexadecimales y cómo las máquinas entienden multimedia.', icon: <Database />, path: '/representacion-datos', color: '#3b82f6' },
+    { title: 'Clase 9: Lógica y Ética', desc: 'Compuertas lógicas, algoritmos sociales, burbujas de filtro y ética digital.', icon: <Cpu />, path: '/logica-digital', color: '#6366f1' },
+  ];
+
+  const unidad4 = [
+    { title: 'Clase 10: Sistemas Operativos', desc: 'Gestión de procesos, memoria y la diferencia entre modo usuario y kernel.', icon: <Server />, path: '/sistema-operativo', color: '#4f46e5' },
+    { title: 'Clase 11: Seguridad y Ética', desc: 'Ciberseguridad, tríada CIA, amenazas comunes y el rol ético del programador.', icon: <Shield />, path: '/seguridad-informatica', color: '#ef4444' },
   ];
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1rem' }}>
       <header style={{ textAlign: 'center', padding: '4rem 0' }}>
         <motion.h2 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: 'var(--primary)', fontWeight: 900, marginBottom: '1rem' }}
+          style={{ fontSize: 'clamp(2.2rem, 6vw, 4rem)', color: 'var(--primary)', fontWeight: 900, marginBottom: '1.25rem' }}
         >
           Fundamentos de <span style={{ color: '#aaa' }}>Computación</span>
         </motion.h2>
@@ -24,55 +41,255 @@ const Home = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          style={{ fontSize: '1.2rem', color: 'var(--text-light)', maxWidth: '600px', margin: '0 auto' }}
+          style={{ fontSize: '1.25rem', color: 'var(--text-light)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}
         >
-          Recursos educativos interactivos sobre arquitectura de computadoras y evolución tecnológica.
+          Plataforma educativa de última generación para el aprendizaje de hardware, software y sistemas integrados.
         </motion.p>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-        {cards.map((card, idx) => (
-          <motion.div
-            key={card.title}
-            whileHover={{ y: -5 }}
-            style={{ 
-              background: 'white',
-              border: '1px solid var(--border)',
-              borderRadius: '20px',
-              padding: '2rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)'
-            }}
-          >
-            <div style={{ 
-              width: '50px', 
-              height: '50px', 
-              background: card.color + '1a', 
-              color: card.color,
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              {card.icon}
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{card.title}</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', flex: 1 }}>{card.desc}</p>
-            <Link to={card.path} style={{ 
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              color: card.color,
-              fontWeight: 700,
-              fontSize: '0.9rem'
-            }}>
-              Explorar modulo <ArrowRight size={16} />
-            </Link>
-          </motion.div>
-        ))}
-      </div>
+      {/* Unidad 1 */}
+      <section style={{ marginBottom: '5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+          <div style={{ padding: '0.5rem 1rem', background: 'var(--primary)', color: '#fff', borderRadius: '10px', fontWeight: 900, fontSize: '0.8rem' }}>UNIDAD 1</div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Arquitectura y Evolución</h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {unidad1.map((card, idx) => (
+            <motion.div
+              key={card.title}
+              whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+              style={{ 
+                background: 'white',
+                border: '1.5px solid var(--border)',
+                borderRadius: '28px',
+                padding: '2.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.25rem',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: card.color + '15', 
+                color: card.color,
+                borderRadius: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem'
+              }}>
+                {card.icon}
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem' }}>{card.title}</h3>
+                <p style={{ fontSize: '0.95rem', color: 'var(--text-light)', flex: 1, lineHeight: 1.6 }}>{card.desc}</p>
+              </div>
+              <Link to={card.path} style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                background: card.color,
+                color: '#fff',
+                padding: '1rem',
+                borderRadius: '14px',
+                textDecoration: 'none',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                marginTop: 'auto'
+              }}>
+                Explorar Clase <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Unidad 2 */}
+      <section style={{ marginBottom: '5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+          <div style={{ padding: '0.5rem 1rem', background: '#00f2ff', color: '#000', borderRadius: '10px', fontWeight: 900, fontSize: '0.8rem' }}>UNIDAD 2</div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Sistemas e Impacto</h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {unidad2.map((card, idx) => (
+            <motion.div
+              key={card.title}
+              whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+              style={{ 
+                background: 'white',
+                border: '1.5px solid var(--border)',
+                borderRadius: '28px',
+                padding: '2.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.25rem',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: card.color + '15', 
+                color: card.color,
+                borderRadius: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem'
+              }}>
+                {card.icon}
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem' }}>{card.title}</h3>
+                <p style={{ fontSize: '0.95rem', color: 'var(--text-light)', flex: 1, lineHeight: 1.6 }}>{card.desc}</p>
+              </div>
+              <Link to={card.path} style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                background: card.color,
+                color: '#fff',
+                padding: '1rem',
+                borderRadius: '14px',
+                textDecoration: 'none',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                marginTop: 'auto'
+              }}>
+                Explorar Clase <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Unidad 3 */}
+      <section style={{ marginBottom: '5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+          <div style={{ padding: '0.5rem 1rem', background: '#3b82f6', color: '#fff', borderRadius: '10px', fontWeight: 900, fontSize: '0.8rem' }}>UNIDAD 3</div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Representación y Lógica</h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {unidad3.map((card, idx) => (
+            <motion.div
+              key={card.title}
+              whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+              style={{ 
+                background: 'white',
+                border: '1.5px solid var(--border)',
+                borderRadius: '28px',
+                padding: '2.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.25rem',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: card.color + '15', 
+                color: card.color,
+                borderRadius: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem'
+              }}>
+                {card.icon}
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem' }}>{card.title}</h3>
+                <p style={{ fontSize: '0.95rem', color: 'var(--text-light)', flex: 1, lineHeight: 1.6 }}>{card.desc}</p>
+              </div>
+              <Link to={card.path} style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                background: card.color,
+                color: '#fff',
+                padding: '1rem',
+                borderRadius: '14px',
+                textDecoration: 'none',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                marginTop: 'auto'
+              }}>
+                Explorar Clase <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Unidad 4 */}
+      <section style={{ marginBottom: '5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+          <div style={{ padding: '0.5rem 1rem', background: '#4f46e5', color: '#fff', borderRadius: '10px', fontWeight: 900, fontSize: '0.8rem' }}>UNIDAD 4</div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Sistemas y Seguridad</h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {unidad4.map((card, idx) => (
+            <motion.div
+              key={card.title}
+              whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
+              style={{ 
+                background: 'white',
+                border: '1.5px solid var(--border)',
+                borderRadius: '28px',
+                padding: '2.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.25rem',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: card.color + '15', 
+                color: card.color,
+                borderRadius: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem'
+              }}>
+                {card.icon}
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.5rem' }}>{card.title}</h3>
+                <p style={{ fontSize: '0.95rem', color: 'var(--text-light)', flex: 1, lineHeight: 1.6 }}>{card.desc}</p>
+              </div>
+              <Link to={card.path} style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                background: card.color,
+                color: '#fff',
+                padding: '1rem',
+                borderRadius: '14px',
+                textDecoration: 'none',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                marginTop: 'auto'
+              }}>
+                Explorar Clase <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

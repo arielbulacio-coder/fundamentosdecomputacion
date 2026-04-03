@@ -177,12 +177,13 @@ const Generaciones = () => {
   };
 
   return (
-    <LockedContent keyword="valvulas" title="Clase 1: Generaciones de Computadoras">
+    <LockedContent keyword="valvulas" title="Clase 1: Generaciones de Computadoras" unit={1}>
       <div className="gen-page">
       <header className="gen-header">
         <div className="gen-header-content">
           <h1 className="gen-title">Generaciones de Computadoras</h1>
           <p className="gen-subtitle">Un viaje interactivo desde los tubos al vacío hasta el futuro cuántico.</p>
+          <img src="/generations_info.png" alt="Timeline Panorama" style={{ width: '100%', borderRadius: '24px', marginTop: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }} />
           <div className="gen-progress-container">
             <div className="gen-progress-bar">
               <div className="gen-progress-fill" style={{ width: `${(progreso.size / GENERACIONES.length) * 100}%` }} />
@@ -286,6 +287,7 @@ const Generaciones = () => {
         </main>
       </div>
     </div>
+    </LockedContent>
   );
 };
 
@@ -433,11 +435,11 @@ const SimulacionQuantum = () => {
         ψ = α|0⟩ + β|1⟩
         <span style={{ fontSize: '0.7rem', color: '#00a8ff' }}>Superposición Activa</span>
       </div>
-          </div>
-    </LockedContent>
+    </div>
   );
 };
- = ({ type }) => {
+
+const Simulador = ({ type }) => {
   switch (type) {
     case 'valvulas': return <SimulacionValvulas />;
     case 'transistor': return <SimulacionTransistor />;
