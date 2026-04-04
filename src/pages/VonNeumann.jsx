@@ -66,7 +66,7 @@ const VonNeumann = () => {
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', background: 'linear-gradient(to right, #0088ff, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1.5rem', fontWeight: 900 }}>
-              Von Neumann vs Harvard
+              Von Neumann vs Harvard (v2.2)
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
               Los dos pilares de la computación digital. Entiende las diferencias entre el modelo de bus compartido y el sistema de canales paralelos.
@@ -172,35 +172,109 @@ const VonNeumann = () => {
           </section>
         </div>
 
-        {/* Teoría Ampliada: La Dualidad Moderna */}
-        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
-            <div style={{ padding: '2rem' }}>
-               <h3 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '1.5rem', color: '#fff' }}>El Modelo Híbrido</h3>
-               <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1.1rem' }}>
-                 Tus procesadores actuales (Intel/ARM) no son puramente uno u otro. Usan <strong style={{ color: '#3b82f6' }}>Harvard Interno</strong> (L1 Cache dividida) para máxima velocidad dentro del núcleo, pero se comunican con la RAM externa mediante un modelo <strong style={{ color: '#3b82f6' }}>Von Neumann</strong> unificado por simplicidad.
-               </p>
+        {/* Teoría Detallada con Imágenes */}
+        <section style={{ marginBottom: '6rem' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, textAlign: 'center', marginBottom: '3rem', background: 'linear-gradient(to right, #0088ff, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Conceptos de la Arquitectura Clásica
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem', marginBottom: '4rem' }}>
+            <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <img src="/assets/vn_diagram.png" alt="Von Neumann Diagram" style={{ width: '100%', height: '240px', objectFit: 'cover' }} />
+              <div style={{ padding: '2rem' }}>
+                <h3 style={{ color: '#0088ff', fontWeight: 900, marginBottom: '1rem' }}>🖥️ Estructura de Tres Bloques</h3>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                  Von Neumann propuso un procesador central (CPU), un sistema de memoria (RAM) y dispositivos de entrada/salida. <strong>La gran innovación:</strong> el programa mismo se guarda en la memoria como si fueran datos.
+                </p>
+                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(0,136,255,0.05)', borderRadius: '15px', borderLeft: '4px solid #0088ff' }}>
+                  <small style={{ color: '#0088ff', fontWeight: 800 }}>Dato Histórico:</small>
+                  <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.8 }}>Sin este modelo, cada vez que quisieras cambiar de programa en una computadora, tendrías que reconectar físicamente sus cables.</p>
+                </div>
+              </div>
             </div>
-            <div style={{ position: 'relative' }}>
-               <img 
-                 src="/assets/harvard_architecture_split_neon_1775235605987.png" 
-                 alt="Architecture Comparison" 
-                 style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 50px rgba(59,130,246,0.3)' }} 
-               />
+
+            <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <img src="/assets/vn_cycle.png" alt="Instruction Cycle" style={{ width: '100%', height: '240px', objectFit: 'cover' }} />
+              <div style={{ padding: '2rem' }}>
+                <h3 style={{ color: '#3b82f6', fontWeight: 900, marginBottom: '1rem' }}>🔄 El Ciclo Interminable</h3>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                  Desde que enciendes tu PC hasta que la apagas, la CPU repite: <strong style={{ color: '#fff' }}>FETCH</strong> (buscar), <strong style={{ color: '#fff' }}>DECODE</strong> (interpretar) y <strong style={{ color: '#fff' }}>EXECUTE</strong> (ejecutar). Es el latido del corazón digital.
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+                  {['PC indica dónde', 'Bus trae la orden', 'ALU suma resultados'].map((tag, i) => (
+                    <span key={i} style={{ padding: '4px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', fontSize: '0.7rem', fontWeight: 700 }}>{tag}</span>
+                  ))}
+                </div>
+              </div>
             </div>
+
+            <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <img src="/assets/vn_bottleneck.png" alt="Von Neumann Bottleneck" style={{ width: '100%', height: '240px', objectFit: 'cover' }} />
+              <div style={{ padding: '2rem' }}>
+                <h3 style={{ color: '#ef4444', fontWeight: 900, marginBottom: '1rem' }}>⚠️ El Cuello de Botella</h3>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                  Al compartir un único bus para traer instrucciones y datos a la vez, la CPU debe esperar turno. Esto limita la velocidad máxima del sistema, sin importar qué tan potente sea el procesador.
+                </p>
+                <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(239,68,68,0.1)', borderRadius: '12px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 900 }}>⚡ Solución Moderna: Memoria CACHE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '50px', display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 400px', gap: '3rem', alignItems: 'center' }} className="mobile-stack">
+            <div>
+              <h3 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#fff' }}>Arquitectura Harvard: El Camino Paralelo</h3>
+              <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#94a3b8', marginBottom: '2rem' }}>
+                En la arquitectura Harvard, <strong style={{ color: '#8b5cf6' }}>separas físicamente</strong> la memoria de programa de la de datos. Esto permite que el CPU lea la siguiente instrucción de una memoria mientras lee o escribe un dato en la otra. <strong>Doble canal, doble eficiencia.</strong>
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ padding: '1.5rem', background: '#0f172a', borderRadius: '20px', borderLeft: '4px solid #8b5cf6' }}>
+                  <div style={{ fontWeight: 900, fontSize: '1.1rem', marginBottom: '0.5rem' }}>Harvard Puro</div>
+                  <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>Uso en microcontroladores y DSPs para tiempo real.</div>
+                </div>
+                <div style={{ padding: '1.5rem', background: '#0f172a', borderRadius: '20px', borderLeft: '4px solid #3b82f6' }}>
+                  <div style={{ fontWeight: 900, fontSize: '1.1rem', marginBottom: '0.5rem' }}>Caché Harvard</div>
+                  <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>Tu PC moderno usa esto internamente para evitar esperas.</div>
+                </div>
+              </div>
+            </div>
+            <div>
+               <img src="/assets/vn_vs_harvard.png" alt="Harvard vs Von Neumann" style={{ width: '100%', borderRadius: '35px', boxShadow: '0 30px 60px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)' }} />
+            </div>
+          </div>
+        </section>
+
+        <section style={{ marginBottom: '6rem' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, textAlign: 'center', marginBottom: '3rem' }}>Aplicaciones del Mundo Real</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            {[
+              { title: 'PCs y Laptops', tech: 'Von Neumann', desc: 'Gestionan cientos de procesos compartiendo un solo banco de memoria principal de forma flexible.', img: '/assets/vn_pc.png', color: '#0088ff' },
+              { title: 'Arduino y Microchips', tech: 'Harvard Pura', desc: 'Sistemas que ejecutan un solo programa fijo a máxima velocidad sin esperas de bus.', img: '/assets/vn_arduino.png', color: '#f59e0b' },
+              { title: 'Smartphones (ARM)', tech: 'Híbrido', desc: 'Utilizan cachés Harvard internas y RAM externa Von Neumann para optimizar batería y potencia.', img: '/assets/vn_smartphone.png', color: '#8b5cf6' },
+            ].map((app, i) => (
+              <div key={i} style={{ background: '#0f172a', borderRadius: '30px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
+                <img src={app.img} alt={app.title} style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
+                <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 900, color: app.color, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>{app.tech}</span>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '1rem' }}>{app.title}</h3>
+                  <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.6, margin: 0 }}>{app.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
         <RepasoClave
           accentColor="#3b82f6"
-          title="Von Neumann vs Harvard"
+          title="Conceptos Fundamentales de Arquitectura"
           facts={[
-            { icon: '🧠', term: 'Von Neumann', def: 'Memoria unificada para datos e instrucciones. Base de la mayoría de las PCs. Concepto de "programa almacenado" (1945).' },
-            { icon: '⚠️', term: 'Bottleneck de Von Neumann', def: 'El bus compartido crea un cuello de botella: CPU y memoria compiten por el mismo canal.' },
-            { icon: '🏫', term: 'Harvard Pura', def: 'Buses físicos separados para instrucciones y datos. Permite acceso simultáneo.' },
-            { icon: '⚙️', term: 'Harvard Modificada', def: 'Híbrido moderno: caché separada internamente + RAM unificada externamente.' },
-            { icon: '📡', term: 'Buses', def: 'Direcciones (donde), Datos (qué) y Control (cuándo). El sistema circulatorio digital.' },
-            { icon: '💾', term: 'Programa Almacenado', def: 'Las instrucciones coexisten en la RAM como si fueran datos, permitiendo reprogramación dinámica.' },
+            { icon: '🧠', term: 'Von Neumann', def: 'Modelo de programa almacenado donde datos e instrucciones conviven en el mismo bus.' },
+            { icon: '🏫', term: 'Harvard', def: 'Arquitectura de alto rendimiento con buses físicamente separados para código y datos.' },
+            { icon: '⚡', term: 'FETCH-DECODE-EXECUTE', def: 'El ciclo básico de operación de cualquier procesador moderno.' },
+            { icon: '🧪', term: 'Cuello de Botella', def: 'La limitación de velocidad causada por compartir el acceso a memoria en Von Neumann.' },
+            { icon: '🏗️', term: 'Bus de Datos', def: 'El "camino" bidireccional por el que viaja la información entre CPU y Memoria.' },
+            { icon: '📍', term: 'Bus de Direcciones', def: 'Camino unidireccional donde la CPU indica qué celda de memoria quiere leer o escribir.' },
           ]}
         />
 
@@ -208,8 +282,8 @@ const VonNeumann = () => {
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <ArrowRightLeft size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Modelos de Computación</h2>
-            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Valida tu dominio de las arquitecturas Von Neumann y Harvard con 20 preguntas.</p>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Desafío de Arquitecturas: Von Neumann y Harvard</h2>
+            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Certifica tu dominio de los modelos arquitectónicos con estas 20 preguntas.</p>
           </div>
           <QuizBlock 
             questions={VN_QUESTS} 
@@ -223,6 +297,7 @@ const VonNeumann = () => {
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .spin { animation: spin 1s linear infinite; }
+        @media (max-width: 900px) { .mobile-stack { grid-template-columns: 1fr !important; } }
       `}</style>
     </LockedContent>
   );

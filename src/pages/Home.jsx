@@ -59,7 +59,7 @@ const Home = () => {
            animate={{ opacity: 1 }}
            style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}
         >
-           v2.1 - SimuUnpilar - Actualizado
+           v2.2 - SimuUnpilar - Actualizado
         </motion.div>
       </header>
 

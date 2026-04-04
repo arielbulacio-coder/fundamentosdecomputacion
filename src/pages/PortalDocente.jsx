@@ -58,6 +58,24 @@ const LoginScreen = () => {
             </div>
           ))}
 
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ width: '100%', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '14px', padding: '1.25rem', fontWeight: 900, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginTop: '2rem', transition: '0.3s' }}
+            onMouseOver={e => e.target.style.filter = 'brightness(1.1)'}
+            onMouseOut={e => e.target.style.filter = 'none'}
+          >
+            {loading ? <RefreshCw size={20} className="spin" /> : <LogIn size={20} />}
+            {loading ? 'Entrando...' : 'Ingresar al Panel'}
+          </button>
+
+          <a
+            href="/"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem', color: '#64748b', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}
+          >
+            <LogIn size={16} style={{ transform: 'rotate(180deg)' }} /> Volver al Inicio
+          </a>
+
           {error && (
             <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '12px', padding: '1rem', color: '#ef4444', fontSize: '0.9rem', marginBottom: '1.5rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
               <AlertCircle size={18} /> {error}
@@ -219,6 +237,12 @@ const Dashboard = () => {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <a
+             href="/"
+             style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+             Sitio Principal
+          </a>
           <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
             👤 <strong style={{ color: '#fff' }}>{docente?.nombre}</strong>
             {docente?.admin && <span style={{ marginLeft: '0.5rem', background: '#3b82f620', color: '#3b82f6', borderRadius: '8px', padding: '2px 8px', fontSize: '0.7rem', fontWeight: 800 }}>ADMIN</span>}

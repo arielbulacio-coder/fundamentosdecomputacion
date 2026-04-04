@@ -40,6 +40,11 @@ const PHASE_DESCS = {
   'WRITE-BACK': 'Guardando el resultado final en el ACUMULADOR (ACC).'
 };
 
+const ISA_DATA = [
+  { type: 'RISC', full: 'Reduced Instruction Set Computer', key: 'Simple y rápido', examples: 'ARM (celulares), Apple M1/M2/M3', icon: '📱' },
+  { type: 'CISC', full: 'Complex Instruction Set Computer', key: 'Complejo y potente', examples: 'Intel x86, AMD Ryzen (PCs)', icon: '🖥️' }
+];
+
 // ─── CPU PAGE ───────────────────────────────────────────────────────
 
 const CPU = () => {
@@ -77,7 +82,7 @@ const CPU = () => {
         <header style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', background: 'linear-gradient(to right, #3b82f6, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1.5rem', fontWeight: 900 }}>
-              CPU: El Director de Orquesta
+              CPU: El Director de Orquesta (v2.2)
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
               Desde el contador de programa hasta la ALU. Entiende cómo billones de transistores ejecutan cada instrucción en nanosegundos.
@@ -164,6 +169,47 @@ const CPU = () => {
                 <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>{item.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Conjunto de Instrucciones (ISA) */}
+        <section style={{ marginBottom: '6rem', background: '#0f172a', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '40px', padding: '3rem' }}>
+          <div style={{ display: 'flex', gap: '3rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1.2 }}>
+              <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '1.5rem' }}>📖 Conjunto de Instrucciones (ISA)</h2>
+              <p style={{ opacity: 0.8, lineHeight: 1.7, marginBottom: '2rem', fontSize: '1.1rem' }}>El ISA es la "interfaz" entre el software y el hardware. Define qué operaciones puede hacer la CPU directamente. Existen dos filosofías principales:</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }} className="mobile-stack">
+                {ISA_DATA.map(item => (
+                  <div key={item.type} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(255,255,255,0.05)`, borderRadius: '25px', padding: '1.5rem' }}>
+                    <div style={{fontSize: '2rem', marginBottom: '0.5rem'}}>{item.icon}</div>
+                    <strong style={{ color: '#3b82f6', fontSize: '1.3rem', display: 'block' }}>{item.type}</strong>
+                    <div style={{fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem'}}>{item.full}</div>
+                    <p style={{fontSize: '0.95rem', margin: '0.5rem 0', opacity: 0.8}}>{item.key}</p>
+                    <em style={{fontSize: '0.8rem', opacity: 0.6}}>Ej: {item.examples}</em>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <img src="/assets/cpu_internals.png" alt="ISA Diagram" style={{ width: '100%', maxWidth: '400px', borderRadius: '30px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }} />
+          </div>
+        </section>
+
+        {/* Reloj del Sistema */}
+        <section style={{ marginBottom: '6rem', display: 'flex', gap: '3rem', alignItems: 'center', background: 'linear-gradient(to right, rgba(245,158,11,0.05), transparent)', padding: '3rem', borderRadius: '40px', borderLeft: `6px solid #f59e0b` }} className="mobile-stack">
+          <img src="/assets/cpu_clock.png" alt="Clock Signal" style={{ width: '180px', borderRadius: '20px' }} />
+          <div>
+            <h2 style={{ color: '#f59e0b', margin: 0, fontSize: '2.5rem', fontWeight: 900 }}>⏱️ El Reloj: El Latido del Sistema</h2>
+            <p style={{ margin: '1rem 0', fontSize: '1.2rem', opacity: 0.8, lineHeight: 1.7 }}>
+              La CPU no corre de forma continua, sino a "pulsos". Cada pulso del reloj permite avanzar un pequeño paso en la ejecución de una instrucción.
+            </p>
+            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem 1.5rem', borderRadius: '15px' }}>
+                <strong style={{ color: '#f59e0b' }}>Hertz (Hz):</strong> 1 pulso por segundo.
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem 1.5rem', borderRadius: '15px' }}>
+                <strong style={{ color: '#f59e0b' }}>Gigahertz (GHz):</strong> ¡Mil millones de pulsos por segundo!
+              </div>
+            </div>
           </div>
         </section>
 

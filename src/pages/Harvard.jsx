@@ -117,24 +117,90 @@ const Harvard = () => {
           </div>
         </section>
 
+        {/* Casos de Uso con Imágenes */}
+        <section style={{ marginBottom: '6rem' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 900, textAlign: 'center', marginBottom: '3rem', background: 'linear-gradient(to right, #8b5cf6, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Dónde vive Harvard hoy: Referencias Reales
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
+            <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <img src="/assets/vn_arduino.png" alt="Arduino Harvard" style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
+               <div style={{ padding: '2rem' }}>
+                  <h3 style={{ color: '#8b5cf6', fontWeight: 900, marginBottom: '1rem' }}>🤖 Microcontroladores (Arduino)</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                    El chip ATmega328 de Arduino es el ejemplo perfecto de <strong>Harvard pura</strong>. El programa vive en una memoria Flash de 32KB y los datos en una RAM de 2KB, cada uno con su bus independiente.
+                  </p>
+                  <div style={{ marginTop: '1.2rem', padding: '0.8rem', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', textAlign: 'center' }}>
+                     <span style={{ fontSize: '0.8rem', color: '#8b5cf6', fontWeight: 900 }}>💡 Determinismo y Estabilidad</span>
+                  </div>
+               </div>
+            </div>
+
+            <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <img src="/assets/vn_smartphone.png" alt="Smartphone ARM" style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
+               <div style={{ padding: '2rem' }}>
+                  <h3 style={{ color: '#ec4899', fontWeight: 900, marginBottom: '1rem' }}>📱 Smartphones (ARM Cortex)</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                    Los núcleos ARM de tu celular usan <strong>Harvard Modificada</strong>. Dentro del procesador, las cachés L1 están físicamente separadas para instrucciones y datos, permitiendo un rendimiento extremo.
+                  </p>
+                  <div style={{ marginTop: '1.2rem', padding: '0.8rem', background: 'rgba(236,72,153,0.1)', borderRadius: '12px', textAlign: 'center' }}>
+                     <span style={{ fontSize: '0.8rem', color: '#ec4899', fontWeight: 900 }}>🚀 Eficiencia a Nivel de Caché</span>
+                  </div>
+               </div>
+            </div>
+
+            <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <img src="/assets/vn_dsp.png" alt="DSP Audio Processing" style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
+               <div style={{ padding: '2rem' }}>
+                  <h3 style={{ color: '#f59e0b', fontWeight: 900, marginBottom: '1rem' }}>🎵 Procesamiento de Señal (DSP)</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                    Los procesadores DSP para audio/video manejan flujos masivos de datos. Usan Harvard para asegurar que los cálculos nunca compitan con la carga de instrucciones del algoritmo.
+                  </p>
+                  <div style={{ marginTop: '1.2rem', padding: '0.8rem', background: 'rgba(245,158,11,0.1)', borderRadius: '12px', textAlign: 'center' }}>
+                     <span style={{ fontSize: '0.8rem', color: '#f59e0b', fontWeight: 900 }}>📡 Cero Latencia de Bus</span>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+            <div style={{ padding: '2rem' }}>
+               <h3 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', color: '#fff' }}>¿Por qué Harvard es el futuro del rendimiento?</h3>
+               <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#94a3b8', marginBottom: '2rem' }}>
+                 Mientras que Von Neumann simplifica el diseño, Harvard maximiza el caudal de información. Al no compartir el bus, el procesador puede realizar <strong>Fetch y Execute simultáneamente</strong>, eliminando por completo los ciclos de espera por acceso a memoria.
+               </p>
+               <div style={{ borderLeft: '4px solid #8b5cf6', paddingLeft: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '0 20px 20px 0' }}>
+                 <p style={{ margin: 0, fontStyle: 'italic', color: '#fff' }}>
+                   "En una competencia de velocidad, Harvard no solo corre más rápido, sino que construyó una pista exclusiva para cada atleta."
+                 </p>
+               </div>
+            </div>
+            <div>
+               <img src="/assets/vn_vs_harvard.png" alt="Architecture Comparison" style={{ width: '100%', borderRadius: '40px', boxShadow: '0 30px 60px rgba(59,130,246,0.3)' }} />
+            </div>
+          </div>
+        </section>
+
         <RepasoClave
           accentColor="#8b5cf6"
-          title="Arquitectura Harvard"
+          title="Conceptos Fundamentales Harvard"
           facts={[
-            { icon: '🚀', term: 'Velocidad', def: 'Mayor rendimiento al permitir acceso en paralelo a buses físicos distintos.' },
-            { icon: '🧱', term: 'Aislamiento', def: 'Seguridad física: el flujo de datos no puede contaminar el flujo de instrucciones fácilmente.' },
-            { icon: '📐', term: 'Personalización', def: 'Permite anchos de bus distintos para instrucciones y datos (ej: 14 bits vs 8 bits).' },
-            { icon: '🏭', term: 'DSPs', def: 'Digital Signal Processors. El estándar para procesamiento de señales en tiempo real.' },
-            { icon: '🤖', term: 'Arduino/PIC', def: 'Ejemplos clásicos de aplicaciones actuales en robótica y control industrial.' },
-            { icon: '⚙️', term: 'Híbrido Moderno', def: 'La mayoría de los CPUs potentes usan Harvard en Caché y Von Neumann en RAM.' },
+            { icon: '🚀', term: 'Paralelismo Real', def: 'Capacidad de acceder a la instrucción N+1 mientras se procesa el dato X simultáneamente.' },
+            { icon: '🧱', term: 'Separación Física', def: 'Buses y memorias físicamente distintos para código y datos en el chip.' },
+            { icon: '📐', term: 'Ancho Variable', def: 'Las instrucciones pueden tener un tamaño de bus diferente a los datos (ej: 14 vs 8 bits).' },
+            { icon: '🏭', term: 'DSPs', def: 'Digital Signal Processors. El estándar para procesamiento de señales de baja latencia.' },
+            { icon: '🛡️', term: 'Seguridad', def: 'Evita ataques de desbordamiento que busquen inyectar código en el flujo de ejecución.' },
+            { icon: '⚙️', term: 'Modelo Híbrido', def: 'La solución moderna: Cachés L1 separadas con RAM Von Neumann (unificada).' },
           ]}
         />
 
         <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #8b5cf6', boxShadow: '0 30px 60px rgba(139,92,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Zap size={52} color="#8b5cf6" style={{ margin: '0 auto 1.5rem' }} />
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Modelo Harvard</h2>
-            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Certifica tu dominio del paralelismo arquitectónico con 20 preguntas aleatorias.</p>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Desafío de Arquitectura Harvard: 20 Preguntas</h2>
+            <p style={{ color: '#94a3b8', marginTop: '1rem' }}>Certifica tu dominio del paralelismo arquitectónico y los sistemas de alto rendimiento.</p>
           </div>
           <QuizBlock 
             questions={HARV_QUESTS} 
@@ -145,6 +211,11 @@ const Harvard = () => {
           />
         </section>
       </div>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+        @media (max-width: 900px) { .mobile-stack { grid-template-columns: 1fr !important; } }
+      `}</style>
     </LockedContent>
   );
 };

@@ -27,7 +27,7 @@ scp -o StrictHostKeyChecking=no -i $KeyPath $ZipPath "$User@$ServerIP`:$RemoteBa
 
 # 3. Deploy on Server
 Write-Host "Reconstruyendo contenedor..."
-$DeployCmd = "cd $RemoteBase/$App && unzip -o ../$App.zip && docker compose down && docker compose build --no-cache && docker compose up -d --force-recreate"
+$DeployCmd = "rm -rf $RemoteBase/$App/* && cd $RemoteBase/$App && unzip -o ../$App.zip && docker compose down -v --remove-orphans && docker compose build --no-cache && docker compose up -d --force-recreate"
 ssh -o StrictHostKeyChecking=no -i $KeyPath $User@$ServerIP $DeployCmd
 
 # 4. Cleanup

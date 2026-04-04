@@ -147,10 +147,108 @@ const Generaciones = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const GEN_DATA = [
-    { gen: '1ra Generación', year: '1940-1956', tech: 'Válvula de Vacío', icon: <Zap />, component: <SimulacionValvulas />, color: '#f59e0b' },
-    { gen: '2da Generación', year: '1956-1963', tech: 'Transistores', icon: <Milestone />, component: <SimulacionTransistor />, color: '#3b82f6' },
-    { gen: '3ra / 4ta Gen', year: '1964-Presente', tech: 'Microchips / VLSI', icon: <Cpu />, component: <SimulacionChip />, color: '#8b5cf6' },
-    { gen: 'Futuro', year: '2024+', tech: 'Computación Cuántica', icon: <Bot />, component: <SimulacionQuantum />, color: '#00f2ff' }
+    { 
+      id: 1, 
+      gen: '1ra Generación', 
+      year: '1940-1956', 
+      tech: 'Válvula de Vacío', 
+      icon: <Zap />, 
+      component: <SimulacionValvulas />, 
+      color: '#f59e0b',
+      desc: 'Computadoras del tamaño de una casa (ENIAC/UNIVAC). Programadas en lenguaje de máquina puro. Uso de tarjetas perforadas.',
+      stats: [
+        { label: 'Tamaño', valor: '~167 m²', icon: '📐' },
+        { label: 'Peso', valor: '~27 toneladas', icon: '⚖️' },
+        { label: 'Consumo', valor: '150 kW', icon: '⚡' },
+        { label: 'Velocidad', valor: '5.000 op/seg', icon: '🚀' },
+      ],
+      curiosidad: '¡La ENIAC necesitaba 18.000 válvulas de vacío! Cuando una fallaba, toda la computadora se detenía.'
+    },
+    { 
+      id: 2, 
+      gen: '2da Generación', 
+      year: '1956-1963', 
+      tech: 'Transistores', 
+      icon: <Milestone />, 
+      component: <SimulacionTransistor />, 
+      color: '#3b82f6',
+      desc: 'Menor tamaño y calor. Aparecen COBOL y FORTRAN. Nace el concepto de memoria científica y los primeros mainframes.',
+      stats: [
+        { label: 'Tamaño', valor: 'Habitación', icon: '📐' },
+        { label: 'Peso', valor: '~1 tonelada', icon: '⚖️' },
+        { label: 'Consumo', valor: '~5 kW', icon: '⚡' },
+        { label: 'Velocidad', valor: '1 M op/seg', icon: '🚀' },
+      ],
+      curiosidad: 'Los transistores son 1.000 veces más pequeños que las válvulas de vacío y consumen 100 veces menos energía.'
+    },
+    { 
+      id: 3, 
+      gen: '3ra Generación', 
+      year: '1964-1971', 
+      tech: 'Circuitos Integrados', 
+      icon: <Cpu />, 
+      component: <SimulacionChip />, 
+      color: '#8b5cf6',
+      desc: 'Pastillas de silicio con múltiples transistores. Aparece el monitor, teclado y sistemas operativos.',
+      stats: [
+        { label: 'Tamaño', valor: 'Escritorio grande', icon: '📐' },
+        { label: 'Peso', valor: '~100 kg', icon: '⚖️' },
+        { label: 'Consumo', valor: '~500 W', icon: '⚡' },
+        { label: 'Velocidad', valor: '10 M op/seg', icon: '🚀' },
+      ],
+      curiosidad: 'Un solo chip integrado podía reemplazar docenas de transistores discretos. Nace la familia IBM 360.'
+    },
+    { 
+      id: 4, 
+      gen: '4ta Generación', 
+      year: '1971-Presente', 
+      tech: 'Microprocesadores', 
+      icon: <Database />, 
+      component: <SimulacionChip />, 
+      color: '#ec4899',
+      desc: 'Nace la PC personal. Integración VLSI. Llegan las GUIs, Internet y la conexión global móvil.',
+      stats: [
+        { label: 'Tamaño', valor: 'Bolsillo / PC', icon: '📐' },
+        { label: 'Peso', valor: 'Gramos', icon: '⚖️' },
+        { label: 'Consumo', valor: '5 W – 300 W', icon: '⚡' },
+        { label: 'Velocidad', valor: 'GHz (miles de M)', icon: '🚀' },
+      ],
+      curiosidad: 'La Ley de Moore predijo que los transistores en un chip se duplicarían cada 2 años. ¡Se cumplió por décadas!'
+    },
+    { 
+      id: 5, 
+      gen: '5ta Generación', 
+      year: 'Futuro / IA', 
+      tech: 'Sist. Inteligentes', 
+      icon: <Bot />, 
+      component: <SimulacionQuantum />, 
+      color: '#00f2ff',
+      desc: 'Inteligencia Artificial, procesamiento paralelo masivo y búsqueda del lenguaje natural.',
+      stats: [
+        { label: 'Paradigma', valor: 'IA + Machine Learning', icon: '🧠' },
+        { label: 'Interfaz', valor: 'Voz / Natural', icon: '🗣️' },
+        { label: 'Consumo', valor: 'Optimización IA', icon: '⚡' },
+        { label: 'Velocidad', valor: 'Petaflops', icon: '🚀' },
+      ],
+      curiosidad: 'En 1997, Deep Blue venció a Kasparov en ajedrez. Hoy, modelos como GPT-4 imitan el razonamiento humano.'
+    },
+    { 
+      id: 6, 
+      gen: 'Generación Futura', 
+      year: '2024+', 
+      tech: 'C. Cuántica y Bio', 
+      icon: <Bot />, 
+      component: <SimulacionQuantum />, 
+      color: '#2ed573',
+      desc: 'Qubits en superposición y computación biológica con ADN. Problemas casi imposibles resueltos en minutos.',
+      stats: [
+        { label: 'Unidad', valor: 'Qubit (0 y 1 a la vez)', icon: '⚛️' },
+        { label: 'Estado', valor: 'Investigación', icon: '🔬' },
+        { label: 'Bio-comp', valor: 'ADN como memoria', icon: '🧬' },
+        { label: 'Velocidad', valor: 'Exponencial', icon: '🚀' },
+      ],
+      curiosidad: '¡Usa partículas subatómicas para procesar información a velocidades que desafían la física clásica!'
+    }
   ];
 
   return (
@@ -162,7 +260,7 @@ const Generaciones = () => {
               Generaciones de Computadoras
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              Desde las válvulas termoiónicas hasta los qubits entrelazados. Un viaje interactivo por la evolución tecnológica del último siglo.
+              Desde las válvulas termoiónicas hasta los qubits entrelazados. Un viaje interactivo por la evolución tecnológica (SimuUnpilar v2.2).
             </p>
           </motion.div>
         </header>
@@ -193,8 +291,46 @@ const Generaciones = () => {
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.div key={activeTab} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.3 }}>
-                {GEN_DATA[activeTab].component}
+              <motion.div 
+                key={activeTab} 
+                initial={{ opacity: 0, x: 20 }} 
+                animate={{ opacity: 1, x: 0 }} 
+                exit={{ opacity: 0, x: -20 }} 
+                transition={{ duration: 0.4 }}
+              >
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 350px', gap: '2.5rem', alignItems: 'start' }} className="mobile-stack">
+                  <div>
+                    <h3 style={{ fontSize: '1.8rem', fontWeight: 900, color: GEN_DATA[activeTab].color, marginBottom: '1rem' }}>
+                      {GEN_DATA[activeTab].gen} ({GEN_DATA[activeTab].year})
+                    </h3>
+                    <p style={{ fontSize: '1.1rem', color: '#94a3b8', lineHeight: 1.7, marginBottom: '2rem' }}>
+                      {GEN_DATA[activeTab].desc}
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                      {GEN_DATA[activeTab].stats.map((s, idx) => (
+                        <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: GEN_DATA[activeTab].color, fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                            {s.icon} {s.label}
+                          </div>
+                          <div style={{ fontSize: '1rem', fontWeight: 700 }}>{s.valor}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={{ background: `${GEN_DATA[activeTab].color}10`, border: `1px solid ${GEN_DATA[activeTab].color}30`, borderRadius: '20px', padding: '1.5rem', display: 'flex', gap: '1rem' }}>
+                      <div style={{ fontSize: '1.5rem' }}>💡</div>
+                      <div>
+                        <strong style={{ display: 'block', color: GEN_DATA[activeTab].color, marginBottom: '0.25rem' }}>Curiosidad</strong>
+                        <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>{GEN_DATA[activeTab].curiosidad}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ position: 'sticky', top: '100px' }}>
+                    {GEN_DATA[activeTab].component}
+                  </div>
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
