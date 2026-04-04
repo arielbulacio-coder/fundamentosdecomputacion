@@ -28,6 +28,68 @@ const QUESTIONS = [
   { q: 'En el procesamiento de audio, la "Frecuencia de Muestreo" indica:', opts: ['El volumen del sonido', 'Cuántas veces por segundo se mide la amplitud de la onda sonora para digitalizarla', 'El peso del archivo mp3', 'La duración de la canción'], a: 1, exp: '44.1 kHz significa que se toman 44.100 muestras por segundo (estándar CD).' }
 ];
 
+const CHAR_EXAMPLES = [
+  { c: 'A', label: 'Mayúscula' }, { c: 'a', label: 'Minúscula' },
+  { c: '0', label: 'Dígito' }, { c: ' ', label: 'Espacio' },
+  { c: '!', label: 'Símbolo' }, { c: 'ñ', label: 'Unicode' },
+];
+
+const AsciiSimulator = () => {
+  const [char, setChar] = useState('A');
+  const code = char.length > 0 ? char.codePointAt(0) : 65;
+  const isAscii = code <= 127;
+  const binary8 = code.toString(2).padStart(isAscii ? 8 : 16, '0');
+  const hex = code.toString(16).toUpperCase().padStart(2, '0');
+  const utf8bytes = isAscii ? 1 : code <= 0x7FF ? 2 : 3;
+
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        {CHAR_EXAMPLES.map(ex => (
+          <button key={ex.c} onClick={() => setChar(ex.c)} style={{
+            padding: '0.6rem 1.2rem', borderRadius: '12px', border: '2px solid',
+            borderColor: char === ex.c ? '#10b981' : '#1e293b',
+            background: char === ex.c ? '#10b98120' : '#1e293b',
+            color: char === ex.c ? '#10b981' : '#94a3b8', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem'
+          }}>{ex.c === ' ' ? '[ espacio ]' : ex.c} <span style={{ color: '#475569', fontSize: '0.75rem' }}>({ex.label})</span></button>
+        ))}
+      </div>
+
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', background: '#1e293b', padding: '1rem 2rem', borderRadius: '20px' }}>
+          <span style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 700 }}>Escribí un carácter:</span>
+          <input maxLength={2} value={char} onChange={e => { const v = e.target.value; if (v) setChar(v.slice(-1)); }}
+            style={{ width: '80px', background: '#0f172a', border: '2px solid #10b981', borderRadius: '12px', padding: '0.75rem', color: '#10b981', fontSize: '2rem', fontWeight: 900, textAlign: 'center', fontFamily: 'monospace', outline: 'none' }} />
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+        {[
+          { label: 'Código Unicode/ASCII', value: code, color: '#10b981', note: isAscii ? 'Rango ASCII (0-127)' : 'Extendido Unicode' },
+          { label: 'Binario', value: binary8, color: '#3b82f6', note: `${binary8.length} bits` },
+          { label: 'Hexadecimal', value: `0x${hex}`, color: '#8b5cf6', note: `${hex.length} dígitos hex` },
+          { label: 'Bytes en UTF-8', value: utf8bytes, color: '#f59e0b', note: isAscii ? 'Compatible ASCII' : 'Multi-byte Unicode' },
+        ].map((d, i) => (
+          <div key={i} style={{ background: '#1e293b', padding: '1.5rem', borderRadius: '20px', textAlign: 'center', border: `2px solid ${d.color}30` }}>
+            <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, letterSpacing: '1px', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{d.label}</div>
+            <div style={{ fontFamily: 'monospace', fontSize: '1.5rem', fontWeight: 900, color: d.color, wordBreak: 'break-all' }}>{d.value}</div>
+            <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: '0.4rem' }}>{d.note}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: '#1e293b', padding: '1.5rem 2rem', borderRadius: '20px', borderLeft: `4px solid ${isAscii ? '#10b981' : '#a855f7'}` }}>
+        <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.7 }}>
+          {isAscii
+            ? <><strong style={{ color: '#10b981' }}>ASCII (1963):</strong> Estándar de 7 bits (128 caracteres). Diseñado para inglés. El código {code} representa la '{char}'. Cada PC del planeta lo entiende igual.</>
+            : <><strong style={{ color: '#a855f7' }}>Unicode / UTF-8 (1991):</strong> Codifica más de 1.1 millón de caracteres de todos los idiomas. El carácter '{char}' usa código U+{hex} y ocupa {utf8bytes} bytes en UTF-8. Retrocompatible con ASCII para los primeros 127 valores.</>
+          }
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const RepresentacionDatos = () => {
   const [num, setNum] = useState(42);
 
@@ -217,6 +279,18 @@ const RepresentacionDatos = () => {
               <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.7 }}>El proceso de convertir magnitudes físicas continuas (analógicas) en valores discretos (ceros y unos).</p>
             </div>
           </div>
+        </section>
+
+        {/* Simulador: ASCII / Unicode */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <FileJson size={40} color="#10b981" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Simulador: Codificación ASCII y Unicode</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '700px', margin: '0.5rem auto 0' }}>
+              Escribí cualquier carácter y descubrí cómo la computadora lo almacena en binario, su código ASCII/Unicode y cuántos bytes ocupa en UTF-8.
+            </p>
+          </div>
+          <AsciiSimulator />
         </section>
 
         <RepasoClave

@@ -213,6 +213,59 @@ const CPU = () => {
           </div>
         </section>
 
+        {/* RISC vs CISC */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>ISA: RISC vs CISC</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '700px', margin: '0.5rem auto 0' }}>
+              El Conjunto de Instrucciones (ISA) define el "idioma" que entiende el hardware. Hay dos filosofías opuestas con ventajas distintas.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+            {[
+              { name: 'RISC', sub: 'Reduced Instruction Set Computer', color: '#10b981', badge: 'Smartphones, ARM, Apple M', items: [
+                { icon: '📦', t: 'Pocas instrucciones simples', d: 'Cada instrucción hace una sola cosa. Fácil de optimizar.' },
+                { icon: '⚡', t: '1 ciclo por instrucción', d: 'La mayoría de instrucciones se ejecutan en un único ciclo de reloj.' },
+                { icon: '🔁', t: 'Pipeline eficiente', d: 'La simplicidad permite procesadores altamente segmentados.' },
+                { icon: '🔋', t: 'Bajo consumo', d: 'Ideal para móviles y dispositivos IoT. Apple M1/M2 son ARM RISC.' },
+              ]},
+              { name: 'CISC', sub: 'Complex Instruction Set Computer', color: '#3b82f6', badge: 'PCs, Intel x86, AMD Ryzen', items: [
+                { icon: '🧠', t: 'Instrucciones complejas', d: 'Una sola instrucción puede realizar múltiples operaciones.' },
+                { icon: '📝', t: 'Código más compacto', d: 'Un programador necesita escribir menos instrucciones en ensamblador.' },
+                { icon: '🔧', t: 'Compatible con software antiguo', d: 'x86 de Intel corre software de los años 80 hasta hoy.' },
+                { icon: '💪', t: 'Alto rendimiento bruto', d: 'Procesadores de escritorio y servidores dominan con CISC.' },
+              ]},
+            ].map((arch, ai) => (
+              <div key={ai} style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '40px', border: `2px solid ${arch.color}30` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                  <span style={{ fontSize: '2rem', fontWeight: 900, color: arch.color }}>{arch.name}</span>
+                  <span style={{ background: `${arch.color}20`, color: arch.color, borderRadius: '10px', padding: '3px 10px', fontSize: '0.7rem', fontWeight: 800 }}>HOY</span>
+                </div>
+                <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{arch.sub}</p>
+                <div style={{ background: `${arch.color}15`, padding: '0.6rem 1rem', borderRadius: '10px', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: arch.color }}>Ejemplos: {arch.badge}</span>
+                </div>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  {arch.items.map((item, ii) => (
+                    <div key={ii} style={{ display: 'flex', gap: '0.75rem' }}>
+                      <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '0.9rem', color: arch.color }}>{item.t}</div>
+                        <div style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5 }}>{item.d}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '2rem', background: '#1e293b', padding: '1.5rem 2rem', borderRadius: '20px', borderLeft: '4px solid #f59e0b' }}>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.95rem' }}>
+              <strong style={{ color: '#f59e0b' }}>Dato clave:</strong> Los procesadores modernos x86 (Intel/AMD) son CISC por fuera pero internamente traducen sus instrucciones complejas a micro-operaciones tipo RISC para ejecutarlas más eficientemente. ¡Lo mejor de ambos mundos!
+            </p>
+          </div>
+        </section>
+
         <RepasoClave
           accentColor="#3b82f6"
           title="El Procesador (CPU)"

@@ -37,6 +37,79 @@ const GATES = {
   NOR: (a, b) => !(a || b)
 };
 
+const POSTS = [
+  { id: 1, cat: 'Tecnología', texto: '🤖 IA supera a humanos en diagnóstico médico', tags: ['tech', 'ia'] },
+  { id: 2, cat: 'Política', texto: '🏛️ Debate sobre regulación de redes sociales', tags: ['politica'] },
+  { id: 3, cat: 'Tecnología', texto: '💻 Nuevo procesador bate récord de velocidad', tags: ['tech'] },
+  { id: 4, cat: 'Deporte', texto: '⚽ Argentina clasifica al mundial sub-20', tags: ['deporte'] },
+  { id: 5, cat: 'Tecnología', texto: '🔒 Brecha de datos expone millones de usuarios', tags: ['tech', 'seguridad'] },
+  { id: 6, cat: 'Entretenimiento', texto: '🎬 Estreno de película usa actores generados por IA', tags: ['ia', 'entretenimiento'] },
+  { id: 7, cat: 'Deporte', texto: '🎾 Final del torneo de tenis más largo de la historia', tags: ['deporte'] },
+  { id: 8, cat: 'Política', texto: '🌎 Cumbre climática: acuerdo histórico entre naciones', tags: ['politica', 'medioambiente'] },
+  { id: 9, cat: 'Tecnología', texto: '📱 El nuevo celular con 100x zoom óptico', tags: ['tech'] },
+  { id: 10, cat: 'Entretenimiento', texto: '🎵 Álbum generado por IA rompe récords en streaming', tags: ['ia', 'entretenimiento'] },
+];
+
+const COLORS = { Tecnología: '#3b82f6', Política: '#ef4444', Deporte: '#10b981', Entretenimiento: '#a855f7' };
+
+const BurbujaFiltroSim = () => {
+  const [filtroIA, setFiltroIA] = useState(false);
+  const [filtroTech, setFiltroTech] = useState(false);
+  const [operator, setOperator] = useState('OR');
+
+  const visible = POSTS.filter(p => {
+    if (!filtroIA && !filtroTech) return true;
+    const matchIA = filtroIA && p.tags.includes('ia');
+    const matchTech = filtroTech && p.tags.includes('tech');
+    if (operator === 'AND') return matchIA && matchTech;
+    return matchIA || matchTech;
+  });
+
+  const ocultos = POSTS.length - visible.length;
+
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '25px', marginBottom: '2rem' }}>
+        <p style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Configuración del Algoritmo (condiciones booleanas):</p>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          {[{ id: 'ia', label: '🤖 Contiene IA', state: filtroIA, set: setFiltroIA }, { id: 'tech', label: '💻 Contiene Tecnología', state: filtroTech, set: setFiltroTech }].map(f => (
+            <button key={f.id} onClick={() => f.set(!f.state)} style={{
+              padding: '0.8rem 1.5rem', borderRadius: '15px', border: '2px solid', cursor: 'pointer', fontWeight: 800,
+              borderColor: f.state ? '#f59e0b' : '#334155', background: f.state ? '#f59e0b20' : '#0f172a', color: f.state ? '#f59e0b' : '#64748b'
+            }}>{f.state ? '☑' : '☐'} {f.label}</button>
+          ))}
+          <div style={{ display: 'flex', gap: '0.5rem', background: '#0f172a', padding: '0.4rem', borderRadius: '12px' }}>
+            {['AND', 'OR'].map(op => (
+              <button key={op} onClick={() => setOperator(op)} style={{
+                padding: '0.6rem 1.2rem', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: 900, fontSize: '0.85rem',
+                background: operator === op ? '#f59e0b' : 'transparent', color: operator === op ? '#000' : '#64748b'
+              }}>{op}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        {visible.map(p => (
+          <motion.div key={p.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+            style={{ background: '#1e293b', padding: '1rem 1.5rem', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: `4px solid ${COLORS[p.cat]}` }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: COLORS[p.cat], minWidth: '90px', textTransform: 'uppercase' }}>{p.cat}</span>
+            <span style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>{p.texto}</span>
+          </motion.div>
+        ))}
+      </div>
+
+      <div style={{ background: ocultos > 0 ? '#ef444420' : '#0f172a', border: `2px solid ${ocultos > 0 ? '#ef4444' : '#1e293b'}`, padding: '1.5rem', borderRadius: '20px' }}>
+        <p style={{ margin: 0, color: ocultos > 0 ? '#ef4444' : '#475569', fontWeight: 800, fontSize: '1rem', textAlign: 'center' }}>
+          {ocultos === 0
+            ? '✅ Ves el 100% del contenido. Sin filtros activos.'
+            : `⚠️ El algoritmo ocultó ${ocultos} publicaciones (${Math.round(ocultos/POSTS.length*100)}%). Solo ves ${visible.length}/${POSTS.length}. ¡Eso es una burbuja de filtro!`}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const LogicaDigital = () => {
   const [gateType, setGateType] = useState('AND');
   const [inputA, setInputA] = useState(false);
@@ -142,6 +215,18 @@ const LogicaDigital = () => {
                  </p>
               </div>
            </div>
+        </section>
+
+        {/* Simulador: Burbuja de Filtro */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <ArrowRightCircle size={40} color="#ef4444" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Simulador: Burbuja de Filtro Algorítmica</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '750px', margin: '0.5rem auto 0' }}>
+              Las redes sociales usan condiciones booleanas (AND/OR) para decidir qué contenido mostrarte. Activá filtros y observá cómo el algoritmo limita tu visión del mundo.
+            </p>
+          </div>
+          <BurbujaFiltroSim />
         </section>
 
         <RepasoClave
