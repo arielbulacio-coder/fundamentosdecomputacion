@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, User, Hash, BookOpen, Award } from 'lucide-react';
 
@@ -64,26 +64,27 @@ const RegistrationModal = ({ isOpen, onClose, score, total, materia, unidad, cla
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.85, y: 40 }}
             style={{
-              background: '#1e293b', borderRadius: '40px', padding: '3rem',
+              background: '#1e293b', borderRadius: '40px', padding: 'clamp(1.5rem, 4vw, 3rem)',
               maxWidth: '560px', width: '100%', boxShadow: '0 40px 80px rgba(0,0,0,0.5)',
-              border: '2px solid rgba(34,197,94,0.3)'
+              border: '2px solid rgba(34,197,94,0.3)',
+              maxHeight: '95vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch'
             }}
           >
             {/* Score badge */}
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <Award size={52} color="#22c55e" style={{ margin: '0 auto 1rem' }} />
-              <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', margin: 0 }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(1rem, 3vw, 2.5rem)' }}>
+              <Award size={40} color="#22c55e" style={{ margin: '0 auto 0.5rem' }} />
+              <h2 style={{ fontSize: 'clamp(1.3rem, 4vw, 2rem)', fontWeight: 900, color: '#fff', margin: 0 }}>
                 ¡Aprobaste!
               </h2>
-              <div style={{ fontSize: '3.5rem', fontWeight: 900, background: 'linear-gradient(to right, #22c55e, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '0.5rem 0' }}>
+              <div style={{ fontSize: 'clamp(2rem, 6vw, 3.5rem)', fontWeight: 900, background: 'linear-gradient(to right, #22c55e, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '0.25rem 0' }}>
                 {score} / {total}
               </div>
-              <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '20px', padding: '0.75rem 2rem', display: 'inline-block', color: '#22c55e', fontWeight: 800, fontSize: '1.1rem' }}>
-                {porcentaje}% de respuestas correctas
+              <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '20px', padding: '0.5rem 1.5rem', display: 'inline-block', color: '#22c55e', fontWeight: 800, fontSize: 'clamp(0.85rem, 2.5vw, 1.1rem)' }}>
+                {porcentaje}% correctas
               </div>
-              <div style={{ marginTop: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.85rem', lineHeight: 2, color: '#64748b' }}>
+              <div style={{ marginTop: '0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.8rem', lineHeight: 1.8, color: '#64748b' }}>
                 <div><span style={{ fontWeight: 800, color: '#94a3b8' }}>Materia:</span> {materia || 'Fundamentos de Computación'}</div>
-                <div><span style={{ fontWeight: 800, color: '#94a3b8' }}>Unidad:</span> {unidad} &nbsp;·&nbsp; <span style={{ fontWeight: 800, color: '#94a3b8' }}>Clase:</span> {clase}</div>
+                <div><span style={{ fontWeight: 800, color: '#94a3b8' }}>Unidad:</span> {unidad} · <span style={{ fontWeight: 800, color: '#94a3b8' }}>Clase:</span> {clase}</div>
               </div>
             </div>
 
@@ -108,8 +109,33 @@ const RegistrationModal = ({ isOpen, onClose, score, total, materia, unidad, cla
                   Completá tus datos para que el docente registre tu aprobación.
                 </p>
 
+                {/* Comisión dropdown */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontWeight: 800, color: '#64748b', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    <BookOpen size={16} /> Número de Comisión
+                  </label>
+                  <select
+                    required
+                    value={form.numero_comision}
+                    onChange={(e) => setForm(f => ({ ...f, numero_comision: e.target.value }))}
+                    style={{
+                      width: '100%', background: '#0f172a', border: '2px solid rgba(255,255,255,0.1)',
+                      borderRadius: '14px', padding: '1rem 1.25rem', color: form.numero_comision ? '#fff' : '#64748b', fontSize: '1rem',
+                      outline: 'none', transition: '0.2s', boxSizing: 'border-box',
+                      fontFamily: 'inherit', cursor: 'pointer', appearance: 'auto'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#22c55e'}
+                    onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                  >
+                    <option value="" disabled>Seleccioná tu comisión</option>
+                    {Array.from({ length: 11 }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={String(n)} style={{ color: '#fff', background: '#0f172a' }}>{n}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Text fields: DNI, Apellido, Nombres */}
                 {[
-                  { key: 'numero_comision', label: 'Número de Comisión', icon: <BookOpen size={16} />, placeholder: 'Ej: 2025-A, Comisión 3...' },
                   { key: 'dni', label: 'DNI', icon: <Hash size={16} />, placeholder: 'Ej: 30123456' },
                   { key: 'apellido', label: 'Apellido', icon: <User size={16} />, placeholder: 'Ej: GARCÍA' },
                   { key: 'nombres', label: 'Nombres', icon: <User size={16} />, placeholder: 'Ej: Juan Carlos' },
@@ -126,7 +152,7 @@ const RegistrationModal = ({ isOpen, onClose, score, total, materia, unidad, cla
                       onChange={(e) => setForm(f => ({ ...f, [key]: e.target.value }))}
                       style={{
                         width: '100%', background: '#0f172a', border: '2px solid rgba(255,255,255,0.1)',
-                        borderRadius: '14px', padding: '1rem 1.25rem', color: '#fff', fontSize: '1rem',
+                        borderRadius: '14px', padding: '0.85rem 1.25rem', color: '#fff', fontSize: '1rem',
                         outline: 'none', transition: '0.2s', boxSizing: 'border-box',
                         fontFamily: 'inherit'
                       }}

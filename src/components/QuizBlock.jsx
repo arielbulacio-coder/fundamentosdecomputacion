@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RegistrationModal from './RegistrationModal';
 import { prepareQuiz } from '../utils/quizUtils';
@@ -26,12 +26,15 @@ const QuizBlock = ({
   clase = 'Sin asignar',
   unidad = 'Sin asignar'
 }) => {
+  const TIMER_SECONDS = 10 * 60; // 10 minutes
   const [started, setStarted] = useState(false);
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [chosen, setChosen] = useState(null);
   const [finished, setFinished] = useState(false);
   const [showRegistration, setShowRegistration] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
+  const timerRef = useRef(null);
 
   // Shuffle questions + options ONCE when quiz starts
   const shuffledQuestions = useMemo(() => {
@@ -44,13 +47,43 @@ const QuizBlock = ({
   const passed = score >= minPass;
   const pct = started && finished ? Math.round((score / questions.length) * 100) : 0;
 
+  // Finish quiz when timer expires
+  const finishByTimeout = useCallback(() => {
+    setFinished(true);
+  }, []);
+
+  // Timer countdown
+  useEffect(() => {
+    if (started && !finished) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            finishByTimeout();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timerRef.current);
+    }
+  }, [started, finished, finishByTimeout]);
+
+  const formatTime = (s) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  };
+
   const reset = () => {
+    clearInterval(timerRef.current);
     setStarted(false);
     setQIdx(0);
     setScore(0);
     setChosen(null);
     setFinished(false);
     setShowRegistration(false);
+    setTimeLeft(TIMER_SECONDS);
   };
 
   const handleAnswer = (i) => {
@@ -76,6 +109,7 @@ const QuizBlock = ({
           <strong style={{ color: '#fff' }}>{questions.length} preguntas</strong> — Necesitás{' '}
           <strong style={{ color: accentColor }}>{minPass}/{questions.length} ({Math.round(minPass / questions.length * 100)}%)</strong> para aprobar.
           <br />Las preguntas y opciones aparecerán en orden aleatorio.
+          <br /><span style={{ color: '#f59e0b', fontWeight: 700 }}>⏱ Tiempo máximo: 10 minutos</span>
         </div>
         <button
           onClick={() => setStarted(true)}
@@ -102,9 +136,19 @@ const QuizBlock = ({
             <h3 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '0.5rem' }}>
               {score} / {questions.length}
             </h3>
-            <div style={{ fontSize: '1.5rem', color: passed ? '#22c55e' : '#f59e0b', fontWeight: 700, marginBottom: '2rem' }}>
+            <div style={{ fontSize: '1.5rem', color: passed ? '#22c55e' : '#f59e0b', fontWeight: 700, marginBottom: '0.5rem' }}>
               {pct}% — {passed ? '¡APROBADO!' : 'NECESITÁS REPASAR'}
             </div>
+            {timeLeft === 0 && (
+              <div style={{ color: '#ef4444', fontSize: '0.9rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+                ⏱ Se agotó el tiempo (10 min)
+              </div>
+            )}
+            {timeLeft > 0 && finished && (
+              <div style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                Tiempo utilizado: {formatTime(TIMER_SECONDS - timeLeft)} de 10:00
+              </div>
+            )}
 
             {passed ? (
               /* ── Passed: decision panel ── */
@@ -189,8 +233,11 @@ const QuizBlock = ({
   return (
     <div style={{ maxWidth: '850px', margin: '0 auto' }}>
       {/* Progress */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', color: accentColor, fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: accentColor, fontWeight: 900, fontSize: '0.9rem', letterSpacing: '1px', flexWrap: 'wrap', gap: '0.5rem' }}>
         <span>PREGUNTA {qIdx + 1} / {shuffledQuestions.length}</span>
+        <span style={{ color: timeLeft <= 60 ? '#ef4444' : timeLeft <= 180 ? '#f59e0b' : '#94a3b8', fontWeight: 900, fontFamily: 'monospace', fontSize: '1rem' }}>
+          ⏱ {formatTime(timeLeft)}
+        </span>
         <span>CORRECTAS: {score}</span>
       </div>
       {/* Progress bar */}

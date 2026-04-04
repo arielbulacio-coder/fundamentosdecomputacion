@@ -187,14 +187,73 @@ const LogicaDigital = () => {
           </div>
         </section>
 
+        {/* Tablas de Verdad completas */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Layers size={40} color="#f59e0b" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Tablas de Verdad de las Compuertas</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '750px', margin: '0.5rem auto 0' }}>
+              Cada tabla muestra todas las combinaciones posibles de entrada y su resultado. Para n entradas hay 2<sup>n</sup> filas.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            {[
+              { name: 'AND (Y)', symbol: 'A · B', color: '#f59e0b', desc: 'Solo da 1 si TODAS las entradas son 1.', rows: [[0,0,0],[0,1,0],[1,0,0],[1,1,1]] },
+              { name: 'OR (O)', symbol: 'A + B', color: '#3b82f6', desc: 'Da 1 si AL MENOS UNA entrada es 1.', rows: [[0,0,0],[0,1,1],[1,0,1],[1,1,1]] },
+              { name: 'NOT (NO)', symbol: "A'", color: '#ef4444', desc: 'Invierte la entrada: 0→1 y 1→0.', rows: [[0,1],[1,0]], single: true },
+              { name: 'XOR (O Excl.)', symbol: 'A ⊕ B', color: '#8b5cf6', desc: 'Da 1 solo si las entradas son DIFERENTES.', rows: [[0,0,0],[0,1,1],[1,0,1],[1,1,0]] },
+              { name: 'NAND', symbol: '(A · B)\'', color: '#ec4899', desc: 'Inversa de AND. Compuerta UNIVERSAL.', rows: [[0,0,1],[0,1,1],[1,0,1],[1,1,0]] },
+              { name: 'NOR', symbol: '(A + B)\'', color: '#10b981', desc: 'Inversa de OR. También UNIVERSAL.', rows: [[0,0,1],[0,1,0],[1,0,0],[1,1,0]] },
+            ].map((gate, gi) => (
+              <div key={gi} style={{ background: '#111', borderRadius: '25px', border: `2px solid ${gate.color}30`, overflow: 'hidden' }}>
+                <div style={{ background: `${gate.color}15`, padding: '1.25rem 1.5rem', borderBottom: `1px solid ${gate.color}30` }}>
+                  <h3 style={{ margin: 0, fontWeight: 900, color: gate.color, fontSize: '1.15rem' }}>{gate.name}</h3>
+                  <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '0.25rem' }}>Expresión: <strong style={{ color: '#fff' }}>{gate.symbol}</strong></div>
+                </div>
+                <div style={{ padding: '1rem 1.5rem' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem' }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', borderBottom: '1px solid #1e293b', letterSpacing: '1px' }}>A</th>
+                        {!gate.single && <th style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', borderBottom: '1px solid #1e293b', letterSpacing: '1px' }}>B</th>}
+                        <th style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 800, color: gate.color, borderBottom: '1px solid #1e293b', letterSpacing: '1px' }}>Salida</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {gate.rows.map((row, ri) => (
+                        <tr key={ri}>
+                          <td style={{ padding: '0.4rem', textAlign: 'center', fontWeight: 700, color: row[0] ? '#f59e0b' : '#475569', fontFamily: 'monospace', fontSize: '1rem' }}>{row[0]}</td>
+                          {!gate.single && <td style={{ padding: '0.4rem', textAlign: 'center', fontWeight: 700, color: row[1] ? '#f59e0b' : '#475569', fontFamily: 'monospace', fontSize: '1rem' }}>{row[1]}</td>}
+                          <td style={{ padding: '0.4rem', textAlign: 'center', fontWeight: 900, fontSize: '1.1rem', color: row[gate.single ? 1 : 2] ? '#22c55e' : '#ef4444' }}>
+                            {row[gate.single ? 1 : 2]}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p style={{ color: '#64748b', fontSize: '0.8rem', lineHeight: 1.5, margin: 0 }}>{gate.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: '#0f172a', border: '1.5px solid #f59e0b30', borderRadius: '20px', padding: '1.5rem 2rem', marginTop: '2rem', textAlign: 'center' }}>
+            <p style={{ margin: 0, color: '#f59e0b', fontWeight: 800, fontSize: '0.95rem' }}>
+              💡 Dato clave: Con 2 entradas hay 2² = 4 filas posibles. Con 3 entradas serían 2³ = 8 filas. La fórmula general es 2<sup>n</sup> combinaciones.
+            </p>
+          </div>
+        </section>
+
         {/* Teoría Ampliada: El mundo digital */}
         <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-           <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>De la de Lógica al Hardware</h2>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+           <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>De la Lógica al Hardware</h2>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
               {[
-                { Icon: Cpu, color: '#f59e0b', title: 'Álgebra de Boole', desc: 'La matemática del 0 y 1. Claude Shannon demostró en 1937 que los circuitos de relés podían realizar cualquier operación lógica compleja.' },
-                { Icon: Layers, color: '#ef4444', title: 'Tablas de Verdad', desc: 'Mapean cada combinación posible de entradas con su salida única. Define el comportamiento exacto de un componente digital.' },
-                { Icon: Smartphone, color: '#3b82f6', title: 'Compuertas Universales', desc: 'Las NAND y NOR pueden simular a todas las demás. Usando solo NANDs se puede construir una CPU completa.' }
+                { Icon: Cpu, color: '#f59e0b', title: 'Álgebra de Boole', desc: 'La matemática del 0 y 1. Claude Shannon demostró en 1937 que los circuitos de relés podían realizar cualquier operación lógica compleja. Las 3 operaciones básicas son AND (conjunción, símbolo ·), OR (disyunción, símbolo +) y NOT (negación, símbolo \').' },
+                { Icon: Layers, color: '#ef4444', title: 'Tablas de Verdad', desc: 'Mapean cada combinación posible de entradas con su salida única. Define el comportamiento exacto de un componente digital. Para n entradas, la tabla tendrá 2^n filas. Son la herramienta fundamental para diseñar y verificar circuitos.' },
+                { Icon: Smartphone, color: '#3b82f6', title: 'Compuertas Universales', desc: 'Las NAND y NOR pueden simular a todas las demás. Usando solo NANDs se puede construir una CPU completa. Esto las hace fundamentales en el diseño de circuitos VLSI (Very Large Scale Integration).' },
+                { Icon: Zap, color: '#22c55e', title: 'Sumador Completo (Full Adder)', desc: 'Un circuito que suma 3 bits: dos operandos (A, B) y un acarreo de entrada (Cin). Produce un bit de suma (S) y un acarreo de salida (Cout). Es el bloque elemental de la ALU (Unidad Aritmético Lógica) del procesador.' },
+                { Icon: Settings, color: '#a855f7', title: 'Multiplexor (MUX)', desc: 'Selector digital que elige una de varias entradas para enviarla a una sola salida, controlado por líneas de selección. Un MUX de 4:1 usa 2 bits de selección para elegir entre 4 entradas de datos. Se usa en buses de datos y memoria.' },
+                { Icon: Info, color: '#ec4899', title: 'Flip-Flop y Registros', desc: 'Un Flip-Flop es un circuito secuencial con memoria que guarda 1 bit. A diferencia de las compuertas combinacionales, su salida depende también del estado anterior. 8 Flip-Flops juntos forman un registro de 8 bits (1 byte). Son la base de las memorias SRAM (caché).' },
               ].map((item, i) => (
                 <div key={i} style={{ background: '#0f172a', padding: '2.5rem', borderRadius: '35px', border: '1px solid rgba(255,255,255,0.04)' }}>
                    <item.Icon size={32} color={item.color} style={{ marginBottom: '1.25rem' }} />
@@ -205,8 +264,28 @@ const LogicaDigital = () => {
            </div>
         </section>
 
+        {/* Teoría: Conceptos adicionales para la evaluación */}
+        <section style={{ marginBottom: '6rem', background: '#0f172a', padding: '4rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(245,158,11,0.15)' }}>
+          <h2 style={{ fontSize: '2.2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900, color: '#f59e0b' }}>Conceptos Avanzados</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+            {[
+              { title: 'Mapa de Karnaugh', color: '#3b82f6', text: 'Herramienta visual para simplificar funciones lógicas. Se agrupan los 1s adyacentes en la cuadrícula para encontrar la expresión booleana mínima, reduciendo la cantidad de compuertas necesarias en un circuito.' },
+              { title: 'Lógica Tristate', color: '#22c55e', text: 'Añade un tercer estado: "Alta Impedancia" (Z), que equivale a un circuito abierto. Permite que varios dispositivos compartan un mismo bus de datos, desconectándose eléctricamente cuando no transmiten.' },
+              { title: 'Lógica Negativa (Active Low)', color: '#ef4444', text: 'En ciertos circuitos el "1 lógico" se representa con 0 Volts (GND). Se usa en señales de control como Reset, Chip Select y habilitación de memoria. Se indica con una barra sobre el nombre (e.g. CS̄).' },
+              { title: 'Decodificador (Decoder)', color: '#a855f7', text: 'Convierte un código binario de n bits en una de 2^n salidas activas. Un decodificador de 3 a 8 toma 3 bits de entrada y activa exactamente 1 de 8 líneas. Se usa para seleccionar celdas de memoria o registros del CPU.' },
+              { title: 'Circuito Combinacional vs Secuencial', color: '#ec4899', text: 'Un combinacional produce salida basada solo en las entradas actuales (sin memoria). Un secuencial tiene Flip-Flops que guardan estado y su salida depende también de la historia previa. Los contadores y registros son secuenciales.' },
+              { title: 'Retardo de Propagación', color: '#f59e0b', text: 'Es el tiempo que tarda la salida de una compuerta en cambiar después de que cambia la entrada. Es el límite físico de velocidad del procesador. A mayor frecuencia de reloj, menor es el margen para este retardo.' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: '#1e293b', padding: '2rem', borderRadius: '25px', borderLeft: `5px solid ${item.color}` }}>
+                <h4 style={{ margin: '0 0 0.75rem', fontWeight: 800, color: item.color, fontSize: '1.1rem' }}>{item.title}</h4>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.9rem', margin: 0 }}>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section style={{ marginBottom: '6rem' }}>
-           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', alignItems: 'center' }}>
               <img src="/assets/digital_logic_gates_neon_1775235547550.png" alt="Logic Gates Diagram" style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} />
               <div>
                  <h2 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '2rem' }}>Jerarquía de Abstracción</h2>

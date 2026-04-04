@@ -435,6 +435,29 @@ const SistemaOperativo = () => {
         {/* Simulador Round Robin */}
         <SchedulerSimulator />
 
+        {/* Teoría Ampliada: Conceptos para la evaluación */}
+        <section style={{ marginBottom: '6rem', background: '#0f172a', padding: '4rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(147,51,234,0.15)' }}>
+          <h2 style={{ fontSize: '2.2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900, color: '#9333ea' }}>Conceptos Ampliados del SO</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+            {[
+              { title: 'Proceso vs Hilo (Thread)', color: '#3b82f6', text: 'Un proceso es un programa en ejecución con su propia memoria aislada. Un hilo es la unidad de ejecución más pequeña dentro de un proceso. Un navegador web, por ejemplo, usa un proceso principal y múltiples hilos para pestañas, renderizado y red simultáneamente.' },
+              { title: 'Multitarea y Planificación', color: '#9333ea', text: 'El SO alterna rápidamente entre procesos (Context Switch) dando la ilusión de que todos corren al mismo tiempo. El algoritmo Round Robin asigna "quantums" de tiempo fijos a cada proceso. FCFS (First Come First Served) ejecuta en orden de llegada. SJF (Shortest Job First) prioriza el más corto.' },
+              { title: 'Sistema de Archivos', color: '#10b981', text: 'Es la estructura que organiza datos en el disco. NTFS (Windows) soporta permisos y archivos grandes. FAT32 es compatible con todo pero limita archivos a 4 GB. ext4 (Linux) es robusto y eficiente. Cada uno define cómo se nombran, almacenan y recuperan los archivos.' },
+              { title: 'Shell e Interfaces', color: '#f59e0b', text: 'La Shell es el intérprete de comandos entre el usuario y el Kernel. CLI (Command Line Interface) usa solo texto — ej: Bash en Linux, CMD/PowerShell en Windows. GUI (Graphical User Interface) usa ventanas, botones e iconos. Los administradores de sistemas prefieren CLI por su potencia.' },
+              { title: 'Drivers (Controladores)', color: '#ec4899', text: 'Software especializado que traduce las instrucciones genéricas del SO al lenguaje específico de cada dispositivo hardware (impresora, GPU, teclado). Sin el driver correcto, el SO no puede comunicarse con el dispositivo aunque esté físicamente conectado.' },
+              { title: 'Interrupción y Spooling', color: '#ef4444', text: 'Una interrupción (Trap) es una señal que detiene la CPU para atender algo urgente: error de división por cero, petición de E/S o System Call. El Spooling almacena trabajos en cola (ej: cola de impresión) para que la CPU no espere a dispositivos lentos.' },
+              { title: 'Kernel Monolítico vs Micro', color: '#64748b', text: 'Monolítico (Linux): todos los servicios del SO viven en el espacio del Kernel — muy rápido pero un bug en un driver puede crashear todo. Microkernel (Minix): el Kernel solo maneja lo esencial y los servicios corren en Modo Usuario — más estable pero más lento por la comunicación entre procesos.' },
+              { title: 'RTOS (Tiempo Real)', color: '#a855f7', text: 'Un Sistema Operativo de Tiempo Real garantiza respuestas dentro de plazos estrictos. Se usa en frenos ABS de autos, controladores de vuelo, equipos médicos y satélites. Un retraso de milisegundos puede ser catastrófico en estos sistemas, a diferencia de un SO de escritorio.' },
+              { title: 'Buffering y E/S', color: '#22c55e', text: 'El buffering almacena datos intermedios en RAM para sincronizar dispositivos de diferente velocidad. Cuando ves un video en streaming, el buffer carga datos por adelantado para que la reproducción no se detenga. El SO gestiona estos buffers para todas las operaciones de Entrada/Salida.' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: '#1e293b', padding: '2rem', borderRadius: '25px', borderLeft: `5px solid ${item.color}` }}>
+                <h4 style={{ margin: '0 0 0.75rem', fontWeight: 800, color: item.color, fontSize: '1.1rem' }}>{item.title}</h4>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.9rem', margin: 0 }}>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <RepasoClave
           accentColor="#9333ea"
           title="Sistemas Operativos"

@@ -487,6 +487,29 @@ const Memoria = () => {
         {/* Simulador de Caché */}
         <CacheSimulator />
 
+        {/* Teoría Ampliada: Conceptos para la evaluación */}
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '4rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(168,85,247,0.15)' }}>
+          <h2 style={{ fontSize: '2.2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900, color: '#a855f7' }}>Conceptos Profundos de Memoria</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+            {[
+              { title: 'SRAM vs DRAM', color: '#ec4899', text: 'SRAM (Static RAM) no necesita refresco constante, es ultra rápida (~2ns) pero cara y de baja capacidad — se usa en las Cachés L1/L2/L3. DRAM (Dynamic RAM) requiere refrescarse miles de veces por segundo, es más lenta (~100ns) pero barata y de gran capacidad — es la RAM convencional (DDR).' },
+              { title: 'DDR5 y Ancho de Banda', color: '#3b82f6', text: 'DDR5 es la última generación de RAM, con velocidades de transferencia de 50-100 GB/s. El "ancho de banda" depende del bus de datos: un bus de 64 bits puede mover 8 bytes simultáneamente por ciclo de reloj. Más módulos en Dual Channel duplican el rendimiento.' },
+              { title: 'Memoria ECC', color: '#22c55e', text: 'Error Correcting Code: detecta y corrige automáticamente errores de bits causados por interferencias electromagnéticas o rayos cósmicos. Se usa en servidores y estaciones de trabajo críticas donde un error de 1 bit podría corromper datos financieros o científicos.' },
+              { title: 'VRAM (Video RAM)', color: '#f59e0b', text: 'Memoria dedicada de la GPU (tarjeta de video). Almacena texturas, buffers de pantalla y frames durante el renderizado. Las GPUs modernas tienen 8-24 GB de VRAM GDDR6X con anchos de banda de hasta 1 TB/s para manejar gráficos 3D y IA.' },
+              { title: 'NVMe y Almacenamiento', color: '#8b5cf6', text: 'NVMe (Non-Volatile Memory Express) es un protocolo que permite a los SSDs comunicarse directamente con la CPU a través del bus PCIe, eliminando el cuello de botella del SATA antiguo. Un SSD NVMe puede leer a 7 GB/s vs los 0.5 GB/s de un SATA.' },
+              { title: 'Memory Leak (Fuga)', color: '#ef4444', text: 'Ocurre cuando un programa reserva memoria RAM y nunca la libera. Con el tiempo, la RAM se agota y el sistema se vuelve lento o se cuelga. Es un bug de software común en lenguajes sin recolector de basura automático (C, C++).' },
+              { title: 'Page Fault y MMU', color: '#a855f7', text: 'Cuando el CPU busca un dato en RAM y no lo encuentra (está en disco), ocurre un Page Fault. La MMU (Memory Management Unit) traduce direcciones lógicas a físicas y gestiona permisos. El SO entonces carga la página faltante desde el archivo de paginación (swap).' },
+              { title: 'Latencia de Memoria', color: '#10b981', text: 'Es el tiempo que tarda la memoria en responder a una solicitud. Se mide en nanosegundos (ns) o en ciclos CAS (Column Address Strobe). A menor latencia, más rápido fluyen los datos hacia el procesador. DDR5 tiene mayor frecuencia pero también mayor latencia absoluta.' },
+              { title: 'ROM, EEPROM y Flash', color: '#64748b', text: 'ROM (Read Only Memory) es no volátil: no pierde datos sin electricidad. EEPROM puede borrarse y reescribirse eléctricamente. La memoria Flash (usada en pendrives y SSDs) es un tipo de EEPROM más rápida y densa. El chip BIOS/UEFI de la placa madre usa Flash.' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: '#0f172a', padding: '2rem', borderRadius: '25px', borderLeft: `5px solid ${item.color}` }}>
+                <h4 style={{ margin: '0 0 0.75rem', fontWeight: 800, color: item.color, fontSize: '1.1rem' }}>{item.title}</h4>
+                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.9rem', margin: 0 }}>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <RepasoClave
           accentColor="#a855f7"
           title="Jerarquía de Memoria"

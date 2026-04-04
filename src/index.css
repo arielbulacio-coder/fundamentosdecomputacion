@@ -41,3 +41,50 @@ button {
 .fade-in {
   animation: fadeIn 0.5s ease forwards;
 }
+
+/* ── Mobile responsive overrides ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Prevent horizontal overflow on all pages */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Force all grid containers to single column on narrow screens */
+  [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce padding on large containers */
+  section > div[style*="padding: 4rem"],
+  section > div[style*="padding: 5rem"] {
+    padding: 1.5rem !important;
+    border-radius: 25px !important;
+  }
+
+  /* 2-col image+text grids → stack */
+  .mobile-stack {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Prevent fixed-width images from overflowing */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Ensure quiz buttons don't overflow */
+  button {
+    max-width: 100%;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Even smaller screens */
+  h1 {
+    font-size: clamp(1.5rem, 7vw, 2.5rem) !important;
+  }
+  h2 {
+    font-size: clamp(1.3rem, 5vw, 2rem) !important;
+  }
+}
