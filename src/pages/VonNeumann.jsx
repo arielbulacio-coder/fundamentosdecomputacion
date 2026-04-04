@@ -265,6 +265,72 @@ const VonNeumann = () => {
           </div>
         </section>
 
+        {/* Los 3 Buses */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Los 3 Buses del Sistema</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '700px', margin: '0.5rem auto 0' }}>
+              Los buses son las autopistas de datos del hardware. Von Neumann utiliza tres canales distintos para coordinar todo el flujo de información.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            {[
+              {
+                name: 'Bus de Datos', color: '#3b82f6', icon: '↔️', dir: 'Bidireccional',
+                bits: '8 / 16 / 32 / 64 bits',
+                desc: 'Transporta los datos e instrucciones reales entre la CPU, la Memoria y los dispositivos de E/S. Es bidireccional: la CPU tanto lee como escribe por él.',
+                ejemplos: ['Instrucción que viene de RAM', 'Resultado de la ALU', 'Dato guardado en RAM'],
+                analogia: 'El contenido que circula por la autopista.'
+              },
+              {
+                name: 'Bus de Direcciones', color: '#10b981', icon: '→', dir: 'Unidireccional (CPU → Memoria)',
+                bits: '32 bits = 4 GB / 64 bits = 16 EB',
+                desc: 'Indica la dirección de la celda de memoria que se quiere leer o escribir. Solo la CPU pone información en este bus (unidireccional). Su ancho determina cuánta RAM puede direccionar el sistema.',
+                ejemplos: ['CPU dice: "quiero la dirección 0x004A"', 'Determina el espacio de memoria total', '32 bits → máx 4 GB de RAM'],
+                analogia: 'El número de la dirección postal.'
+              },
+              {
+                name: 'Bus de Control', color: '#f59e0b', icon: '⚡', dir: 'Bidireccional (señales)',
+                bits: 'Señales individuales (1 bit cada una)',
+                desc: 'Lleva las señales de sincronización y mando que coordinan todo el sistema: lectura/escritura, reloj, interrupciones, reset. Sin él, los demás buses no sabrían qué hacer con los datos.',
+                ejemplos: ['READ / WRITE (leer o escribir)', 'CLOCK (sincronización del sistema)', 'IRQ (petición de interrupción)', 'RESET (reinicio del sistema)'],
+                analogia: 'Las señales de tráfico que regulan la autopista.'
+              }
+            ].map((bus, i) => (
+              <div key={i} style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '40px', border: `2px solid ${bus.color}30` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                  <span style={{ fontSize: '2rem' }}>{bus.icon}</span>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 900, color: bus.color }}>{bus.name}</h3>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>{bus.dir}</span>
+                  </div>
+                </div>
+                <div style={{ background: `${bus.color}15`, padding: '0.5rem 1rem', borderRadius: '10px', marginBottom: '1.25rem', fontSize: '0.8rem', fontWeight: 800, color: bus.color }}>
+                  Ancho: {bus.bits}
+                </div>
+                <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '1.25rem' }}>{bus.desc}</p>
+                <div style={{ display: 'grid', gap: '0.5rem', marginBottom: '1rem' }}>
+                  {bus.ejemplos.map((ej, j) => (
+                    <div key={j} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                      <span style={{ color: bus.color, marginTop: '2px' }}>›</span>
+                      <span style={{ color: '#64748b', fontSize: '0.82rem' }}>{ej}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background: '#0f172a', padding: '0.75rem 1rem', borderRadius: '12px', borderLeft: `3px solid ${bus.color}` }}>
+                  <span style={{ fontSize: '0.8rem', color: '#475569', fontStyle: 'italic' }}>Analogía: </span>
+                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{bus.analogia}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '2rem', background: '#1e293b', padding: '1.5rem 2rem', borderRadius: '20px', borderLeft: '4px solid #ef4444' }}>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.95rem' }}>
+              <strong style={{ color: '#ef4444' }}>Cuello de botella:</strong> En Von Neumann, el Bus de Datos es compartido por instrucciones y datos. Mientras la CPU busca la siguiente instrucción, no puede leer un dato (y viceversa). Harvard resuelve esto con buses físicamente separados.
+            </p>
+          </div>
+        </section>
+
         <RepasoClave
           accentColor="#3b82f6"
           title="Conceptos Fundamentales de Arquitectura"

@@ -77,6 +77,103 @@ const DEFAULT_PROCESSES = [
   { name: 'P4', burst: 2 },
 ];
 
+const RING_LAYERS = [
+  { ring: 'Ring 0', name: 'Kernel', color: '#9333ea', bg: '#9333ea15', icon: '⚛️', desc: 'Acceso total al hardware. Ejecuta drivers, gestiona interrupciones, controla la MMU y el scheduler. Un bug aquí cuelga todo el sistema.' , ejemplos: ['Controladores de disco', 'Gestión de memoria física', 'Manejo de interrupciones', 'Scheduler de procesos'] },
+  { ring: 'Ring 1-2', name: 'SO — Servicios', color: '#4f46e5', bg: '#4f46e515', icon: '🔧', desc: 'En la práctica, la mayoría de los SO modernos (Linux, Windows) usan solo Ring 0 y Ring 3. Los rings intermedios fueron diseñados para hipervisores y virtualización.' , ejemplos: ['Hipervisores (VMware, Hyper-V)', 'Algunos drivers en VMs', 'En Linux/Win: raramente usados'] },
+  { ring: 'Ring 3', name: 'Aplicaciones de Usuario', color: '#3b82f6', bg: '#3b82f615', icon: '👤', desc: 'Todo el software de usuario. No tiene acceso directo al hardware. Debe pedir servicios al Kernel mediante System Calls. Un crash aquí solo mata esa app.' , ejemplos: ['Tu navegador Chrome', 'Microsoft Word', 'Spotify, Photoshop', 'Cualquier app que descargás'] },
+];
+
+const SYSCALLS = [
+  { label: '📂 Abrir archivo', steps: ['App llama a open("/foto.jpg")', 'System Call → crossing Ring 3→0', 'Kernel verifica permisos en el filesystem', 'Kernel solicita datos al controlador de disco', '← Devuelve descriptor de archivo a la app'] },
+  { label: '🌐 Leer de red', steps: ['App llama a recv(socket)', 'System Call → crossing Ring 3→0', 'Kernel consulta el buffer de red', 'Driver de NIC mueve datos a RAM (DMA)', '← Devuelve bytes recibidos a la app'] },
+  { label: '🖥️ Mostrar ventana', steps: ['App llama a DrawWindow()', 'System Call → crossing Ring 3→0', 'Kernel envía comandos al driver de video', 'GPU actualiza el framebuffer en VRAM', '← Confirma renderizado'] },
+];
+
+const ModoRingSim = () => {
+  const [selectedRing, setSelectedRing] = useState(null);
+  const [selectedCall, setSelectedCall] = useState(null);
+  const [showCallSteps, setShowCallSteps] = useState(false);
+
+  const handleCall = (i) => {
+    setSelectedCall(i);
+    setShowCallSteps(true);
+    setTimeout(() => setShowCallSteps(false), 4000);
+  };
+
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
+        {/* Diagrama de Rings */}
+        <div>
+          <h3 style={{ fontWeight: 900, marginBottom: '1.5rem', color: '#94a3b8', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Anillos de Privilegio</h3>
+          <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {RING_LAYERS.map((r, i) => (
+              <div key={i} onClick={() => setSelectedRing(selectedRing === i ? null : i)}
+                style={{ padding: `${1.5 + i * 0.3}rem 1.5rem`, borderRadius: '20px', border: `2px solid`, cursor: 'pointer', transition: '0.3s',
+                  borderColor: selectedRing === i ? r.color : `${r.color}40`,
+                  background: selectedRing === i ? r.bg : '#1e293b',
+                  borderLeft: `5px solid ${r.color}` }}>
+                <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', gap: '1rem' }}>
+                  <span style={{ fontSize: '1.5rem' }}>{r.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 900, color: r.color, letterSpacing: '1px' }}>{r.ring}</span>
+                      <span style={{ fontWeight: 900, fontSize: '1rem' }}>{r.name}</span>
+                    </div>
+                    {selectedRing === i && (
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, margin: '0 0 0.75rem' }}>{r.desc}</p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                          {r.ejemplos.map((ej, j) => <span key={j} style={{ background: `${r.color}20`, color: r.color, borderRadius: '8px', padding: '2px 10px', fontSize: '0.75rem', fontWeight: 700 }}>{ej}</span>)}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <span style={{ color: '#475569', fontSize: '0.8rem' }}>{selectedRing === i ? '▲' : '▼'}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '1rem', background: '#1e293b', padding: '1rem 1.5rem', borderRadius: '15px', borderLeft: '4px solid #ef4444' }}>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.82rem' }}>
+              <strong style={{ color: '#ef4444' }}>Clave:</strong> Linux y Windows usan solo Ring 0 (kernel) y Ring 3 (apps). Un programa de usuario <em>nunca</em> puede acceder directamente al hardware — debe pasar por una System Call.
+            </p>
+          </div>
+        </div>
+
+        {/* System Call Simulator */}
+        <div>
+          <h3 style={{ fontWeight: 900, marginBottom: '1.5rem', color: '#94a3b8', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Simulador de System Call</h3>
+          <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.5rem' }}>Elegí una acción de usuario y mirá cómo cruza la frontera hacia el Kernel:</p>
+          <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+            {SYSCALLS.map((sc, i) => (
+              <button key={i} onClick={() => handleCall(i)} style={{
+                padding: '1rem 1.5rem', borderRadius: '15px', border: '2px solid',
+                borderColor: selectedCall === i ? '#9333ea' : '#1e293b',
+                background: selectedCall === i ? '#9333ea20' : '#1e293b',
+                color: '#f8fafc', cursor: 'pointer', fontWeight: 800, textAlign: 'left', fontSize: '0.95rem'
+              }}>{sc.label}</button>
+            ))}
+          </div>
+          {selectedCall !== null && (
+            <div style={{ background: '#1e293b', padding: '1.5rem', borderRadius: '20px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {SYSCALLS[selectedCall].steps.map((step, j) => (
+                  <motion.div key={j} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: j * 0.15 }}
+                    style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                    <span style={{ color: j === 1 ? '#ef4444' : j === SYSCALLS[selectedCall].steps.length - 1 ? '#10b981' : '#9333ea', fontWeight: 900, minWidth: '20px', fontSize: '0.9rem' }}>{j === 1 ? '⚡' : j === SYSCALLS[selectedCall].steps.length - 1 ? '✓' : `${j+1}.`}</span>
+                    <span style={{ color: j === 1 ? '#ef4444' : j === SYSCALLS[selectedCall].steps.length - 1 ? '#10b981' : '#94a3b8', fontSize: '0.85rem', fontWeight: j === 1 ? 800 : 400 }}>{step}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SchedulerSimulator = () => {
   const [processes, setProcesses] = useState(
     DEFAULT_PROCESSES.map((p, i) => ({ ...p, color: PROCESS_COLORS[i] }))
@@ -322,6 +419,17 @@ const SistemaOperativo = () => {
                  <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
               </div>
            </div>
+        </section>
+
+        {/* Modo Usuario vs Kernel */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Anillos de Privilegio: Modo Kernel vs Usuario</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '750px', margin: '0.5rem auto 0' }}>
+              Los procesadores modernos implementan niveles de privilegio (rings) para aislar el SO de las aplicaciones. Hacé clic en cada ring o simulá una System Call para ver cómo funciona el puente entre ambos mundos.
+            </p>
+          </div>
+          <ModoRingSim />
         </section>
 
         {/* Simulador Round Robin */}

@@ -28,6 +28,146 @@ const MEM_QUESTS = [
   { q: '¿Qué significa que la memoria ROM sea "no volátil"?', opts: ['Que puede explotar', 'Que no pierde su contenido al quitar la alimentación eléctrica', 'Que es líquida', 'Que vuela muy rápido'], a: 1, exp: 'Es ideal para guardar el BIOS o el firmware de control.' }
 ];
 
+// ─── Memoria Virtual Simulator ────────────────────────────────────────────────
+const PAGES = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'];
+const RAM_FRAMES = 4;
+
+const VirtualMemSim = () => {
+  const [ramSlots, setRamSlots] = useState([null, null, null, null]); // null = empty
+  const [swapSlots, setSwapSlots] = useState(['P4', 'P5', 'P6', 'P7']); // pages initially on disk
+  const [log, setLog] = useState([]);
+  const [pageFaults, setPageFaults] = useState(0);
+  const [pageHits, setPageHits] = useState(0);
+  const [useOrder, setUseOrder] = useState([]); // LRU tracking
+  const requestPage = (page) => {
+    const ramIdx = ramSlots.findIndex(s => s === page);
+    if (ramIdx !== -1) {
+      // Page HIT
+      setPageHits(h => h + 1);
+      setUseOrder(prev => [...prev.filter(p => p !== page), page]);
+      setLog(l => [{ type: 'HIT', page, msg: `✓ Página ${page} encontrada en RAM (Frame ${ramIdx}). Tiempo: ~100ns`, id: Date.now() }, ...l].slice(0, 7));
+    } else {
+      // Page FAULT
+      setPageFaults(f => f + 1);
+      const emptyIdx = ramSlots.findIndex(s => s === null);
+      if (emptyIdx !== -1) {
+        // Free slot available
+        const newRam = [...ramSlots];
+        newRam[emptyIdx] = page;
+        setRamSlots(newRam);
+        setSwapSlots(prev => prev.filter(p => p !== page));
+        setUseOrder(prev => [...prev, page]);
+        setLog(l => [{ type: 'FAULT', page, msg: `⚠ Page Fault: ${page} cargada desde disco a Frame ${emptyIdx}. Tiempo: ~5ms (50.000× más lento!)`, id: Date.now() }, ...l].slice(0, 7));
+      } else {
+        // LRU eviction
+        const lruPage = useOrder[0];
+        const lruIdx = ramSlots.findIndex(s => s === lruPage);
+        const newRam = [...ramSlots];
+        newRam[lruIdx] = page;
+        setRamSlots(newRam);
+        setSwapSlots(prev => {
+          const next = prev.filter(p => p !== page);
+          if (lruPage) next.push(lruPage);
+          return next;
+        });
+        setUseOrder(prev => [...prev.filter(p => p !== lruPage && p !== page), page]);
+        setLog(l => [{ type: 'FAULT', page, evicted: lruPage, msg: `⚠ Page Fault: ${lruPage} desalojada (LRU) → disco. ${page} cargada en Frame ${lruIdx}. Tiempo: ~5ms`, id: Date.now() }, ...l].slice(0, 7));
+      }
+    }
+  };
+
+  const reset = () => { setRamSlots([null, null, null, null]); setSwapSlots(['P4', 'P5', 'P6', 'P7']); setLog([]); setPageFaults(0); setPageHits(0); setUseOrder([]); };
+
+  const total = pageFaults + pageHits;
+  const hitRate = total > 0 ? Math.round(pageHits / total * 100) : 0;
+
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
+        {/* RAM */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <span style={{ fontSize: '1.2rem' }}>⚡</span>
+            <h4 style={{ margin: 0, color: '#a855f7', fontWeight: 900 }}>RAM Física (4 Frames)</h4>
+            <span style={{ fontSize: '0.7rem', color: '#64748b', background: '#1e293b', padding: '2px 8px', borderRadius: '6px' }}>~100ns</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            {ramSlots.map((slot, i) => (
+              <div key={i} style={{ background: slot ? '#a855f720' : '#1e293b', border: `2px solid ${slot ? '#a855f7' : '#334155'}`, borderRadius: '15px', padding: '1.25rem', textAlign: 'center', minHeight: '70px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: '0.3s' }}>
+                <div style={{ fontSize: '0.65rem', color: '#64748b', marginBottom: '0.3rem' }}>Frame {i}</div>
+                <div style={{ fontWeight: 900, fontSize: '1.1rem', color: slot ? '#a855f7' : '#334155' }}>{slot || '—'}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Disco/Swap */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <span style={{ fontSize: '1.2rem' }}>💾</span>
+            <h4 style={{ margin: 0, color: '#64748b', fontWeight: 900 }}>Disco / Swap</h4>
+            <span style={{ fontSize: '0.7rem', color: '#64748b', background: '#1e293b', padding: '2px 8px', borderRadius: '6px' }}>~5ms</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            {Array.from({ length: 4 }, (_, i) => swapSlots[i] || null).map((slot, i) => (
+              <div key={i} style={{ background: '#1e293b', border: '2px solid #334155', borderRadius: '15px', padding: '1.25rem', textAlign: 'center', minHeight: '70px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: slot ? 0.7 : 0.3 }}>
+                <div style={{ fontSize: '0.65rem', color: '#64748b', marginBottom: '0.3rem' }}>Swap {i}</div>
+                <div style={{ fontWeight: 900, fontSize: '1.1rem', color: '#64748b' }}>{slot || '—'}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div>
+          <h4 style={{ margin: '0 0 1rem', color: '#94a3b8', fontWeight: 900 }}>Estadísticas</h4>
+          <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+            {[{ label: 'Page Hits', val: pageHits, color: '#10b981' }, { label: 'Page Faults', val: pageFaults, color: '#ef4444' }, { label: 'Hit Rate', val: `${hitRate}%`, color: hitRate >= 70 ? '#10b981' : hitRate >= 40 ? '#f59e0b' : '#ef4444' }].map((s, i) => (
+              <div key={i} style={{ background: '#1e293b', padding: '1rem', borderRadius: '12px', display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{s.label}</span>
+                <span style={{ color: s.color, fontWeight: 900 }}>{s.val}</span>
+              </div>
+            ))}
+          </div>
+          <button onClick={reset} style={{ width: '100%', background: '#1e293b', border: '1.5px solid #334155', color: '#94a3b8', padding: '0.8rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <RefreshCw size={16} /> Reiniciar
+          </button>
+        </div>
+      </div>
+
+      {/* Page Request Buttons */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 700 }}>Solicitá una página de memoria — el SO la buscará en RAM o en Disco:</p>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          {PAGES.map(p => {
+            const inRam = ramSlots.includes(p);
+            return (
+              <button key={p} onClick={() => requestPage(p)} style={{
+                padding: '0.75rem 1.25rem', borderRadius: '12px', border: '2px solid', cursor: 'pointer', fontWeight: 900,
+                borderColor: inRam ? '#a855f7' : '#334155',
+                background: inRam ? '#a855f720' : '#1e293b',
+                color: inRam ? '#a855f7' : '#64748b'
+              }}>{p} {inRam ? '(RAM)' : '(Disco)'}</button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Log */}
+      {log.length > 0 && (
+        <div style={{ display: 'grid', gap: '0.5rem' }}>
+          {log.map((entry, i) => (
+            <motion.div key={entry.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+              style={{ background: '#1e293b', padding: '0.75rem 1.25rem', borderRadius: '12px', borderLeft: `3px solid ${entry.type === 'HIT' ? '#10b981' : '#ef4444'}`, fontSize: '0.85rem', color: entry.type === 'HIT' ? '#10b981' : '#f87171' }}>
+              {entry.msg}
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CACHE_SIZE = 4;
 const MEMORY_ADDRESSES = ['0x1A', '0x2B', '0x3C', '0x4D', '0x5E', '0x6F', '0x7A', '0x8B', '0x9C', '0xAD'];
 const ACCESS_TIMES = { cache: 2, ram: 80, disk: 5000000 };
@@ -330,6 +470,18 @@ const Memoria = () => {
                </div>
              ))}
           </div>
+        </section>
+
+        {/* Simulador de Memoria Virtual */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <BarChart size={40} color="#a855f7" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Simulador: Memoria Virtual y Paginación</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem', maxWidth: '750px', margin: '0.5rem auto 0' }}>
+              El SO divide la memoria en <strong style={{ color: '#a855f7' }}>páginas</strong>. Cuando una página no está en RAM (Page Fault), la trae del disco usando política <strong style={{ color: '#a855f7' }}>LRU</strong>. Observá el impacto de velocidad: RAM ~100ns vs Disco ~5ms.
+            </p>
+          </div>
+          <VirtualMemSim />
         </section>
 
         {/* Simulador de Caché */}
