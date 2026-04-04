@@ -1,12 +1,136 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
 import RepasoClave from '../components/RepasoClave';
-import { 
-  Users, Database, FileCode, Share2, Globe, 
-  Settings, Layers, Info, CheckCircle, ShieldCheck
+import {
+  Users, Database, FileCode, Share2, Globe,
+  Settings, Layers, Info, CheckCircle, ShieldCheck,
+  ArrowRight, Play, RefreshCw, Trophy, XCircle
 } from 'lucide-react';
+
+const DATO_STEPS = [
+  { id: 'CAPTURA', label: '1. Captura', icon: '📥', color: '#00f2ff', desc: 'El dato nace: sensores IoT, teclado, formularios web, cámaras, micrófonos. Sin captura, no hay información que procesar.', ej: 'Ej: El usuario escribe su DNI en un formulario web.' },
+  { id: 'PROCESO', label: '2. Procesamiento', icon: '⚙️', color: '#f59e0b', desc: 'La ALU y los algoritmos transforman el dato: cálculos, validaciones, filtros, modelos de IA, criptografía.', ej: 'Ej: El servidor verifica el DNI y busca el registro en la base de datos.' },
+  { id: 'ALMACENAMIENTO', label: '3. Almacenamiento', icon: '🗄️', color: '#2ed573', desc: 'El dato se persiste para uso futuro: bases de datos SQL/NoSQL, discos SSD/HDD, servicios en la nube, backups.', ej: 'Ej: El registro queda guardado en la tabla "usuarios" de MySQL.' },
+  { id: 'DISTRIBUCION', label: '4. Distribución', icon: '📡', color: '#a855f7', desc: 'La información procesada llega al destinatario: dashboards, APIs REST, reportes PDF, notificaciones push.', ej: 'Ej: El sistema envía un email de confirmación y actualiza el portal.' },
+];
+
+const SOFTWARE_ITEMS = [
+  { name: 'Windows 11', correct: 'Sistema', icon: '🖥️' },
+  { name: 'Microsoft Word', correct: 'Aplicación', icon: '📝' },
+  { name: 'Visual Studio Code', correct: 'Programación', icon: '💻' },
+  { name: 'Google Chrome', correct: 'Aplicación', icon: '🌐' },
+  { name: 'Driver Nvidia RTX', correct: 'Sistema', icon: '🎮' },
+  { name: 'Python 3.12', correct: 'Programación', icon: '🐍' },
+  { name: 'Adobe Photoshop', correct: 'Aplicación', icon: '🎨' },
+  { name: 'Linux Kernel', correct: 'Sistema', icon: '🐧' },
+  { name: 'Spotify', correct: 'Aplicación', icon: '🎵' },
+  { name: 'Git (Control de versiones)', correct: 'Programación', icon: '🔧' },
+];
+
+const CicloDelDato = () => {
+  const [step, setStep] = useState(0);
+  const current = DATO_STEPS[step];
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '3rem' }}>
+        {DATO_STEPS.map((s, i) => (
+          <button key={s.id} onClick={() => setStep(i)} style={{
+            padding: '1.5rem 0.5rem', borderRadius: '20px', border: '2px solid', cursor: 'pointer', transition: '0.3s',
+            borderColor: step === i ? s.color : '#1e293b',
+            background: step === i ? `${s.color}20` : '#1e293b',
+            color: step === i ? s.color : '#475569',
+            fontWeight: 900, fontSize: '0.8rem'
+          }}>
+            <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>{s.icon}</div>
+            {s.label}
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div key={step} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', background: '#1e293b', padding: '2.5rem', borderRadius: '30px', borderLeft: `5px solid ${current.color}` }}>
+            <div style={{ fontSize: '3rem' }}>{current.icon}</div>
+            <div>
+              <h3 style={{ color: current.color, margin: '0 0 1rem', fontSize: '1.4rem', fontWeight: 800 }}>{current.label}</h3>
+              <p style={{ color: '#cbd5e1', lineHeight: 1.8, margin: '0 0 1rem' }}>{current.desc}</p>
+              <p style={{ color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic', margin: 0 }}>{current.ej}</p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+      <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', justifyContent: 'center' }}>
+        <button onClick={() => setStep(p => Math.max(0, p - 1))} disabled={step === 0} style={{ padding: '0.8rem 2rem', borderRadius: '15px', border: '2px solid #1e293b', background: 'transparent', color: '#94a3b8', cursor: step === 0 ? 'not-allowed' : 'pointer', fontWeight: 700 }}>← Anterior</button>
+        <button onClick={() => setStep(p => Math.min(DATO_STEPS.length - 1, p + 1))} disabled={step === DATO_STEPS.length - 1} style={{ padding: '0.8rem 2rem', borderRadius: '15px', background: '#00f2ff', border: 'none', color: '#000', cursor: step === DATO_STEPS.length - 1 ? 'not-allowed' : 'pointer', fontWeight: 900 }}>Siguiente →</button>
+      </div>
+    </div>
+  );
+};
+
+const ClasificadorSoftware = () => {
+  const [items] = useState(() => [...SOFTWARE_ITEMS].sort(() => Math.random() - 0.5).slice(0, 6));
+  const [current, setCurrent] = useState(0);
+  const [score, setScore] = useState(0);
+  const [feedback, setFeedback] = useState(null);
+  const [done, setDone] = useState(false);
+
+  const classify = (tipo) => {
+    if (feedback) return;
+    const isCorrect = tipo === items[current].correct;
+    if (isCorrect) setScore(s => s + 1);
+    setFeedback({ correct: isCorrect, answer: items[current].correct });
+    setTimeout(() => {
+      setFeedback(null);
+      if (current + 1 >= items.length) setDone(true);
+      else setCurrent(c => c + 1);
+    }, 1200);
+  };
+
+  const reset = () => { setCurrent(0); setScore(0); setFeedback(null); setDone(false); };
+
+  if (done) return (
+    <div style={{ textAlign: 'center', padding: '3rem', background: '#0f172a', borderRadius: '40px' }}>
+      <Trophy size={60} color="#f59e0b" style={{ margin: '0 auto 1.5rem' }} />
+      <h3 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem' }}>{score}/{items.length} Correctas</h3>
+      <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>{score === items.length ? '¡Perfecto dominio de la clasificación!' : score >= 4 ? '¡Buen resultado!' : 'Repasá las categorías de software.'}</p>
+      <button onClick={reset} style={{ padding: '1rem 2.5rem', background: '#00f2ff', border: 'none', borderRadius: '15px', color: '#000', fontWeight: 900, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px' }}><RefreshCw size={18}/> Jugar de nuevo</button>
+    </div>
+  );
+
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+        <span style={{ color: '#64748b', fontWeight: 700 }}>Pregunta {current + 1}/{items.length}</span>
+        <span style={{ color: '#00f2ff', fontWeight: 900, fontSize: '1.2rem' }}>✓ {score}</span>
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div key={current} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{items[current].icon}</div>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 900 }}>{items[current].name}</h3>
+            <p style={{ color: '#64748b' }}>¿A qué categoría de software pertenece?</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+            {['Sistema', 'Aplicación', 'Programación'].map(tipo => (
+              <button key={tipo} onClick={() => classify(tipo)} disabled={!!feedback} style={{
+                padding: '1.5rem', borderRadius: '20px', border: '2px solid',
+                borderColor: feedback ? (tipo === items[current].correct ? '#2ed573' : feedback.answer === tipo ? '#ef4444' : '#1e293b') : '#1e293b',
+                background: feedback ? (tipo === items[current].correct ? '#2ed57320' : '#1e293b') : '#1e293b',
+                color: '#f8fafc', cursor: feedback ? 'default' : 'pointer', fontWeight: 800, fontSize: '1rem', transition: '0.2s'
+              }}>{tipo}</button>
+            ))}
+          </div>
+          {feedback && (
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', marginTop: '1.5rem', fontWeight: 800, color: feedback.correct ? '#2ed573' : '#ef4444', fontSize: '1.1rem' }}>
+              {feedback.correct ? '✓ ¡Correcto!' : `✗ Era: ${feedback.answer}`}
+            </motion.p>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const SOCIETY_QUESTS = [
   { q: '¿Qué es un Sistema de Información (SI)?', opts: ['Una computadora cara', 'Un conjunto de componentes que recolectan, procesan, almacenan y distribuyen información', 'Un sitio web', 'Un programa de mensajería'], a: 1, exp: 'Va más allá del hardware; incluye procesos, personas y datos organizados.' },
@@ -95,6 +219,26 @@ const SociedadSoftware = () => {
                 <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, #0f172a 100%)', borderRadius: '50px' }} />
              </div>
           </div>
+        </section>
+
+        {/* Simulador: Ciclo del Dato */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Database size={40} color="#00f2ff" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Simulador: Ciclo del Dato</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>Navegá por las 4 etapas del ciclo de vida de la información. Hacé clic en cada etapa para explorarla.</p>
+          </div>
+          <CicloDelDato />
+        </section>
+
+        {/* Simulador: Clasificador de Software */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Layers size={40} color="#2ed573" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Mini-juego: Clasificador de Software</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>6 preguntas. Clasificá cada software en su categoría correcta: Sistema, Aplicación o Programación.</p>
+          </div>
+          <ClasificadorSoftware />
         </section>
 
         <RepasoClave

@@ -176,7 +176,7 @@ app.post('/api/evaluaciones', async (req, res) => {
 
 // Consultar evaluaciones (requiere auth, filtra por comisiones del docente)
 app.get('/api/evaluaciones', authMiddleware, async (req, res) => {
-  const { comision, unidad, clase } = req.query;
+  const { comision, unidad, clase, dni, nombre } = req.query;
   const docente = req.docente;
 
   try {
@@ -194,6 +194,8 @@ app.get('/api/evaluaciones', authMiddleware, async (req, res) => {
     if (comision) { params.push(comision); conditions.push(`numero_comision = $${params.length}`); }
     if (unidad) { params.push(unidad); conditions.push(`unidad = $${params.length}`); }
     if (clase) { params.push(clase); conditions.push(`clase = $${params.length}`); }
+    if (dni) { params.push(`%${dni.trim()}%`); conditions.push(`dni ILIKE $${params.length}`); }
+    if (nombre) { params.push(`%${nombre.trim()}%`); conditions.push(`(apellido ILIKE $${params.length} OR nombres ILIKE $${params.length})`); }
 
     const where = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
     const result = await pool.query(`SELECT * FROM evaluaciones ${where} ORDER BY fecha DESC`, params);

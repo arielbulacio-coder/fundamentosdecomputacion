@@ -1,12 +1,110 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
 import RepasoClave from '../components/RepasoClave';
-import { 
-  Globe, Share2, Zap, ZapOff, Shield, Database, Smartphone, 
+import {
+  Globe, Share2, Zap, ZapOff, Shield, Database, Smartphone,
   Cpu, Users, Info, Rocket, CheckCircle, BarChart3
 } from 'lucide-react';
+
+const INDUSTRIA4_PILLARS = [
+  { id: 'iot', label: 'IoT', icon: '📡', color: '#2ed573', desc: 'Internet de las Cosas: Objetos físicos con sensores conectados a internet. Heladeras que piden compras, fábricas que se auto-diagnostican, ropa que mide tu salud.', ejemplo: 'Amazon Echo, sensores de temperatura industriales, autos Tesla.' },
+  { id: 'bigdata', label: 'Big Data', icon: '🌊', color: '#3b82f6', desc: 'Análisis de volúmenes de datos masivos (las 3 V: Volumen, Velocidad, Variedad). Permite encontrar patrones imposibles de ver manualmente.', ejemplo: 'Netflix predice qué vas a ver, Spotify crea tu playlist, bancos detectan fraudes.' },
+  { id: 'ia', label: 'Inteligencia Artificial', icon: '🧠', color: '#a855f7', desc: 'Sistemas que aprenden de los datos para tomar decisiones (Machine Learning). La IA no piensa, optimiza una función matemática.', ejemplo: 'GPT, reconocimiento facial, diagnóstico médico por imágenes, conducción autónoma.' },
+  { id: 'cloud', label: 'Cloud Computing', icon: '☁️', color: '#00f2ff', desc: 'Computación bajo demanda: alquilás procesamiento y almacenamiento remoto en lugar de comprarlo. Pago por uso.', ejemplo: 'AWS (Amazon), Azure (Microsoft), Google Cloud. Startups sin servidores propios.' },
+  { id: 'robotics', label: 'Robótica Avanzada', icon: '🤖', color: '#f59e0b', desc: 'Robots colaborativos (cobots) que trabajan junto a humanos en líneas de producción. Precisión de micrones y operación 24/7.', ejemplo: 'Brazos robóticos de Tesla, drones de reparto de Amazon.' },
+  { id: '3d', label: 'Manufactura Aditiva', icon: '🖨️', color: '#ef4444', desc: 'Impresión 3D industrial: construye objetos capa por capa desde diseño digital. Elimina moldes y reduce desechos al mínimo.', ejemplo: 'Prótesis médicas, piezas aeroespaciales, casas de concreto impresas.' },
+];
+
+const BRECHA_DIGITAL_DATA = [
+  { region: 'Europa Occ.', acceso: 93, habilidades: 71 },
+  { region: 'América del Norte', acceso: 91, habilidades: 68 },
+  { region: 'América Latina', acceso: 68, habilidades: 42 },
+  { region: 'Asia-Pac.', acceso: 64, habilidades: 38 },
+  { region: 'África Subsah.', acceso: 28, habilidades: 14 },
+];
+
+const Industria4Explorer = () => {
+  const [selected, setSelected] = useState(null);
+  const current = INDUSTRIA4_PILLARS.find(p => p.id === selected);
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+        {INDUSTRIA4_PILLARS.map(p => (
+          <button key={p.id} onClick={() => setSelected(p.id === selected ? null : p.id)} style={{
+            padding: '1.5rem 1rem', borderRadius: '20px', border: '2px solid', cursor: 'pointer', transition: '0.3s', textAlign: 'center',
+            borderColor: selected === p.id ? p.color : '#1e293b',
+            background: selected === p.id ? `${p.color}20` : '#1e293b',
+            color: selected === p.id ? p.color : '#94a3b8'
+          }}>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{p.icon}</div>
+            <div style={{ fontWeight: 900, fontSize: '0.85rem' }}>{p.label}</div>
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        {current && (
+          <motion.div key={current.id} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+            style={{ overflow: 'hidden' }}>
+            <div style={{ background: '#1e293b', padding: '2.5rem', borderRadius: '25px', borderLeft: `5px solid ${current.color}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <span style={{ fontSize: '2.5rem' }}>{current.icon}</span>
+                <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900, color: current.color }}>{current.label}</h3>
+              </div>
+              <p style={{ color: '#cbd5e1', lineHeight: 1.8, marginBottom: '1rem' }}>{current.desc}</p>
+              <div style={{ background: '#0f172a', padding: '1rem 1.5rem', borderRadius: '12px', borderLeft: `3px solid ${current.color}50` }}>
+                <span style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 700 }}>EJEMPLOS REALES: </span>
+                <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{current.ejemplo}</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+        {!current && (
+          <motion.p key="hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', color: '#475569', padding: '2rem' }}>
+            ↑ Hacé clic en cualquier tecnología para explorarla
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const BrechaDigitalChart = () => {
+  const [mode, setMode] = useState('acceso');
+  return (
+    <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2.5rem', justifyContent: 'center' }}>
+        {[{ id: 'acceso', label: '% Acceso a Internet', color: '#2ed573' }, { id: 'habilidades', label: '% Habilidades Digitales', color: '#a855f7' }].map(m => (
+          <button key={m.id} onClick={() => setMode(m.id)} style={{
+            padding: '0.8rem 1.5rem', borderRadius: '15px', border: '2px solid', cursor: 'pointer',
+            borderColor: mode === m.id ? m.color : '#1e293b',
+            background: mode === m.id ? `${m.color}20` : '#1e293b',
+            color: mode === m.id ? m.color : '#64748b', fontWeight: 800, fontSize: '0.9rem'
+          }}>{m.label}</button>
+        ))}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+        {BRECHA_DIGITAL_DATA.map((d, i) => (
+          <div key={d.region} style={{ display: 'grid', gridTemplateColumns: '160px 1fr 60px', alignItems: 'center', gap: '1rem' }}>
+            <span style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 700 }}>{d.region}</span>
+            <div style={{ background: '#1e293b', borderRadius: '10px', height: '28px', overflow: 'hidden' }}>
+              <motion.div
+                initial={{ width: 0 }} animate={{ width: `${d[mode]}%` }}
+                transition={{ duration: 0.8, delay: i * 0.1 }}
+                style={{ height: '100%', borderRadius: '10px', background: mode === 'acceso' ? 'linear-gradient(to right, #2ed573, #00f2ff)' : 'linear-gradient(to right, #a855f7, #3b82f6)' }}
+              />
+            </div>
+            <span style={{ color: mode === 'acceso' ? '#2ed573' : '#a855f7', fontWeight: 900, fontSize: '1rem' }}>{d[mode]}%</span>
+          </div>
+        ))}
+      </div>
+      <p style={{ textAlign: 'center', color: '#475569', fontSize: '0.8rem', marginTop: '2rem' }}>
+        Fuente: datos aproximados basados en informes ITU/UNESCO 2023
+      </p>
+    </div>
+  );
+};
 
 const CULTURE_QUESTS = [
   { q: '¿Qué significan las siglas TICs?', opts: ['Técnicas de Información y Comunicación', 'Tecnologías del Internet y Calidad', 'Tecnologías de la Información y la Comunicación', 'Todo Internet Conectado'], a: 2, exp: 'Engloban las herramientas y métodos para procesar, guardar y transmitir información digital.' },
@@ -98,6 +196,26 @@ const CulturaDigital = () => {
                  </div>
               </div>
            </div>
+        </section>
+
+        {/* Simulador: Industria 4.0 Explorer */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <Rocket size={40} color="#2ed573" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Explorador: Industria 4.0</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>Los 6 pilares de la Cuarta Revolución Industrial. Hacé clic en cada tecnología para descubrir qué es y un ejemplo real.</p>
+          </div>
+          <Industria4Explorer />
+        </section>
+
+        {/* Simulador: Brecha Digital */}
+        <section style={{ marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <BarChart3 size={40} color="#a855f7" style={{ margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '2.2rem', fontWeight: 900 }}>Visualizador: La Brecha Digital Global</h2>
+            <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>Compará el acceso a internet con las habilidades digitales reales en distintas regiones del mundo.</p>
+          </div>
+          <BrechaDigitalChart />
         </section>
 
         <RepasoClave

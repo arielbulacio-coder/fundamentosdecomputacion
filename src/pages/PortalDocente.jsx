@@ -164,7 +164,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('evaluaciones');
   const [filters, setFilters] = useState({ comision: '', unidad: '', clase: '' });
-  const [search, setSearch] = useState('');
+  const [searchDni, setSearchDni] = useState('');
+  const [searchNombre, setSearchNombre] = useState('');
   const [showCreateDocente, setShowCreateDocente] = useState(false);
 
   const fetchEvaluaciones = useCallback(async () => {
@@ -194,12 +195,12 @@ const Dashboard = () => {
   useEffect(() => { if (activeTab === 'docentes') fetchDocentes(); }, [activeTab, fetchDocentes]);
 
   const filtered = evaluaciones.filter(e => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return e.apellido.toLowerCase().includes(s) || e.nombres.toLowerCase().includes(s) || e.dni.includes(s) || e.numero_comision.toLowerCase().includes(s);
+    const dniOk = !searchDni || e.dni.includes(searchDni.trim());
+    const nombreOk = !searchNombre || e.apellido.toLowerCase().includes(searchNombre.toLowerCase()) || e.nombres.toLowerCase().includes(searchNombre.toLowerCase());
+    return dniOk && nombreOk;
   });
 
-  const exportCSV = () => {
+  const buildRows = () => {
     const headers = ['Comisión', 'DNI', 'Apellido', 'Nombres', 'Materia', 'Unidad', 'Clase', 'Puntaje', 'Total', '%', 'Fecha'];
     const rows = filtered.map(e => [
       e.numero_comision, e.dni, e.apellido, e.nombres,
@@ -207,11 +208,26 @@ const Dashboard = () => {
       e.puntaje, e.total, e.porcentaje,
       new Date(e.fecha).toLocaleString('es-AR')
     ]);
+    return { headers, rows };
+  };
+
+  const exportCSV = () => {
+    const { headers, rows } = buildRows();
     const csv = [headers, ...rows].map(r => r.join(';')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `evaluaciones_${Date.now()}.csv`;
+    link.click();
+  };
+
+  const exportXLS = () => {
+    const { headers, rows } = buildRows();
+    const tableHtml = `<html><head><meta charset="UTF-8"></head><body><table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></body></html>`;
+    const blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `evaluaciones_${Date.now()}.xls`;
     link.click();
   };
 
@@ -302,18 +318,28 @@ const Dashboard = () => {
                   </select>
                 </div>
                 <div>
-                  <label style={LABEL}>Buscar alumno</label>
+                  <label style={LABEL}>Buscar por DNI</label>
                   <div style={{ position: 'relative' }}>
                     <Search size={16} color="#64748b" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Nombre, DNI..." style={{ ...INPUT, paddingLeft: '2.75rem' }} />
+                    <input type="text" value={searchDni} onChange={e => setSearchDni(e.target.value)} placeholder="Ej: 40123456" style={{ ...INPUT, paddingLeft: '2.75rem' }} />
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div>
+                  <label style={LABEL}>Buscar por Apellido / Nombre</label>
+                  <div style={{ position: 'relative' }}>
+                    <Search size={16} color="#64748b" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input type="text" value={searchNombre} onChange={e => setSearchNombre(e.target.value)} placeholder="Ej: García" style={{ ...INPUT, paddingLeft: '2.75rem' }} />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <button onClick={fetchEvaluaciones} style={{ flex: 1, background: '#1e293b', border: '1.5px solid rgba(255,255,255,0.08)', color: '#94a3b8', borderRadius: '12px', padding: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <RefreshCw size={16} /> Actualizar
                   </button>
                   <button onClick={exportCSV} style={{ flex: 1, background: '#22c55e', border: 'none', color: '#000', borderRadius: '12px', padding: '0.75rem', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <Download size={16} /> CSV
+                  </button>
+                  <button onClick={exportXLS} style={{ flex: 1, background: '#3b82f6', border: 'none', color: '#fff', borderRadius: '12px', padding: '0.75rem', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                    <Download size={16} /> Excel
                   </button>
                 </div>
               </div>
