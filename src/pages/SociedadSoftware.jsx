@@ -212,7 +212,7 @@ const SociedadSoftware = () => {
              </div>
              <div style={{ position: 'relative' }}>
                 <img 
-                  src="/assets/sociedad_software_networks_1775236177650.png" 
+                  src="/assets/sociedad_software_networks.png" 
                   alt="Social Software Networks" 
                   style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(46,213,115,0.2)' }} 
                 />

@@ -263,6 +263,13 @@ const Generaciones = () => {
               Desde las válvulas termoiónicas hasta los qubits entrelazados. Un viaje interactivo por la evolución tecnológica (SimuUnpilar v2.2).
             </p>
           </motion.div>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ marginTop: '3rem' }}>
+            <img
+              src="/assets/generations_info.png"
+              alt="Línea cronológica de generaciones de computadoras"
+              style={{ width: '100%', maxWidth: '900px', borderRadius: '30px', boxShadow: '0 20px 60px rgba(59,130,246,0.2)', border: '1.5px solid rgba(59,130,246,0.2)' }}
+            />
+          </motion.div>
         </header>
 
         {/* Simuladores Interactivos Seleccionables */}

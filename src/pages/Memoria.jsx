@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import LockedContent from '../components/LockedContent';
 import QuizBlock from '../components/QuizBlock';
 import RepasoClave from '../components/RepasoClave';
-import { Database, Zap, Server, ShieldCheck, BarChart, RefreshCw, PlayCircle } from 'lucide-react';
+import { Database, Zap, Server, ShieldCheck, BarChart, RefreshCw, PlayCircle, Cpu } from 'lucide-react';
 
 const MEM_QUESTS = [
   { q: '¿Qué significa RAM?', opts: ['Read Access Memory', 'Random Access Memory', 'Rapid Advanced Memory', 'Root Alpha Memory'], a: 1, exp: 'Es una memoria de acceso aleatorio, lo que significa que se puede leer cualquier punto con la misma velocidad.' },

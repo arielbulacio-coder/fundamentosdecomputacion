@@ -167,7 +167,7 @@ const CulturaDigital = () => {
            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '4rem', alignItems: 'center' }}>
               <div style={{ position: 'relative' }}>
                  <img 
-                   src="/assets/cultura_digital_transformation_1775236198314.png" 
+                   src="/assets/cultura_digital_transformation.png" 
                    alt="Digital Transformation" 
                    style={{ width: '100%', borderRadius: '50px', boxShadow: '0 20px 50px rgba(46,213,115,0.2)' }} 
                  />
