@@ -63,7 +63,7 @@ const AsciiSimulator = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         {[
           { label: 'Código Unicode/ASCII', value: code, color: '#10b981', note: isAscii ? 'Rango ASCII (0-127)' : 'Extendido Unicode' },
           { label: 'Binario', value: binary8, color: '#3b82f6', note: `${binary8.length} bits` },
@@ -117,12 +117,12 @@ const RepresentacionDatos = () => {
         </header>
 
         {/* Teoría Ampliada: Sistemas de Numeración */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
           <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem', fontWeight: 900 }}>Sistemas de Numeración e Información</h2>
           <p style={{ textAlign: 'center', color: '#94a3b8', maxWidth: '700px', margin: '0 auto 4rem', fontSize: '1.05rem', lineHeight: 1.7 }}>
             Los sistemas de numeración posicionales asignan un valor diferente a cada dígito según su <strong style={{ color: '#10b981' }}>posición</strong>. Entender esto es la clave para comprender cómo se organizan los datos en la memoria.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
             {[
               { base: 'Decimal', b: 10, digits: '0-9', color: '#10b981', use: 'Uso humano cotidiano. Surgió por los 10 dedos de las manos.' },
               { base: 'Binario', b: 2, digits: '0, 1', color: '#3b82f6', use: 'El lenguaje nativo del hardware digital: señales eléctricas encendidas o apagadas.' },
@@ -141,7 +141,7 @@ const RepresentacionDatos = () => {
 
         {/* Simulador: Conversor Multi-Base */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
               <Calculator color="#10b981" size={42} style={{ margin: '0 auto 1rem' }} />
               <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Conversor de Bases Numéricas</h2>
@@ -156,7 +156,7 @@ const RepresentacionDatos = () => {
             </div>
 
             {/* Resultados en las 4 bases */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
               {[
                 { label: 'Decimal', base: 10, value: num.toString(), color: '#10b981', prefix: '' },
                 { label: 'Binario', base: 2, value: num.toString(2).padStart(8, '0'), color: '#3b82f6', prefix: '0b' },
@@ -238,7 +238,7 @@ const RepresentacionDatos = () => {
         </section>
 
         {/* Teoría Ampliada: Formatos Digitales */}
-        <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+        <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '3rem' }}>
            <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1px solid rgba(255,255,255,0.05)' }}>
               <FileJson size={32} color="#3b82f6" style={{ marginBottom: '1.5rem' }} />
               <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '1.2rem' }}>Codificación de Texto</h3>
@@ -263,9 +263,9 @@ const RepresentacionDatos = () => {
         </section>
 
         {/* Conceptos Avanzados */}
-        <section style={{ marginBottom: '6rem', background: 'linear-gradient(135deg, #0f172a, #1e293b)', padding: '5rem', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <section style={{ marginBottom: '6rem', background: 'linear-gradient(135deg, #0f172a, #1e293b)', padding: 'clamp(1.5rem, 4vw, 5rem)', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)' }}>
           <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '3.5rem', textAlign: 'center' }}>Domina la Información Digital</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '3rem' }}>
             <div>
               <h4 style={{ color: '#3b82f6', fontWeight: 800, marginBottom: '1rem' }}>Compresión</h4>
               <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: 1.7 }}>Reduce el tamaño redundante. Puede ser <strong>Lossless</strong> (sin pérdida como ZIP) o <strong>Lossy</strong> (con pérdida como JPG o MP3).</p>
@@ -307,7 +307,7 @@ const RepresentacionDatos = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #10b981', boxShadow: '0 30px 60px rgba(16,185,129,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #10b981', boxShadow: '0 30px 60px rgba(16,185,129,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Binary size={52} color="#10b981" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación: Representación Digital</h2>

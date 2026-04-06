@@ -30,7 +30,7 @@ const Industria4Explorer = () => {
   const current = INDUSTRIA4_PILLARS.find(p => p.id === selected);
   return (
     <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '1rem', marginBottom: '2rem' }}>
         {INDUSTRIA4_PILLARS.map(p => (
           <button key={p.id} onClick={() => setSelected(p.id === selected ? null : p.id)} style={{
             padding: '1.5rem 1rem', borderRadius: '20px', border: '2px solid', cursor: 'pointer', transition: '0.3s', textAlign: 'center',
@@ -86,7 +86,7 @@ const BrechaDigitalChart = () => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
         {BRECHA_DIGITAL_DATA.map((d, i) => (
-          <div key={d.region} style={{ display: 'grid', gridTemplateColumns: '160px 1fr 60px', alignItems: 'center', gap: '1rem' }}>
+          <div key={d.region} style={{ display: 'grid', gridTemplateColumns: 'minmax(80px, 120px) 1fr 50px', alignItems: 'center', gap: '1rem' }}>
             <span style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 700 }}>{d.region}</span>
             <div style={{ background: '#1e293b', borderRadius: '10px', height: '28px', overflow: 'hidden' }}>
               <motion.div
@@ -146,7 +146,7 @@ const CulturaDigital = () => {
 
         {/* Pilares de la Transformación Digital Ampliada */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
              {[
                { title: 'Conectividad Universal', icon: <Share2 />, color: '#2ed573', desc: 'El acceso a internet como un derecho habilitador. Permite la convergencia de datos de todo el mundo al instante.' },
                { title: 'Automatización e IA', icon: <Cpu />, color: '#3b82f6', desc: 'La delegación de tareas repetitivas y de análisis masivo a sistemas de software capaces de aprender.' },
@@ -163,8 +163,8 @@ const CulturaDigital = () => {
         </section>
 
         {/* Análisis de Impacto Ampliado */}
-        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3.5rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+        <section style={{ marginBottom: '6rem', background: '#111', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3.5rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))', gap: '4rem', alignItems: 'center' }}>
               <div style={{ position: 'relative' }}>
                  <img 
                    src="/assets/cultura_digital_transformation.png" 
@@ -232,7 +232,7 @@ const CulturaDigital = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #2ed573', boxShadow: '0 30px 60px rgba(46,213,115,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #2ed573', boxShadow: '0 30px 60px rgba(46,213,115,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <BarChart3 size={52} color="#2ed573" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: TICs y Cultura</h2>

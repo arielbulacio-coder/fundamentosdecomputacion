@@ -133,13 +133,13 @@ const LogicaDigital = () => {
 
         {/* Simulador Interactivo de Compuertas */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '4rem' }}>
+          <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '4rem' }}>
              
              <div>
                 <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                    <Zap color="#f59e0b" /> Laboratorio Lógico
                 </h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '2rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
                    {Object.keys(GATES).map(g => (
                      <button key={g} onClick={() => setGateType(g)} style={{
                         padding: '1.2rem', borderRadius: '15px', border: '2px solid', fontWeight: 800, cursor: 'pointer', transition: '0.2s',
@@ -196,7 +196,7 @@ const LogicaDigital = () => {
               Cada tabla muestra todas las combinaciones posibles de entrada y su resultado. Para n entradas hay 2<sup>n</sup> filas.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
             {[
               { name: 'AND (Y)', symbol: 'A · B', color: '#f59e0b', desc: 'Solo da 1 si TODAS las entradas son 1.', rows: [[0,0,0],[0,1,0],[1,0,0],[1,1,1]] },
               { name: 'OR (O)', symbol: 'A + B', color: '#3b82f6', desc: 'Da 1 si AL MENOS UNA entrada es 1.', rows: [[0,0,0],[0,1,1],[1,0,1],[1,1,1]] },
@@ -244,9 +244,9 @@ const LogicaDigital = () => {
         </section>
 
         {/* Teoría Ampliada: El mundo digital */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
            <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>De la Lógica al Hardware</h2>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '3rem' }}>
               {[
                 { Icon: Cpu, color: '#f59e0b', title: 'Álgebra de Boole', desc: 'La matemática del 0 y 1. Claude Shannon demostró en 1937 que los circuitos de relés podían realizar cualquier operación lógica compleja. Las 3 operaciones básicas son AND (conjunción, símbolo ·), OR (disyunción, símbolo +) y NOT (negación, símbolo \').' },
                 { Icon: Layers, color: '#ef4444', title: 'Tablas de Verdad', desc: 'Mapean cada combinación posible de entradas con su salida única. Define el comportamiento exacto de un componente digital. Para n entradas, la tabla tendrá 2^n filas. Son la herramienta fundamental para diseñar y verificar circuitos.' },
@@ -265,9 +265,9 @@ const LogicaDigital = () => {
         </section>
 
         {/* Teoría: Conceptos adicionales para la evaluación */}
-        <section style={{ marginBottom: '6rem', background: '#0f172a', padding: '4rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(245,158,11,0.15)' }}>
+        <section style={{ marginBottom: '6rem', background: '#0f172a', padding: 'clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(245,158,11,0.15)' }}>
           <h2 style={{ fontSize: '2.2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900, color: '#f59e0b' }}>Conceptos Avanzados</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2.5rem' }}>
             {[
               { title: 'Mapa de Karnaugh', color: '#3b82f6', text: 'Herramienta visual para simplificar funciones lógicas. Se agrupan los 1s adyacentes en la cuadrícula para encontrar la expresión booleana mínima, reduciendo la cantidad de compuertas necesarias en un circuito.' },
               { title: 'Lógica Tristate', color: '#22c55e', text: 'Añade un tercer estado: "Alta Impedancia" (Z), que equivale a un circuito abierto. Permite que varios dispositivos compartan un mismo bus de datos, desconectándose eléctricamente cuando no transmiten.' },
@@ -285,7 +285,7 @@ const LogicaDigital = () => {
         </section>
 
         <section style={{ marginBottom: '6rem' }}>
-           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+           <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '4rem', alignItems: 'center' }}>
               <img src="/assets/digital_logic_gates_neon_1775235547550.png" alt="Logic Gates Diagram" style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} />
               <div>
                  <h2 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '2rem' }}>Jerarquía de Abstracción</h2>
@@ -322,7 +322,7 @@ const LogicaDigital = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #f59e0b', boxShadow: '0 30px 60px rgba(245,158,11,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #f59e0b', boxShadow: '0 30px 60px rgba(245,158,11,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Settings size={52} color="#f59e0b" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Lógica de Sistemas</h2>

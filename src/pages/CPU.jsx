@@ -92,7 +92,7 @@ const CPU = () => {
 
         {/* Simulador Avanzado Reconstruido */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '4rem' }}>
+          <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '4rem' }}>
              
              <div>
                 <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2rem', color: '#3b82f6', display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -155,9 +155,9 @@ const CPU = () => {
         </section>
 
         {/* Sección de Teoría Restante (Manteniendo el diseño moderno) */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
           <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>Anatomía del Procesador</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '3rem' }}>
             {[
               { Icon: Activity, color: '#3b82f6', title: 'Unidad de Control', desc: 'Coordina el flujo de datos. Decodifica las instrucciones y genera las señales de habilitación para el resto.' },
               { Icon: Zap, color: '#f59e0b', title: 'ALU', desc: 'El músculo del sistema. Realiza cada suma, resta y comparación lógica necesaria para que tu código funcione.' },
@@ -221,7 +221,7 @@ const CPU = () => {
               El Conjunto de Instrucciones (ISA) define el "idioma" que entiende el hardware. Hay dos filosofías opuestas con ventajas distintas.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '2rem' }}>
             {[
               { name: 'RISC', sub: 'Reduced Instruction Set Computer', color: '#10b981', badge: 'Smartphones, ARM, Apple M', items: [
                 { icon: '📦', t: 'Pocas instrucciones simples', d: 'Cada instrucción hace una sola cosa. Fácil de optimizar.' },
@@ -279,7 +279,17 @@ const CPU = () => {
           ]}
         />
 
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
+        {/* CTA Laboratorio 3D */}
+        <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1a1040 100%)', padding: 'clamp(1.5rem, 4vw, 3rem)', borderRadius: '30px', border: '2px solid rgba(236, 72, 153, 0.3)', textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🔬</div>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#e2e8f0', margin: '0 0 0.5rem' }}>Explora el Interior del CPU en 3D</h3>
+          <p style={{ color: '#94a3b8', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Observa CU, ALU, registros y caché en un modelo 3D interactivo. Toca cada componente para aprender.</p>
+          <a href="/ar-arquitectura" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 2rem', background: 'linear-gradient(135deg, #ec4899, #8b5cf6)', color: '#fff', borderRadius: '16px', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 4px 20px rgba(236,72,153,0.3)' }}>
+            Abrir Laboratorio 3D — CPU
+          </a>
+        </section>
+
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Cpu size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: El Procesador</h2>

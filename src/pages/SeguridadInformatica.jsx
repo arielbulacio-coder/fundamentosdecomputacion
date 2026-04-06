@@ -107,7 +107,7 @@ const CipherSimulator = () => {
   });
 
   return (
-    <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
+    <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <Lock color="#ef4444" size={42} style={{ margin: '0 auto 1rem' }} />
         <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>Laboratorio de Criptografía</h2>
@@ -135,7 +135,7 @@ const CipherSimulator = () => {
           <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.7 }}>
             El <strong style={{ color: '#f8fafc' }}>Cifrado César</strong> desplaza cada letra del alfabeto <strong style={{ color: '#ef4444' }}>N</strong> posiciones. Es el cifrado sustitutivo más antiguo (usado por Julio César). Aunque hoy es trivial romperlo por análisis de frecuencia, es la base conceptual del cifrado simétrico.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', marginBottom: '2rem', alignItems: 'end' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem', marginBottom: '2rem', alignItems: 'end' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Texto Original</label>
               <input
@@ -156,7 +156,7 @@ const CipherSimulator = () => {
           </div>
 
           {/* Resultado */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
             <div style={{ background: '#0f172a', borderRadius: '20px', padding: '1.5rem', borderLeft: '4px solid #ef4444' }}>
               <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, marginBottom: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Texto Cifrado (desplaz. +{shift})</div>
               <div style={{ fontFamily: 'monospace', fontSize: '1.15rem', fontWeight: 800, color: '#ef4444', wordBreak: 'break-all' }}>{encrypted}</div>
@@ -263,7 +263,7 @@ const CipherSimulator = () => {
               </div>
 
               {/* Checklist */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '0.75rem' }}>
                 {pwdStrength.checks.map((c, i) => (
                   <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', background: '#0f172a', padding: '0.75rem 1rem', borderRadius: '12px' }}>
                     <span style={{ fontSize: '1rem', color: c.ok ? '#22c55e' : '#334155' }}>{c.ok ? '✓' : '○'}</span>
@@ -309,7 +309,7 @@ const SeguridadInformatica = () => {
         {/* Tríada de la Seguridad Ampliada */}
         <section style={{ marginBottom: '6rem' }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '4rem', textAlign: 'center' }}>La Tríada CIA</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '3rem' }}>
              {[
                { title: 'Confidencialidad', icon: <EyeOff />, color: '#ef4444', desc: 'Asegurar que la información sea accesible únicamente por las personas o sistemas autorizados mediante cifrado y control de accesos.' },
                { title: 'Integridad', icon: <Fingerprint />, color: '#f59e0b', desc: 'Garantizar que los datos no sean alterados durante su almacenamiento o transporte, manteniendo su veracidad original.' },
@@ -325,8 +325,8 @@ const SeguridadInformatica = () => {
         </section>
 
         {/* Amenazas Modernas Ampliadas */}
-        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3.5rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+        <section style={{ marginBottom: '6rem', background: '#111', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3.5rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '4rem', alignItems: 'center' }}>
               <div style={{ position: 'relative' }}>
                  <img
                    src="/assets/cyber_security_shield_cia_1775235507133.png"
@@ -377,7 +377,7 @@ const SeguridadInformatica = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ef4444', boxShadow: '0 30px 60px rgba(239,68,68,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #ef4444', boxShadow: '0 30px 60px rgba(239,68,68,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Shield size={52} color="#ef4444" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Seguridad</h2>

@@ -83,7 +83,7 @@ const VirtualMemSim = () => {
 
   return (
     <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem', marginBottom: '2rem' }}>
         {/* RAM */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -231,7 +231,7 @@ const CacheSimulator = () => {
   const hitRate = total > 0 ? ((hits / total) * 100).toFixed(0) : 0;
 
   return (
-    <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
+    <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <Cpu color="#ec4899" size={42} style={{ margin: '0 auto 1rem' }} />
         <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>Simulador de Caché (LRU)</h2>
@@ -325,7 +325,7 @@ const CacheSimulator = () => {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
         {[
           { label: 'Hits', value: hits, color: '#22c55e' },
           { label: 'Misses', value: misses, color: '#ef4444' },
@@ -397,7 +397,7 @@ const Memoria = () => {
 
         {/* Pirámide de Jerarquía */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '4rem', alignItems: 'center' }}>
             <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(255,255,255,0.05)', boxShadow: '0 30px 60px rgba(168,85,247,0.1)' }}>
               <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '2rem', color: '#a855f7' }}>Orden de Magnitud</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -454,9 +454,9 @@ const Memoria = () => {
         </section>
 
         {/* Conceptos Ampliados */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
           <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>Gestión de la Memoria</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '3rem' }}>
              {[
                { Icon: Zap, color: '#ec4899', title: 'Acceso Aleatorio (RAM)', desc: 'Permite leer cualquier dirección de memoria en el mismo tiempo exacto. Es vital para que la ejecución de programas no dependa de la ubicación física del dato.' },
                { Icon: ShieldCheck, color: '#a855f7', title: 'Memoria No Volátil (ROM)', desc: 'Chips como el EEPROM o Flash que no necesitan electricidad para mantener los datos. Guardan el BIOS/UEFI, el firmware y el arranque.' },
@@ -488,9 +488,9 @@ const Memoria = () => {
         <CacheSimulator />
 
         {/* Teoría Ampliada: Conceptos para la evaluación */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '4rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(168,85,247,0.15)' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(168,85,247,0.15)' }}>
           <h2 style={{ fontSize: '2.2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900, color: '#a855f7' }}>Conceptos Profundos de Memoria</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2.5rem' }}>
             {[
               { title: 'SRAM vs DRAM', color: '#ec4899', text: 'SRAM (Static RAM) no necesita refresco constante, es ultra rápida (~2ns) pero cara y de baja capacidad — se usa en las Cachés L1/L2/L3. DRAM (Dynamic RAM) requiere refrescarse miles de veces por segundo, es más lenta (~100ns) pero barata y de gran capacidad — es la RAM convencional (DDR).' },
               { title: 'DDR5 y Ancho de Banda', color: '#3b82f6', text: 'DDR5 es la última generación de RAM, con velocidades de transferencia de 50-100 GB/s. El "ancho de banda" depende del bus de datos: un bus de 64 bits puede mover 8 bytes simultáneamente por ciclo de reloj. Más módulos en Dual Channel duplican el rendimiento.' },
@@ -523,8 +523,18 @@ const Memoria = () => {
           ]}
         />
 
+        {/* CTA Laboratorio 3D */}
+        <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0a1628 100%)', padding: 'clamp(1.5rem, 4vw, 3rem)', borderRadius: '30px', border: '2px solid rgba(34, 197, 94, 0.3)', textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📊</div>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#e2e8f0', margin: '0 0 0.5rem' }}>Pirámide de Memoria en 3D</h3>
+          <p style={{ color: '#94a3b8', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Visualiza la jerarquía completa desde Registros hasta HDD en un modelo 3D interactivo con velocidades y capacidades.</p>
+          <a href="/ar-arquitectura" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 2rem', background: 'linear-gradient(135deg, #22c55e, #06b6d4)', color: '#fff', borderRadius: '16px', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 4px 20px rgba(34,197,94,0.3)' }}>
+            Abrir Laboratorio 3D — Memoria
+          </a>
+        </section>
+
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #a855f7', boxShadow: '0 30px 60px rgba(168,85,247,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #a855f7', boxShadow: '0 30px 60px rgba(168,85,247,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Database size={52} color="#a855f7" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Jerarquías</h2>

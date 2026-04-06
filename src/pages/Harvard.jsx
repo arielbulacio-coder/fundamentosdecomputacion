@@ -48,7 +48,7 @@ const Harvard = () => {
 
         {/* Diagrama Interactivo Harvard */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
+          <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '3rem' }}>
              
              <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px', border: '1px solid #8b5cf630' }}>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#8b5cf6', marginBottom: '2rem', textAlign: 'center' }}>Topología Harvard Pura</h3>
@@ -100,9 +100,9 @@ const Harvard = () => {
         </section>
 
         {/* Aplicaciones Modernas */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
           <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem', fontWeight: 900 }}>¿Dónde vive Harvard hoy?</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '3rem' }}>
             {[
               { Icon: Smartphone, color: '#8b5cf6', title: 'Smartphones (ARM)', desc: 'Los cores ARM usan Harvard Modificada: cachés L1 de instrucciones y datos separadas para evitar conflictos.' },
               { Icon: Database, color: '#ec4899', title: 'Microcontroladores', desc: 'Arduino (AVR) y PIC son 100% Harvard. El código vive en Flash y los datos en RAM con buses propios.' },
@@ -122,7 +122,7 @@ const Harvard = () => {
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, textAlign: 'center', marginBottom: '3rem', background: 'linear-gradient(to right, #8b5cf6, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Dónde vive Harvard hoy: Referencias Reales
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '2.5rem' }}>
             <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                <img src="/assets/vn_arduino.png" alt="Arduino Harvard" style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
                <div style={{ padding: '2rem' }}>
@@ -164,8 +164,8 @@ const Harvard = () => {
           </div>
         </section>
 
-        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+        <section style={{ marginBottom: '6rem', background: '#111', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '3rem', alignItems: 'center' }}>
             <div style={{ padding: '2rem' }}>
                <h3 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', color: '#fff' }}>¿Por qué Harvard es el futuro del rendimiento?</h3>
                <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#94a3b8', marginBottom: '2rem' }}>
@@ -196,7 +196,7 @@ const Harvard = () => {
           ]}
         />
 
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #8b5cf6', boxShadow: '0 30px 60px rgba(139,92,246,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #8b5cf6', boxShadow: '0 30px 60px rgba(139,92,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Zap size={52} color="#8b5cf6" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Desafío de Arquitectura Harvard: 20 Preguntas</h2>

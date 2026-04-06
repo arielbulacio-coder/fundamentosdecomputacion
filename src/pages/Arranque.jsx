@@ -76,11 +76,11 @@ const Arranque = () => {
 
         {/* Simulador de Arranque */}
         <section style={{ marginBottom: '6rem' }}>
-           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+           <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
               <Terminal size={40} color="#ff4757" style={{ margin: '0 auto 1.5rem' }} />
               <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '2.5rem' }}>Secuenciador de Inicio</h2>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))', gap: '1rem', marginBottom: '3rem' }}>
                  {BOOT_STAGES.map((s, i) => (
                    <div key={s.id} style={{
                       padding: '1.5rem 1rem', borderRadius: '20px', border: '2px solid', transition: '0.3s',
@@ -113,7 +113,7 @@ const Arranque = () => {
 
         {/* Teoría Ampliada */}
         <section style={{ marginBottom: '6rem' }}>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '3rem' }}>
               {[
                 { title: 'El POST', icon: <ShieldCheck />, color: '#ff4757', desc: 'Power-On Self-Test. El diagnóstico inicial que asegura que la CPU, la memoria y la tarjeta gráfica están vivas.' },
                 { title: 'MBR vs GPT', icon: <Database />, color: '#3b82f6', desc: 'Master Boot Record es el estándar clásico. GPT es el moderno que permite discos de petabytes y 128 particiones.' },
@@ -141,7 +141,7 @@ const Arranque = () => {
           ]}
         />
 
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #ff4757', boxShadow: '0 30px 60px rgba(255,71,87,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #ff4757', boxShadow: '0 30px 60px rgba(255,71,87,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Zap size={52} color="#ff4757" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Arranque</h2>

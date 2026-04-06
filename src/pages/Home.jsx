@@ -70,7 +70,7 @@ const Home = () => {
           <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Arquitectura y Evolución</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '2rem' }}>
           {unidad1.map((card, idx) => (
             <motion.div
               key={card.title}
@@ -131,7 +131,7 @@ const Home = () => {
           <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Sistemas e Impacto</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '2rem' }}>
           {unidad2.map((card, idx) => (
             <motion.div
               key={card.title}
@@ -192,7 +192,7 @@ const Home = () => {
           <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Representación y Lógica</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '2rem' }}>
           {unidad3.map((card, idx) => (
             <motion.div
               key={card.title}
@@ -253,7 +253,7 @@ const Home = () => {
           <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Sistemas y Seguridad</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '2rem' }}>
           {unidad4.map((card, idx) => (
             <motion.div
               key={card.title}

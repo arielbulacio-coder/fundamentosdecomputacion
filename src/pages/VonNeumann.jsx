@@ -76,12 +76,12 @@ const VonNeumann = () => {
 
         {/* Simulador de Ciclo de Bus Von Neumann */}
         <section style={{ marginBottom: '6rem' }}>
-           <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+           <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
               <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '3rem' }}>Simulador de Ciclo de Bus (Von Neumann)</h2>
               
               <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: '4rem', position: 'relative' }}>
                  {/* CPU CARD */}
-                 <div style={{ width: '250px', padding: '2rem', background: '#0f172a', border: '2px solid #0088ff', borderRadius: '25px', textAlign: 'center' }}>
+                 <div style={{ maxWidth: '250px', width: '100%', padding: '2rem', background: '#0f172a', border: '2px solid #0088ff', borderRadius: '25px', textAlign: 'center' }}>
                     <Cpu color="#0088ff" size={40} style={{ margin: '0 auto 1rem' }} />
                     <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>C.P.U.</div>
                     <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#64748b' }}>Registros: PC=0x01, ACC=42</div>
@@ -100,7 +100,7 @@ const VonNeumann = () => {
                  </div>
 
                  {/* RAM CARD */}
-                 <div style={{ width: '250px', padding: '2rem', background: '#0f172a', border: '2px solid #3b82f6', borderRadius: '25px', textAlign: 'center' }}>
+                 <div style={{ maxWidth: '250px', width: '100%', padding: '2rem', background: '#0f172a', border: '2px solid #3b82f6', borderRadius: '25px', textAlign: 'center' }}>
                     <Database color="#3b82f6" size={40} style={{ margin: '0 auto 1rem' }} />
                     <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>RAM (Unificada)</div>
                     <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#64748b' }}>[0x01] : LOAD 42</div>
@@ -122,7 +122,7 @@ const VonNeumann = () => {
         </section>
 
         {/* Comparativa Visual Ampliada */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '4rem', marginBottom: '6rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))', gap: '4rem', marginBottom: '6rem' }}>
           {/* Von Neumann Side */}
           <section style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '45px', border: '1.5px solid rgba(0,136,255,0.2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2.5rem' }}>
@@ -178,7 +178,7 @@ const VonNeumann = () => {
             Conceptos de la Arquitectura Clásica
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem', marginBottom: '4rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '3rem', marginBottom: '4rem' }}>
             <div style={{ background: '#0f172a', borderRadius: '35px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
               <img src="/assets/vn_diagram.png" alt="Von Neumann Diagram" style={{ width: '100%', height: '240px', objectFit: 'cover' }} />
               <div style={{ padding: '2rem' }}>
@@ -222,7 +222,7 @@ const VonNeumann = () => {
             </div>
           </div>
 
-          <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '50px', display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 400px', gap: '3rem', alignItems: 'center' }} className="mobile-stack">
+          <div style={{ background: '#1e293b', padding: '3.5rem', borderRadius: '50px', display: 'grid', gridTemplateColumns: 'minmax(min(100%, 300px), 1fr) 400px', gap: '3rem', alignItems: 'center' }} className="mobile-stack">
             <div>
               <h3 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#fff' }}>Arquitectura Harvard: El Camino Paralelo</h3>
               <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#94a3b8', marginBottom: '2rem' }}>
@@ -247,7 +247,7 @@ const VonNeumann = () => {
 
         <section style={{ marginBottom: '6rem' }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, textAlign: 'center', marginBottom: '3rem' }}>Aplicaciones del Mundo Real</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
             {[
               { title: 'PCs y Laptops', tech: 'Von Neumann', desc: 'Gestionan cientos de procesos compartiendo un solo banco de memoria principal de forma flexible.', img: '/assets/vn_pc.png', color: '#0088ff' },
               { title: 'Arduino y Microchips', tech: 'Harvard Pura', desc: 'Sistemas que ejecutan un solo programa fijo a máxima velocidad sin esperas de bus.', img: '/assets/vn_arduino.png', color: '#f59e0b' },
@@ -273,7 +273,7 @@ const VonNeumann = () => {
               Los buses son las autopistas de datos del hardware. Von Neumann utiliza tres canales distintos para coordinar todo el flujo de información.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '2rem' }}>
             {[
               {
                 name: 'Bus de Datos', color: '#3b82f6', icon: '↔️', dir: 'Bidireccional',
@@ -344,8 +344,18 @@ const VonNeumann = () => {
           ]}
         />
 
+        {/* CTA Laboratorio 3D */}
+        <section style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)', padding: 'clamp(1.5rem, 4vw, 3rem)', borderRadius: '30px', border: '2px solid rgba(99, 102, 241, 0.3)', textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🧊</div>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#e2e8f0', margin: '0 0 0.5rem' }}>Explora la Arquitectura en 3D</h3>
+          <p style={{ color: '#94a3b8', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Rota, toca y observa cada componente de Von Neumann en un modelo tridimensional interactivo.</p>
+          <a href="/ar-arquitectura" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 2rem', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', borderRadius: '16px', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 4px 20px rgba(99,102,241,0.3)' }}>
+            Abrir Laboratorio 3D
+          </a>
+        </section>
+
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <ArrowRightLeft size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Desafío de Arquitecturas: Von Neumann y Harvard</h2>

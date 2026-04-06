@@ -305,7 +305,7 @@ const Generaciones = () => {
                 exit={{ opacity: 0, x: -20 }} 
                 transition={{ duration: 0.4 }}
               >
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 350px', gap: '2.5rem', alignItems: 'start' }} className="mobile-stack">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '2.5rem', alignItems: 'start' }} className="mobile-stack">
                   <div>
                     <h3 style={{ fontSize: '1.8rem', fontWeight: 900, color: GEN_DATA[activeTab].color, marginBottom: '1rem' }}>
                       {GEN_DATA[activeTab].gen} ({GEN_DATA[activeTab].year})
@@ -364,7 +364,7 @@ const Generaciones = () => {
           ))}
         </section>
 
-        <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+        <section style={{ marginBottom: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '3rem' }}>
           {[
             { Icon: History, color: '#f59e0b', title: 'Ley de Moore', desc: 'La observación de que la potencia se duplica mientras el tamaño y costo bajan a la mitad cada 2 años. El motor del siglo XX.' },
             { Icon: Globe, color: '#10b981', title: 'Ubicuidad Digital', desc: 'Con la 4ta generación, la informática pasó de laboratorios militares a estar en cada bolsillo y objeto del planeta.' }
@@ -391,7 +391,7 @@ const Generaciones = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #3b82f6', boxShadow: '0 30px 60px rgba(59,130,246,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <History size={52} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Historia y Evolución</h2>

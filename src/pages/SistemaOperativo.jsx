@@ -102,7 +102,7 @@ const ModoRingSim = () => {
 
   return (
     <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '3rem' }}>
         {/* Diagrama de Rings */}
         <div>
           <h3 style={{ fontWeight: 900, marginBottom: '1.5rem', color: '#94a3b8', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Anillos de Privilegio</h3>
@@ -209,7 +209,7 @@ const SchedulerSimulator = () => {
   };
 
   return (
-    <div style={{ background: '#111', padding: '4rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
+    <div style={{ background: '#111', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)', marginBottom: '6rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <Activity color="#9333ea" size={42} style={{ margin: '0 auto 1rem' }} />
         <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>Simulador de Planificación Round Robin</h2>
@@ -369,7 +369,7 @@ const SistemaOperativo = () => {
 
         {/* Teoría Ampliada: Capas del Sistema */}
         <section style={{ marginBottom: '6rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '3rem' }}>
              {[
                { title: 'Nucleo / Kernel', icon: <Cpu />, color: '#9333ea', desc: 'Es la parte vital. Maneja la memoria, el tiempo del procesador (Scheduling) y el acceso a los periféricos de forma segura.' },
                { title: 'Gestión de Procesos', icon: <Activity />, color: '#4f46e5', desc: 'Un programa es algo muerto en disco. El SO lo convierte en un Proceso vivo, asignándole recursos y tiempo de ejecución.' },
@@ -386,8 +386,8 @@ const SistemaOperativo = () => {
         </section>
 
         {/* Modelo de Capas Visual Ampliado */}
-        <section style={{ marginBottom: '6rem', background: '#111', padding: '5rem 3.5rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+        <section style={{ marginBottom: '6rem', background: '#111', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3.5rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '4rem', alignItems: 'center' }}>
               <div>
                  <h2 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '2rem' }}>Jerarquía de Abstracción</h2>
                  <p style={{ color: '#94a3b8', lineHeight: 1.8, marginBottom: '2rem', fontSize: '1.1rem' }}>
@@ -436,9 +436,9 @@ const SistemaOperativo = () => {
         <SchedulerSimulator />
 
         {/* Teoría Ampliada: Conceptos para la evaluación */}
-        <section style={{ marginBottom: '6rem', background: '#0f172a', padding: '4rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(147,51,234,0.15)' }}>
+        <section style={{ marginBottom: '6rem', background: '#0f172a', padding: 'clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(147,51,234,0.15)' }}>
           <h2 style={{ fontSize: '2.2rem', textAlign: 'center', marginBottom: '3rem', fontWeight: 900, color: '#9333ea' }}>Conceptos Ampliados del SO</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2.5rem' }}>
             {[
               { title: 'Proceso vs Hilo (Thread)', color: '#3b82f6', text: 'Un proceso es un programa en ejecución con su propia memoria aislada. Un hilo es la unidad de ejecución más pequeña dentro de un proceso. Un navegador web, por ejemplo, usa un proceso principal y múltiples hilos para pestañas, renderizado y red simultáneamente.' },
               { title: 'Multitarea y Planificación', color: '#9333ea', text: 'El SO alterna rápidamente entre procesos (Context Switch) dando la ilusión de que todos corren al mismo tiempo. El algoritmo Round Robin asigna "quantums" de tiempo fijos a cada proceso. FCFS (First Come First Served) ejecuta en orden de llegada. SJF (Shortest Job First) prioriza el más corto.' },
@@ -472,7 +472,7 @@ const SistemaOperativo = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #9333ea', boxShadow: '0 30px 60px rgba(147,51,234,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #9333ea', boxShadow: '0 30px 60px rgba(147,51,234,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Server size={52} color="#9333ea" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Sistemas Operativos</h2>

@@ -34,7 +34,7 @@ const CicloDelDato = () => {
   const current = DATO_STEPS[step];
   return (
     <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '3rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: '1rem', marginBottom: '3rem' }}>
         {DATO_STEPS.map((s, i) => (
           <button key={s.id} onClick={() => setStep(i)} style={{
             padding: '1.5rem 0.5rem', borderRadius: '20px', border: '2px solid', cursor: 'pointer', transition: '0.3s',
@@ -111,7 +111,7 @@ const ClasificadorSoftware = () => {
             <h3 style={{ fontSize: '1.8rem', fontWeight: 900 }}>{items[current].name}</h3>
             <p style={{ color: '#64748b' }}>¿A qué categoría de software pertenece?</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '1rem' }}>
             {['Sistema', 'Aplicación', 'Programación'].map(tipo => (
               <button key={tipo} onClick={() => classify(tipo)} disabled={!!feedback} style={{
                 padding: '1.5rem', borderRadius: '20px', border: '2px solid',
@@ -173,7 +173,7 @@ const SociedadSoftware = () => {
         {/* Teoría Ampliada: Categorías de Software */}
         <section style={{ marginBottom: '6rem' }}>
            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '4rem', textAlign: 'center' }}>El Ecosistema del Software</h2>
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '3rem' }}>
               {[
                 { title: 'Software de Sistema', color: '#3b82f6', desc: 'Permite que el hardware funcione. Incluye Sistemas Operativos, Controladores de dispositivos (divers) y utilidades de bajo nivel.' },
                 { title: 'Software de Aplicación', color: '#2ed573', desc: 'Programas finales para el usuario. Desde navegadores web y suites de oficina hasta juegos y editores de video profesionales.' },
@@ -189,8 +189,8 @@ const SociedadSoftware = () => {
         </section>
 
         {/* Teoría Ampliada: Ciclo de Vida e Impacto */}
-        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: '5rem 3rem', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '4rem' }}>
+        <section style={{ marginBottom: '6rem', background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 5rem) clamp(1.5rem, 4vw, 3rem)', borderRadius: '55px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '4rem' }}>
              <div>
                 <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '2rem' }}>El Ciclo de los Datos</h2>
                 <p style={{ color: '#94a3b8', lineHeight: 1.8, marginBottom: '2rem' }}>
@@ -255,7 +255,7 @@ const SociedadSoftware = () => {
         />
 
         {/* Evaluación */}
-        <section style={{ background: '#1e293b', padding: '4rem', borderRadius: '50px', border: '3px solid #00f2ff', boxShadow: '0 30px 60px rgba(0,242,255,0.1)' }}>
+        <section style={{ background: '#1e293b', padding: 'clamp(1.5rem, 4vw, 4rem)', borderRadius: '50px', border: '3px solid #00f2ff', boxShadow: '0 30px 60px rgba(0,242,255,0.1)' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <Users size={52} color="#00f2ff" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900 }}>Evaluación Completa: Sociedad e Información</h2>

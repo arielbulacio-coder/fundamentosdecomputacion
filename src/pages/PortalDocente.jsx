@@ -32,7 +32,7 @@ const LoginScreen = () => {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ background: '#1e293b', borderRadius: '40px', padding: '4rem', maxWidth: '480px', width: '100%', border: '1.5px solid rgba(255,255,255,0.06)', boxShadow: '0 40px 80px rgba(0,0,0,0.5)' }}
+        style={{ background: '#1e293b', borderRadius: '40px', padding: 'clamp(1.5rem, 4vw, 4rem)', maxWidth: '480px', width: '100%', border: '1.5px solid rgba(255,255,255,0.06)', boxShadow: '0 40px 80px rgba(0,0,0,0.5)' }}
       >
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <Shield size={56} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
@@ -286,7 +286,7 @@ const Dashboard = () => {
         {activeTab === 'evaluaciones' && (
           <>
             {/* Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem', marginBottom: '3rem' }}>
               {[
                 { label: 'Total Aprobados', value: total, color: '#22c55e' },
                 { label: 'Promedio', value: `${avgPct}%`, color: '#3b82f6' },
@@ -302,7 +302,7 @@ const Dashboard = () => {
 
             {/* Filters */}
             <div style={{ ...CARD, marginBottom: '2rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', alignItems: 'end' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1.5rem', alignItems: 'end' }}>
                 <div>
                   <label style={LABEL}>Comisión</label>
                   <select value={filters.comision} onChange={e => setFilters(f => ({ ...f, comision: e.target.value }))} style={INPUT}>
@@ -348,9 +348,9 @@ const Dashboard = () => {
             {/* Table */}
             <div style={{ ...CARD, overflow: 'auto' }}>
               {loading ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>Cargando resultados...</div>
+                <div style={{ textAlign: 'center', padding: 'clamp(1.5rem, 4vw, 4rem)', color: '#64748b' }}>Cargando resultados...</div>
               ) : filtered.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
+                <div style={{ textAlign: 'center', padding: 'clamp(1.5rem, 4vw, 4rem)', color: '#64748b' }}>
                   <BookOpen size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
                   <p>No hay evaluaciones registradas con los filtros seleccionados.</p>
                 </div>

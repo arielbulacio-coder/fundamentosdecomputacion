@@ -15,6 +15,7 @@ const NavBar = () => {
     { name: 'Clase 3: Cerebro CPU', path: '/cpu' },
     { name: 'Clase 4: Jerarquía Memoria', path: '/memoria' },
     { name: 'Clase 5: Hardware y Boot', path: '/arranque' },
+    { name: 'Lab 3D Interactivo', path: '/ar-arquitectura' },
   ];
 
   const unit2Links = [
