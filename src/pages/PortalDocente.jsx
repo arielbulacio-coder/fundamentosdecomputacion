@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   LogIn, LogOut, Users, Award, BookOpen, Filter,
   Download, Search, RefreshCw, Shield, ChevronDown,
-  CheckCircle, AlertCircle, PlusCircle, X, Trash2, Settings
+  CheckCircle, AlertCircle, PlusCircle, X, Trash2, Settings, Edit3
 } from 'lucide-react';
 
 // ─── Login Screen ──────────────────────────────────────────────────────────────
@@ -58,24 +58,6 @@ const LoginScreen = () => {
             </div>
           ))}
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ width: '100%', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '14px', padding: '1.25rem', fontWeight: 900, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginTop: '2rem', transition: '0.3s' }}
-            onMouseOver={e => e.target.style.filter = 'brightness(1.1)'}
-            onMouseOut={e => e.target.style.filter = 'none'}
-          >
-            {loading ? <RefreshCw size={20} className="spin" /> : <LogIn size={20} />}
-            {loading ? 'Entrando...' : 'Ingresar al Panel'}
-          </button>
-
-          <a
-            href="/"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem', color: '#64748b', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}
-          >
-            <LogIn size={16} style={{ transform: 'rotate(180deg)' }} /> Volver al Inicio
-          </a>
-
           {error && (
             <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '12px', padding: '1rem', color: '#ef4444', fontSize: '0.9rem', marginBottom: '1.5rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
               <AlertCircle size={18} /> {error}
@@ -87,7 +69,14 @@ const LoginScreen = () => {
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', color: '#475569', fontSize: '0.8rem', marginTop: '2rem' }}>
+        <a
+          href="/"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem', color: '#64748b', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700 }}
+        >
+          <LogIn size={16} style={{ transform: 'rotate(180deg)' }} /> Volver al Inicio
+        </a>
+
+        <p style={{ textAlign: 'center', color: '#475569', fontSize: '0.8rem', marginTop: '1rem' }}>
           Acceso restringido a docentes autorizados.
         </p>
       </motion.div>
@@ -95,12 +84,30 @@ const LoginScreen = () => {
   );
 };
 
-// ─── Admin: Create Teacher Modal ───────────────────────────────────────────────
-const CreateDocenteModal = ({ isOpen, onClose, onCreated }) => {
+// ─── Admin: Create / Edit Teacher Modal ───────────────────────────────────────
+const DocenteModal = ({ isOpen, onClose, onSaved, editing }) => {
   const { authFetch } = useAuth();
+  const isEdit = !!editing;
   const [form, setForm] = useState({ usuario: '', password: '', nombre_completo: '', comisiones: '' });
   const [status, setStatus] = useState('idle');
   const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    if (isOpen && editing) {
+      setForm({
+        usuario: editing.usuario || '',
+        password: '',
+        nombre_completo: editing.nombre_completo || '',
+        comisiones: (editing.comisiones || []).join(', ')
+      });
+      setStatus('idle');
+      setMsg('');
+    } else if (isOpen) {
+      setForm({ usuario: '', password: '', nombre_completo: '', comisiones: '' });
+      setStatus('idle');
+      setMsg('');
+    }
+  }, [isOpen, editing]);
 
   if (!isOpen) return null;
 
@@ -109,21 +116,43 @@ const CreateDocenteModal = ({ isOpen, onClose, onCreated }) => {
     setStatus('loading');
     try {
       const comisiones = form.comisiones.split(',').map(s => s.trim()).filter(Boolean);
-      const res = await authFetch('/docentes', {
-        method: 'POST',
-        body: JSON.stringify({ ...form, comisiones })
-      });
-      const data = await res.json();
-      if (res.ok) { setStatus('success'); setMsg(data.mensaje); onCreated?.(); }
-      else { setStatus('error'); setMsg(data.error); }
+      const body = { nombre_completo: form.nombre_completo, comisiones };
+
+      if (isEdit) {
+        if (form.password) body.password = form.password;
+        const res = await authFetch(`/docentes/${editing.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (res.ok) { setStatus('success'); setMsg(data.mensaje || 'Docente actualizado.'); onSaved?.(); }
+        else { setStatus('error'); setMsg(data.error); }
+      } else {
+        body.usuario = form.usuario;
+        body.password = form.password;
+        const res = await authFetch('/docentes', {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (res.ok) { setStatus('success'); setMsg(data.mensaje || 'Docente creado.'); onSaved?.(); }
+        else { setStatus('error'); setMsg(data.error); }
+      }
     } catch (err) { setStatus('error'); setMsg(err.message); }
   };
+
+  const fields = [
+    { k: 'nombre_completo', l: 'Nombre Completo', p: 'Ej: Prof. María García', t: 'text', required: true },
+    { k: 'usuario', l: 'Usuario', p: 'Ej: mgarcia', t: 'text', required: !isEdit, disabled: isEdit },
+    { k: 'password', l: isEdit ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña', p: isEdit ? 'Solo si desea cambiarla' : 'Mínimo 6 caracteres', t: 'password', required: !isEdit },
+    { k: 'comisiones', l: 'Comisiones (separadas por coma)', p: 'Ej: 2025-A, 2025-B', t: 'text', required: false },
+  ];
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} style={{ background: '#1e293b', borderRadius: '35px', padding: '3rem', maxWidth: '500px', width: '100%', border: '1.5px solid rgba(255,255,255,0.08)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 900 }}>Crear Docente</h2>
+          <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 900 }}>{isEdit ? 'Editar Docente' : 'Crear Docente'}</h2>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={24} /></button>
         </div>
         {status === 'success' ? (
@@ -134,23 +163,59 @@ const CreateDocenteModal = ({ isOpen, onClose, onCreated }) => {
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            {[
-              { k: 'nombre_completo', l: 'Nombre Completo', p: 'Ej: Prof. María García', t: 'text' },
-              { k: 'usuario', l: 'Usuario', p: 'Ej: mgarcia', t: 'text' },
-              { k: 'password', l: 'Contraseña', p: 'Mínimo 6 caracteres', t: 'password' },
-              { k: 'comisiones', l: 'Comisiones (separadas por coma)', p: 'Ej: 2025-A, 2025-B', t: 'text' },
-            ].map(({ k, l, p, t }) => (
+            {fields.map(({ k, l, p, t, required, disabled }) => (
               <div key={k} style={{ marginBottom: '1.25rem' }}>
                 <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{l}</label>
-                <input type={t} required value={form[k]} onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))} placeholder={p} style={{ width: '100%', background: '#0f172a', border: '1.5px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '0.9rem 1rem', color: '#fff', fontSize: '0.95rem', boxSizing: 'border-box', fontFamily: 'inherit', outline: 'none' }} />
+                <input
+                  type={t}
+                  required={required}
+                  disabled={disabled}
+                  value={form[k]}
+                  onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))}
+                  placeholder={p}
+                  style={{ width: '100%', background: disabled ? '#1a2332' : '#0f172a', border: '1.5px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '0.9rem 1rem', color: disabled ? '#475569' : '#fff', fontSize: '0.95rem', boxSizing: 'border-box', fontFamily: 'inherit', outline: 'none', opacity: disabled ? 0.6 : 1 }}
+                />
               </div>
             ))}
             {status === 'error' && <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem' }}>{msg}</div>}
             <button type="submit" disabled={status === 'loading'} style={{ width: '100%', background: '#3b82f6', color: '#fff', border: 'none', padding: '1rem', borderRadius: '16px', fontWeight: 900, cursor: 'pointer', fontSize: '1rem' }}>
-              {status === 'loading' ? 'Creando...' : 'Crear Docente'}
+              {status === 'loading' ? (isEdit ? 'Guardando...' : 'Creando...') : (isEdit ? 'Guardar Cambios' : 'Crear Docente')}
             </button>
           </form>
         )}
+      </motion.div>
+    </div>
+  );
+};
+
+// ─── Admin: Confirm Delete Modal ──────────────────────────────────────────────
+const ConfirmDeleteModal = ({ isOpen, onClose, onConfirm, docente: target }) => {
+  const [loading, setLoading] = useState(false);
+
+  if (!isOpen || !target) return null;
+
+  const handleDelete = async () => {
+    setLoading(true);
+    await onConfirm(target.id);
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} style={{ background: '#1e293b', borderRadius: '35px', padding: '3rem', maxWidth: '450px', width: '100%', border: '1.5px solid rgba(239,68,68,0.2)', textAlign: 'center' }}>
+        <Trash2 size={48} color="#ef4444" style={{ margin: '0 auto 1.5rem' }} />
+        <h2 style={{ margin: '0 0 1rem', fontSize: '1.5rem', fontWeight: 900 }}>Eliminar Docente</h2>
+        <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>
+          ¿Estás seguro de eliminar a <strong style={{ color: '#fff' }}>{target.nombre_completo || target.usuario}</strong>? Esta acción no se puede deshacer.
+        </p>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <button onClick={onClose} disabled={loading} style={{ background: '#334155', color: '#94a3b8', border: 'none', padding: '0.9rem 2rem', borderRadius: '14px', fontWeight: 800, cursor: 'pointer', fontSize: '0.95rem' }}>
+            Cancelar
+          </button>
+          <button onClick={handleDelete} disabled={loading} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '0.9rem 2rem', borderRadius: '14px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Trash2 size={16} /> {loading ? 'Eliminando...' : 'Eliminar'}
+          </button>
+        </div>
       </motion.div>
     </div>
   );
@@ -166,7 +231,9 @@ const Dashboard = () => {
   const [filters, setFilters] = useState({ comision: '', unidad: '', clase: '' });
   const [searchDni, setSearchDni] = useState('');
   const [searchNombre, setSearchNombre] = useState('');
-  const [showCreateDocente, setShowCreateDocente] = useState(false);
+  const [showDocenteModal, setShowDocenteModal] = useState(false);
+  const [editingDocente, setEditingDocente] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const fetchEvaluaciones = useCallback(async () => {
     setLoading(true);
@@ -190,6 +257,18 @@ const Dashboard = () => {
       setDocentes(data.docentes || []);
     } catch (err) { console.error(err.message); }
   }, [authFetch, docente]);
+
+  const deleteDocente = useCallback(async (id) => {
+    try {
+      const res = await authFetch(`/docentes/${id}`, { method: 'DELETE' });
+      if (res.ok) { fetchDocentes(); setDeleteTarget(null); }
+      else { const data = await res.json(); alert(data.error || 'Error al eliminar'); }
+    } catch (err) { alert(err.message); }
+  }, [authFetch, fetchDocentes]);
+
+  const openEdit = (d) => { setEditingDocente(d); setShowDocenteModal(true); };
+  const openCreate = () => { setEditingDocente(null); setShowDocenteModal(true); };
+  const closeDocenteModal = () => { setShowDocenteModal(false); setEditingDocente(null); };
 
   useEffect(() => { fetchEvaluaciones(); }, [fetchEvaluaciones]);
   useEffect(() => { if (activeTab === 'docentes') fetchDocentes(); }, [activeTab, fetchDocentes]);
@@ -391,21 +470,21 @@ const Dashboard = () => {
         {activeTab === 'docentes' && docente?.admin && (
           <>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
-              <button onClick={() => setShowCreateDocente(true)} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '1rem 2rem', borderRadius: '18px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <button onClick={openCreate} style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '1rem 2rem', borderRadius: '18px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <PlusCircle size={20} /> Nuevo Docente
               </button>
             </div>
             <div style={{ ...CARD, overflow: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '700px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    {['Usuario', 'Nombre', 'Comisiones Asignadas', 'Admin', 'Creado'].map(h => (
+                    {['Usuario', 'Nombre', 'Comisiones Asignadas', 'Admin', 'Creado', 'Acciones'].map(h => (
                       <th key={h} style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {docentes.map((d, i) => (
+                  {docentes.map((d) => (
                     <tr key={d.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <td style={{ padding: '1rem', fontWeight: 700 }}>{d.usuario}</td>
                       <td style={{ padding: '1rem', color: '#94a3b8' }}>{d.nombre_completo}</td>
@@ -418,6 +497,18 @@ const Dashboard = () => {
                       </td>
                       <td style={{ padding: '1rem' }}>{d.es_admin ? <CheckCircle size={18} color="#22c55e" /> : <X size={18} color="#475569" />}</td>
                       <td style={{ padding: '1rem', color: '#64748b', fontSize: '0.85rem' }}>{new Date(d.creado_en).toLocaleDateString('es-AR')}</td>
+                      <td style={{ padding: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button onClick={() => openEdit(d)} title="Editar" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', color: '#3b82f6', borderRadius: '10px', padding: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Edit3 size={16} />
+                          </button>
+                          {!d.es_admin && (
+                            <button onClick={() => setDeleteTarget(d)} title="Eliminar" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444', borderRadius: '10px', padding: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -427,10 +518,17 @@ const Dashboard = () => {
         )}
       </div>
 
-      <CreateDocenteModal
-        isOpen={showCreateDocente}
-        onClose={() => setShowCreateDocente(false)}
-        onCreated={() => { setShowCreateDocente(false); fetchDocentes(); }}
+      <DocenteModal
+        isOpen={showDocenteModal}
+        onClose={closeDocenteModal}
+        onSaved={() => { closeDocenteModal(); fetchDocentes(); }}
+        editing={editingDocente}
+      />
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={deleteDocente}
+        docente={deleteTarget}
       />
     </div>
   );
