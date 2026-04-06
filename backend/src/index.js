@@ -236,14 +236,34 @@ app.post('/api/docentes', authMiddleware, async (req, res) => {
   }
 });
 
-// Actualizar comisiones de un docente (admin)
-app.put('/api/docentes/:id/comisiones', authMiddleware, async (req, res) => {
-  if (!req.docente.admin) return res.status(403).json({ error: 'Solo el administrador puede modificar comisiones.' });
-  const { comisiones } = req.body;
-  if (!Array.isArray(comisiones)) return res.status(400).json({ error: 'comisiones debe ser un array.' });
+// Actualizar docente (admin)
+app.put('/api/docentes/:id', authMiddleware, async (req, res) => {
+  if (!req.docente.admin) return res.status(403).json({ error: 'Solo el administrador puede modificar docentes.' });
+  const { nombre_completo, comisiones, password } = req.body;
   try {
-    await pool.query('UPDATE docentes SET comisiones = $1 WHERE id = $2', [comisiones, req.params.id]);
-    res.json({ mensaje: 'Comisiones actualizadas.' });
+    const fields = [];
+    const params = [];
+    if (nombre_completo) { params.push(nombre_completo.trim()); fields.push(`nombre_completo = $${params.length}`); }
+    if (Array.isArray(comisiones)) { params.push(comisiones); fields.push(`comisiones = $${params.length}`); }
+    if (password) { params.push(sha256(password)); fields.push(`password_hash = $${params.length}`); }
+    if (fields.length === 0) return res.status(400).json({ error: 'Nada que actualizar.' });
+    params.push(req.params.id);
+    await pool.query(`UPDATE docentes SET ${fields.join(', ')} WHERE id = $${params.length}`, params);
+    res.json({ mensaje: 'Docente actualizado.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error del servidor.' });
+  }
+});
+
+// Eliminar docente (admin)
+app.delete('/api/docentes/:id', authMiddleware, async (req, res) => {
+  if (!req.docente.admin) return res.status(403).json({ error: 'Solo el administrador puede eliminar docentes.' });
+  try {
+    const check = await pool.query('SELECT es_admin FROM docentes WHERE id = $1', [req.params.id]);
+    if (check.rows.length === 0) return res.status(404).json({ error: 'Docente no encontrado.' });
+    if (check.rows[0].es_admin) return res.status(403).json({ error: 'No se puede eliminar un administrador.' });
+    await pool.query('DELETE FROM docentes WHERE id = $1', [req.params.id]);
+    res.json({ mensaje: 'Docente eliminado.' });
   } catch (err) {
     res.status(500).json({ error: 'Error del servidor.' });
   }
