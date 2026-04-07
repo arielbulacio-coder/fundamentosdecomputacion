@@ -21,7 +21,7 @@ const NavBar = () => {
     { name: 'Arquitectura Von Neumann', path: '/ar-arquitectura' },
     { name: 'Interior del CPU (3D)', path: '/ar-arquitectura' },
     { name: 'Jerarquía de Memoria', path: '/ar-arquitectura' },
-    { name: 'Armado de PC (RA)', path: '/ar-arquitectura' },
+    { name: 'Ensamblaje PC (Cámara RA)', path: '/ar-ensamblaje' },
   ];
 
   const unit2Links = [
@@ -150,7 +150,7 @@ const NavBar = () => {
             onMouseEnter={() => setActiveDropdown('sim3d')}
             onMouseLeave={() => setActiveDropdown(null)}
           >
-            <button className={`nav-link ${location.pathname === '/ar-arquitectura' ? 'active' : ''}`} style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button className={`nav-link ${location.pathname.match(/ar-arquitectura|ar-ensamblaje/) ? 'active' : ''}`} style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
               <Box size={18} /> 3D y RA <span style={{ fontSize: '0.7rem' }}>▼</span>
             </button>
             {activeDropdown === 'sim3d' && (

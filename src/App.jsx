@@ -18,17 +18,19 @@ import SistemaOperativo from './pages/SistemaOperativo';
 import SeguridadInformatica from './pages/SeguridadInformatica';
 import PortalDocente from './pages/PortalDocente';
 import ArquitecturaAR from './pages/ArquitecturaAR';
+import AREnsamblaje from './pages/AREnsamblaje';
 
 // The portal takes over the full screen (no NavBar/Footer)
 function AppLayout() {
   const location = useLocation();
-  const isPortal = location.pathname === '/portal-docente' || location.pathname === '/ar-arquitectura';
+  const isPortal = location.pathname === '/portal-docente' || location.pathname === '/ar-arquitectura' || location.pathname === '/ar-ensamblaje';
 
   if (isPortal) {
     return (
       <Routes>
         <Route path="/portal-docente" element={<PortalDocente />} />
         <Route path="/ar-arquitectura" element={<ArquitecturaAR />} />
+        <Route path="/ar-ensamblaje" element={<AREnsamblaje />} />
       </Routes>
     );
   }

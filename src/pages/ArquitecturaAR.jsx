@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text, Line, Stars } from '@react-three/drei';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Play, Square, RotateCcw, Cpu, Database, Layers, MonitorSmartphone, HardDrive, MemoryStick, CircuitBoard, Fan, CheckCircle } from 'lucide-react';
 import './ArquitecturaAR.css';
 
@@ -532,10 +532,11 @@ const EXPERIENCES = [
   { id: 'vonneumann', label: 'Arquitectura Von Neumann', icon: Cpu, camera: [0, 10, 12], clase: 'Clase 2' },
   { id: 'cpu',        label: 'Interior del CPU',         icon: Layers, camera: [0, 8, 12], clase: 'Clase 3' },
   { id: 'memoria',    label: 'Jerarquía de Memoria',     icon: Database, camera: [8, 5, 5], clase: 'Clase 4' },
-  { id: 'armado',     label: 'Armado de PC',             icon: CircuitBoard, camera: [6, 6, 8], clase: 'RA' },
+  { id: 'armado',     label: 'Ensamblaje RA',             icon: CircuitBoard, camera: [6, 6, 8], clase: 'RA', href: '/ar-ensamblaje' },
 ];
 
 const ArquitecturaAR = () => {
+  const navigate = useNavigate();
   const [experience, setExperience] = useState('vonneumann');
   const [selected, setSelected] = useState(null);
   const [animating, setAnimating] = useState(false);
@@ -606,7 +607,7 @@ const ArquitecturaAR = () => {
           {EXPERIENCES.map(exp => (
             <button key={exp.id}
               className={`lab3d-tab ${experience === exp.id ? 'active' : ''}`}
-              onClick={() => setExperience(exp.id)}
+              onClick={() => exp.href ? navigate(exp.href) : setExperience(exp.id)}
             >
               <exp.icon size={16} />
               <span className="lab3d-tab-label">{exp.label}</span>
