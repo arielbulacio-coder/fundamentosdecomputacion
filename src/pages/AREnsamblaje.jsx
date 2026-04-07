@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Text, Environment } from '@react-three/drei';
-import * as THREE from 'three';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Camera, RotateCcw, Info, ChevronRight,
-  CheckCircle, X, Smartphone, Hand, ZoomIn
+  CheckCircle, X, Smartphone, Hand
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -142,6 +140,90 @@ const PARTS_DATA = [
     ],
     slotPos: [-0.55, 0.18, 0.65],
     color: '#f59e0b',
+  },
+  {
+    id: 'hdd', label: 'Disco Rígido', shortLabel: 'HDD',
+    name: 'Disco Rígido Mecánico (HDD) — 3.5"',
+    desc: 'Almacenamiento masivo no volátil basado en platos magnéticos giratorios. Ideal para archivos grandes y backups por su bajo costo por GB.',
+    specs: [
+      'Interfaz: SATA III (6 Gb/s)',
+      'Capacidad: 1-20 TB',
+      'Velocidad de rotación: 5400-7200 RPM',
+      'Lectura secuencial: ~150-200 MB/s',
+      'Formato: 3.5" (desktop) — requiere bahía de 3.5" en el gabinete',
+      'Conectores: SATA datos + SATA alimentación (desde el PSU)',
+      'Tecnología: Platos magnéticos + cabezal lector flotante (nanómetros)',
+      'Sensible a golpes y vibraciones — manipular con cuidado',
+    ],
+    slotPos: [0.7, 0.12, 0.55],
+    color: '#6366f1',
+  },
+  {
+    id: 'casefan1', label: 'Ventilador Frontal', shortLabel: 'FAN1',
+    name: 'Ventilador de Gabinete — Intake Frontal',
+    desc: 'Inyecta aire fresco del exterior al interior del gabinete. Fundamental para mantener un flujo de aire positivo que refrigere todos los componentes.',
+    specs: [
+      'Tamaño: 120mm o 140mm',
+      'Velocidad: 800-1500 RPM',
+      'Flujo: 50-75 CFM (pies cúbicos por minuto)',
+      'Ruido: 18-28 dBA',
+      'Conector: 4-pin PWM (control automático de velocidad)',
+      'Posición INTAKE: Aire entra por el frente hacia CPU/GPU',
+      'Se atornilla al panel frontal del gabinete',
+      'Filtro anti-polvo recomendado en la entrada',
+    ],
+    slotPos: [-0.85, 0.35, 0],
+    color: '#8b5cf6',
+  },
+  {
+    id: 'casefan2', label: 'Ventilador Trasero', shortLabel: 'FAN2',
+    name: 'Ventilador de Gabinete — Exhaust Trasero',
+    desc: 'Expulsa el aire caliente del interior hacia afuera. Trabaja en conjunto con el ventilador frontal para crear flujo de aire direccional.',
+    specs: [
+      'Tamaño: 120mm',
+      'Velocidad: 800-1500 RPM',
+      'Posición EXHAUST: Aire sale por la parte trasera superior',
+      'Flujo de aire positivo: Más intake que exhaust = presión positiva',
+      'Beneficio: Reduce acumulación de polvo y mejora refrigeración',
+      'Se conecta al header CHA_FAN de la placa madre',
+      'Orientación: Etiqueta del motor hacia afuera del gabinete',
+    ],
+    slotPos: [0.85, 0.45, 0],
+    color: '#a855f7',
+  },
+  {
+    id: 'cables', label: 'Cableado', shortLabel: 'CABLES',
+    name: 'Cableado y Conexiones de Alimentación',
+    desc: 'Todos los cables que conectan la fuente con los componentes. Sin estos cables, los componentes no reciben energía y el sistema no enciende.',
+    specs: [
+      'Cable 24-pin ATX: Alimentación principal de la placa madre',
+      'Cable 8-pin EPS12V: Alimentación directa del CPU',
+      'Cable PCIe 8-pin (6+2): Alimentación de la GPU (1 o 2 cables)',
+      'Cable SATA power: Alimentación de discos HDD/SSD 2.5"',
+      'Cable SATA datos: Conexión de datos HDD → placa madre',
+      'Cable Front Panel: Power SW, Reset SW, HDD LED, Power LED',
+      'Cable USB 3.0: Conector interno 19-pin del panel frontal',
+      'Cable Management: Pasar cables por detrás de la bandeja para orden y flujo de aire',
+    ],
+    slotPos: [0, 0.55, 0],
+    color: '#f97316',
+  },
+  {
+    id: 'case', label: 'Gabinete', shortLabel: 'CASE',
+    name: 'Gabinete (Case) — Torre ATX',
+    desc: 'La estructura que aloja, protege y organiza todos los componentes internos. Provee soporte estructural, flujo de aire y conectividad frontal.',
+    specs: [
+      'Factor: Mid-Tower ATX (más común para gaming/workstation)',
+      'Material: Acero SPCC + Panel lateral de vidrio templado',
+      'Bahías: 2× 3.5" (HDD), 2× 2.5" (SSD), 7 slots de expansión PCIe',
+      'Ventiladores: Soporte 3× 120mm frontal, 1× 120mm trasero, 2× superior',
+      'I/O Frontal: USB 3.0, USB-C, Audio jack 3.5mm, botón Power/Reset',
+      'Filtros anti-polvo: Frontal, inferior (PSU), superior',
+      'Cable Management: Espacio trasero 20-25mm para cables',
+      'Se recomienda flujo de aire frontal-a-trasero (front intake → rear exhaust)',
+    ],
+    slotPos: [0, 0.3, 0],
+    color: '#475569',
   },
 ];
 
@@ -598,6 +680,224 @@ const PSUModel = React.forwardRef(({ highlight, onClick }, ref) => (
 ));
 
 
+// ── HDD: Mechanical hard drive with SATA connectors ──────────────────────
+const HDDModel = React.forwardRef(({ highlight, onClick }, ref) => (
+  <group ref={ref} onClick={onClick}>
+    {/* Main body (sealed aluminum) */}
+    <mesh position={[0, 0, 0]}>
+      <boxGeometry args={[0.4, 0.08, 0.55]} />
+      <meshStandardMaterial color="#a8a8a8" metalness={0.7} roughness={0.2} emissive={highlight ? '#6366f1' : '#000'} emissiveIntensity={highlight ? 0.3 : 0} />
+    </mesh>
+    {/* Top label */}
+    <mesh position={[0, 0.042, 0]}>
+      <boxGeometry args={[0.35, 0.002, 0.45]} />
+      <meshStandardMaterial color="#e2e8f0" roughness={0.9} />
+    </mesh>
+    {/* PCB board (bottom, exposed) */}
+    <mesh position={[0, -0.042, 0]}>
+      <boxGeometry args={[0.38, 0.005, 0.5]} />
+      <meshStandardMaterial color="#065f46" roughness={0.5} />
+    </mesh>
+    {/* Chips on bottom PCB */}
+    {[[-0.1, 0.05], [0.1, 0.05], [0, -0.1]].map(([x, z], i) => (
+      <mesh key={`hchip_${i}`} position={[x, -0.048, z]}>
+        <boxGeometry args={[0.06, 0.01, 0.06]} />
+        <meshStandardMaterial color="#111" />
+      </mesh>
+    ))}
+    {/* SATA data connector */}
+    <mesh position={[-0.08, -0.02, 0.278]}>
+      <boxGeometry args={[0.06, 0.03, 0.015]} />
+      <meshStandardMaterial color="#111" />
+    </mesh>
+    {/* SATA power connector */}
+    <mesh position={[0.06, -0.02, 0.278]}>
+      <boxGeometry args={[0.1, 0.03, 0.015]} />
+      <meshStandardMaterial color="#111" />
+    </mesh>
+    {/* Mounting screw holes (4 corners bottom) */}
+    {[[-0.17, -0.22], [-0.17, 0.22], [0.17, -0.22], [0.17, 0.22]].map(([x, z], i) => (
+      <mesh key={`screw_${i}`} position={[x, -0.04, z]}>
+        <cylinderGeometry args={[0.012, 0.012, 0.01, 8]} />
+        <meshStandardMaterial color="#999" metalness={0.8} />
+      </mesh>
+    ))}
+  </group>
+));
+
+// ── Case Fan: Circular frame with spinning blades ────────────────────────
+const CaseFanModel = React.forwardRef(({ highlight, onClick, exhaust = false }, ref) => {
+  const bladeRef = useRef();
+  useFrame((_, delta) => {
+    if (bladeRef.current) bladeRef.current.rotation.z += delta * (exhaust ? -6 : 6);
+  });
+  const frameColor = exhaust ? '#7c3aed' : '#6d28d9';
+  return (
+    <group ref={ref} onClick={onClick} rotation={[0, exhaust ? Math.PI : 0, 0]}>
+      {/* Frame */}
+      <mesh>
+        <boxGeometry args={[0.06, 0.35, 0.35]} />
+        <meshStandardMaterial color={frameColor} transparent opacity={0.5} emissive={highlight ? '#8b5cf6' : '#000'} emissiveIntensity={highlight ? 0.4 : 0} />
+      </mesh>
+      {/* Corner posts */}
+      {[[-0.15, -0.15], [-0.15, 0.15], [0.15, -0.15], [0.15, 0.15]].map(([y, z], i) => (
+        <mesh key={`post_${i}`} position={[0, y, z]}>
+          <boxGeometry args={[0.065, 0.04, 0.04]} />
+          <meshStandardMaterial color="#1e1e1e" />
+        </mesh>
+      ))}
+      {/* Screw holes */}
+      {[[-0.15, -0.15], [-0.15, 0.15], [0.15, -0.15], [0.15, 0.15]].map(([y, z], i) => (
+        <mesh key={`fscrew_${i}`} position={[0.033, y, z]}>
+          <cylinderGeometry args={[0.008, 0.008, 0.01, 8]} rotation={[0, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#888" metalness={0.8} />
+        </mesh>
+      ))}
+      {/* Spinning blade assembly */}
+      <group ref={bladeRef} position={[0, 0, 0]}>
+        {/* Hub */}
+        <mesh>
+          <cylinderGeometry args={[0.035, 0.035, 0.04, 12]} rotation={[0, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#222" />
+        </mesh>
+        {/* Blades */}
+        {[0, 1, 2, 3, 4, 5, 6, 7].map(i => {
+          const angle = (i * Math.PI * 2) / 8;
+          return (
+            <mesh key={`fblade_${i}`} position={[0, Math.sin(angle) * 0.1, Math.cos(angle) * 0.1]} rotation={[angle, 0, 0]}>
+              <boxGeometry args={[0.015, 0.08, 0.03]} />
+              <meshStandardMaterial color={frameColor} transparent opacity={0.7} />
+            </mesh>
+          );
+        })}
+      </group>
+      {/* Cable */}
+      <mesh position={[-0.02, 0.18, 0.12]}>
+        <cylinderGeometry args={[0.006, 0.006, 0.12, 4]} />
+        <meshStandardMaterial color="#222" />
+      </mesh>
+    </group>
+  );
+});
+
+// ── Cables: Bundle of power cables with connectors ───────────────────────
+const CablesModel = React.forwardRef(({ highlight, onClick }, ref) => (
+  <group ref={ref} onClick={onClick}>
+    {/* 24-pin ATX cable bundle */}
+    <mesh position={[0.3, 0, -0.15]}>
+      <cylinderGeometry args={[0.025, 0.025, 0.6, 6]} rotation={[0, 0, Math.PI / 4]} />
+      <meshStandardMaterial color="#111" emissive={highlight ? '#f97316' : '#000'} emissiveIntensity={highlight ? 0.3 : 0} />
+    </mesh>
+    <mesh position={[0.55, 0, -0.15]}>
+      <boxGeometry args={[0.08, 0.04, 0.06]} />
+      <meshStandardMaterial color="#f5f5f4" />
+    </mesh>
+    {/* 8-pin CPU cable */}
+    <mesh position={[-0.3, 0, -0.3]}>
+      <cylinderGeometry args={[0.015, 0.015, 0.5, 6]} rotation={[0, 0, -Math.PI / 5]} />
+      <meshStandardMaterial color="#fde047" />
+    </mesh>
+    <mesh position={[-0.5, 0, -0.3]}>
+      <boxGeometry args={[0.05, 0.03, 0.04]} />
+      <meshStandardMaterial color="#fde047" />
+    </mesh>
+    {/* PCIe cable */}
+    <mesh position={[0, 0, 0.25]}>
+      <cylinderGeometry args={[0.018, 0.018, 0.5, 6]} rotation={[Math.PI / 6, 0, 0]} />
+      <meshStandardMaterial color="#111" />
+    </mesh>
+    <mesh position={[0, 0, 0.48]}>
+      <boxGeometry args={[0.06, 0.03, 0.04]} />
+      <meshStandardMaterial color="#111" />
+    </mesh>
+    {/* SATA power cable */}
+    <mesh position={[0.4, 0, 0.3]}>
+      <cylinderGeometry args={[0.01, 0.01, 0.35, 4]} rotation={[0, Math.PI / 3, 0]} />
+      <meshStandardMaterial color="#ef4444" />
+    </mesh>
+    {/* SATA data cable */}
+    <mesh position={[0.4, 0.02, 0.35]}>
+      <cylinderGeometry args={[0.008, 0.008, 0.3, 4]} rotation={[0, Math.PI / 3, 0]} />
+      <meshStandardMaterial color="#f97316" />
+    </mesh>
+    {/* Front panel header cables (thin, colored) */}
+    {[['#ef4444', -0.15], ['#22c55e', -0.1], ['#f5f5f4', -0.05], ['#3b82f6', 0]].map(([color, z], i) => (
+      <mesh key={`fp_${i}`} position={[-0.2, -0.02, z]}>
+        <cylinderGeometry args={[0.004, 0.004, 0.2, 4]} rotation={[0, 0, Math.PI / 3]} />
+        <meshStandardMaterial color={color} />
+      </mesh>
+    ))}
+  </group>
+));
+
+// ── Case: Transparent tower showing interior slots ───────────────────────
+const CaseModel = React.forwardRef(({ highlight, onClick }, ref) => (
+  <group ref={ref} onClick={onClick}>
+    {/* Outer frame — wireframe for visibility */}
+    <mesh position={[0, 0, 0]}>
+      <boxGeometry args={[2.2, 1.4, 1.6]} />
+      <meshStandardMaterial color="#475569" transparent opacity={0.06} emissive={highlight ? '#475569' : '#000'} emissiveIntensity={highlight ? 0.3 : 0} />
+    </mesh>
+    {/* Wireframe edge */}
+    <mesh position={[0, 0, 0]}>
+      <boxGeometry args={[2.2, 1.4, 1.6]} />
+      <meshBasicMaterial color="#64748b" wireframe transparent opacity={0.25} />
+    </mesh>
+    {/* Back panel */}
+    <mesh position={[1.1, 0, 0]}>
+      <boxGeometry args={[0.02, 1.38, 1.58]} />
+      <meshStandardMaterial color="#1e293b" transparent opacity={0.4} metalness={0.5} />
+    </mesh>
+    {/* Bottom panel */}
+    <mesh position={[0, -0.69, 0]}>
+      <boxGeometry args={[2.18, 0.02, 1.58]} />
+      <meshStandardMaterial color="#1e293b" transparent opacity={0.3} metalness={0.5} />
+    </mesh>
+    {/* PSU shroud (bottom compartment) */}
+    <mesh position={[0, -0.45, 0]}>
+      <boxGeometry args={[2.18, 0.02, 1.58]} />
+      <meshStandardMaterial color="#27272a" transparent opacity={0.35} />
+    </mesh>
+    {/* Front panel I/O area */}
+    <mesh position={[-1.05, 0.55, 0]}>
+      <boxGeometry args={[0.08, 0.15, 0.3]} />
+      <meshStandardMaterial color="#111" />
+    </mesh>
+    {/* Power button */}
+    <mesh position={[-1.1, 0.58, 0.05]}>
+      <cylinderGeometry args={[0.02, 0.02, 0.01, 12]} rotation={[0, 0, Math.PI / 2]} />
+      <meshStandardMaterial color="#e2e8f0" metalness={0.6} />
+    </mesh>
+    {/* Drive bays (3.5") */}
+    {[0, 0.12].map((z, i) => (
+      <mesh key={`bay_${i}`} position={[0.8, -0.55, 0.4 + z]}>
+        <boxGeometry args={[0.45, 0.1, 0.08]} />
+        <meshStandardMaterial color="#1a1a1a" transparent opacity={0.5} />
+      </mesh>
+    ))}
+    {/* PCIe slot covers (back) */}
+    {[...Array(7)].map((_, i) => (
+      <mesh key={`pcie_cover_${i}`} position={[1.09, -0.05 + i * 0.08, 0.55]}>
+        <boxGeometry args={[0.015, 0.06, 0.02]} />
+        <meshStandardMaterial color="#888" metalness={0.6} />
+      </mesh>
+    ))}
+    {/* Tempered glass side panel */}
+    <mesh position={[0, 0, -0.8]}>
+      <boxGeometry args={[2.18, 1.38, 0.02]} />
+      <meshPhysicalMaterial color="#1e3a5f" transparent opacity={0.08} roughness={0} metalness={0.1} />
+    </mesh>
+    {/* Feet */}
+    {[[-0.9, -0.6], [-0.9, 0.6], [0.9, -0.6], [0.9, 0.6]].map(([x, z], i) => (
+      <mesh key={`foot_${i}`} position={[x, -0.73, z]}>
+        <boxGeometry args={[0.08, 0.04, 0.06]} />
+        <meshStandardMaterial color="#111" />
+      </mesh>
+    ))}
+  </group>
+));
+
+
 /* ═══════════════════════════════════════════════════════════════════════════════
    MODEL DISPATCHER — Renders the correct model for each part ID
    ═══════════════════════════════════════════════════════════════════════════════ */
@@ -612,6 +912,11 @@ const PartModel = React.forwardRef(({ id, highlight, onClick }, ref) => {
     case 'ssd': return <SSDModel ref={ref} highlight={highlight} onClick={onClick} />;
     case 'gpu': return <GPUModel ref={ref} highlight={highlight} onClick={onClick} />;
     case 'psu': return <PSUModel ref={ref} highlight={highlight} onClick={onClick} />;
+    case 'hdd': return <HDDModel ref={ref} highlight={highlight} onClick={onClick} />;
+    case 'casefan1': return <CaseFanModel ref={ref} highlight={highlight} onClick={onClick} />;
+    case 'casefan2': return <CaseFanModel ref={ref} highlight={highlight} onClick={onClick} exhaust />;
+    case 'cables': return <CablesModel ref={ref} highlight={highlight} onClick={onClick} />;
+    case 'case': return <CaseModel ref={ref} highlight={highlight} onClick={onClick} />;
     default: return null;
   }
 });
@@ -663,6 +968,14 @@ const AnimatedPart = ({ partData, installed, installing, isSelected, onSelect })
 /* ═══════════════════════════════════════════════════════════════════════════════
    AR SCENE — All parts + marker cross + labels
    ═══════════════════════════════════════════════════════════════════════════════ */
+
+const FixedCamera = () => {
+  const { camera } = useThree();
+  useEffect(() => {
+    camera.lookAt(0, 0.15, 0);
+  }, [camera]);
+  return null;
+};
 
 const ARScene = ({ installedParts, installingPart, selected, onSelect, placed }) => {
   if (!placed) return null;
@@ -820,7 +1133,7 @@ const AREnsamblaje = () => {
       {/* ── 3D Overlay (transparent background) ──────────────────── */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 2 }} onClick={handlePlace}>
         <Canvas
-          camera={{ position: [1.5, 2, 2.5], fov: 55 }}
+          camera={{ position: [0, 2.5, 2.2], fov: 50 }}
           gl={{ alpha: true, antialias: true }}
           style={{ background: 'transparent' }}
         >
@@ -831,12 +1144,7 @@ const AREnsamblaje = () => {
             onSelect={setSelected}
             placed={placed}
           />
-          <OrbitControls
-            enableDamping dampingFactor={0.08}
-            minDistance={1} maxDistance={6}
-            target={[0, 0.2, 0]}
-            maxPolarAngle={Math.PI / 2.1}
-          />
+          <FixedCamera />
         </Canvas>
       </div>
 
@@ -873,23 +1181,26 @@ const AREnsamblaje = () => {
 
       {/* ── Initial placement prompt ────────────────────────────── */}
       {cameraReady && !placed && (
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 15,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(2px)'
-        }}>
+        <div
+          onClick={handlePlace}
+          style={{
+            position: 'absolute', inset: 0, zIndex: 15, cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(2px)'
+          }}
+        >
           <div style={{
             background: 'rgba(15,23,42,0.92)', backdropFilter: 'blur(20px)',
             borderRadius: '28px', padding: '2.5rem 2rem', maxWidth: '340px', width: '90%',
             textAlign: 'center', border: '1.5px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 25px 60px rgba(0,0,0,0.5)'
+            boxShadow: '0 25px 60px rgba(0,0,0,0.5)', pointerEvents: 'none'
           }}>
             <Hand size={48} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
             <h2 style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 900, margin: '0 0 0.75rem' }}>
               Apuntá a una superficie plana
             </h2>
             <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 0 2rem' }}>
-              Buscá una mesa o escritorio con buena iluminación. Tocá la pantalla para posicionar la placa madre y comenzar el ensamblaje.
+              Buscá una mesa o escritorio con buena iluminación. Tocá la pantalla para posicionar los componentes y comenzar el ensamblaje.
             </p>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
