@@ -675,10 +675,10 @@ const ArquitecturaAR = () => {
       {experience === 'armado' && (
         <div className="lab3d-controls">
           {!pcComplete ? (
-            <button className="lab3d-btn play" onClick={installNextPart} disabled={!!installingPart}>
+            <button type="button" className="lab3d-btn play" onClick={(e) => { e.preventDefault(); e.stopPropagation(); installNextPart(); }} disabled={!!installingPart}>
               {installingPart
                 ? <><RotateCcw size={16} className="lab3d-spin" /> Instalando...</>
-                : <><Play size={16} /> Instalar: {PC_PARTS.find(p => p.id === PC_INSTALL_ORDER.find(id => !installedParts.includes(id)))?.label || ''}</>
+                : <><Play size={16} /> Iniciar Simulación: {PC_PARTS.find(p => p.id === PC_INSTALL_ORDER.find(id => !installedParts.includes(id)))?.label || ''}</>
               }
             </button>
           ) : (

@@ -1256,7 +1256,7 @@ const AREnsamblaje = () => {
           {/* Install + Reset buttons */}
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
             {!isComplete ? (
-              <button onClick={installNext} disabled={!!installingPart} style={{
+              <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); installNext(); }} disabled={!!installingPart} style={{
                 flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
                 background: installingPart ? 'rgba(59,130,246,0.3)' : 'linear-gradient(135deg, #3b82f6, #6366f1)',
                 color: '#fff', border: 'none', borderRadius: '16px',
@@ -1268,7 +1268,7 @@ const AREnsamblaje = () => {
                 {installingPart ? (
                   <>Instalando {PARTS_DATA.find(p => p.id === installingPart)?.shortLabel}...</>
                 ) : (
-                  <><ChevronRight size={20} /> Instalar: {nextPartData?.label}</>
+                  <><ChevronRight size={20} /> Iniciar Simulación: {nextPartData?.label}</>
                 )}
               </button>
             ) : (

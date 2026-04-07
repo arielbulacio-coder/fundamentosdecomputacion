@@ -9,8 +9,13 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'immediate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      registerType: 'autoUpdate',
+      workbox: {
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true
+      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
         name: 'Fundamentos de Computación',
         short_name: 'Fundamentos',
