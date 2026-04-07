@@ -47,12 +47,24 @@ const ISA_DATA = [
 
 // ─── CPU PAGE ───────────────────────────────────────────────────────
 
+const CLOCK_PRESETS = [
+  { label: '0.5 Hz', ms: 2000, ghz: '0.5 Hz' },
+  { label: '1 Hz',   ms: 1000, ghz: '1 Hz' },
+  { label: '2 Hz',   ms: 500,  ghz: '2 Hz' },
+  { label: '4 Hz',   ms: 250,  ghz: '4 Hz' },
+  { label: '8 Hz',   ms: 125,  ghz: '8 Hz' },
+];
+
 const CPU = () => {
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [pc, setPc] = useState(10);
   const [acc, setAcc] = useState(0);
   const [ir, setIr] = useState('---');
   const [running, setRunning] = useState(false);
+  const [clockIdx, setClockIdx] = useState(1);
+  const [autoLoop, setAutoLoop] = useState(false);
+
+  const clockSpeed = CLOCK_PRESETS[clockIdx].ms;
 
   const currentPhase = PHASE_LABELS[phaseIdx];
 
@@ -64,7 +76,6 @@ const CPU = () => {
       idx++;
       if (idx < PHASE_LABELS.length) {
         setPhaseIdx(idx);
-        // Effects per phase
         if (PHASE_LABELS[idx] === 'FETCH') setIr('0x10110');
         if (PHASE_LABELS[idx] === 'EXECUTE') setAcc(prev => (prev + 1) % 255);
         if (PHASE_LABELS[idx] === 'WRITE-BACK') setPc(prev => prev + 1);
@@ -73,8 +84,15 @@ const CPU = () => {
         setRunning(false);
         setPhaseIdx(0);
       }
-    }, 1200);
+    }, clockSpeed);
   };
+
+  // Auto-loop: continuously run cycles
+  useEffect(() => {
+    if (!autoLoop || running) return;
+    const timeout = setTimeout(() => advance(), clockSpeed / 2);
+    return () => clearTimeout(timeout);
+  }, [autoLoop, running, clockSpeed]);
 
   return (
     <LockedContent keyword="fetch" title="Clase 3: El Cerebro del Sistema" unit={1}>
@@ -117,12 +135,38 @@ const CPU = () => {
                    ))}
                 </div>
 
-                <button onClick={advance} disabled={running} style={{
-                   width: '100%', background: '#3b82f6', color: '#fff', border: 'none', padding: '1.25rem',
-                   borderRadius: '20px', fontWeight: 900, cursor: running ? 'not-allowed' : 'pointer', fontSize: '1rem', display: 'flex', justifyContent: 'center', gap: '10px'
-                }}>
-                   {running ? <RefreshCw className="spin" size={20} /> : <><Play size={20} /> Iniciar Secuencia</>}
-                </button>
+                {/* Clock Speed Control */}
+                <div style={{ background: '#0f172a', borderRadius: '18px', padding: '1.25rem', marginBottom: '1.25rem', border: '1px solid rgba(245,158,11,0.15)' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '1px' }}>Velocidad de Clock</span>
+                      <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace' }}>{CLOCK_PRESETS[clockIdx].ghz}</span>
+                   </div>
+                   <input
+                     type="range" min={0} max={CLOCK_PRESETS.length - 1} value={clockIdx}
+                     onChange={e => setClockIdx(Number(e.target.value))}
+                     disabled={running}
+                     style={{ width: '100%', accentColor: '#f59e0b', cursor: running ? 'not-allowed' : 'pointer' }}
+                   />
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem' }}>
+                      <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Lento</span>
+                      <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Rápido</span>
+                   </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                   <button onClick={advance} disabled={running || autoLoop} style={{
+                      flex: 1, background: '#3b82f6', color: '#fff', border: 'none', padding: '1rem',
+                      borderRadius: '16px', fontWeight: 900, cursor: (running || autoLoop) ? 'not-allowed' : 'pointer', fontSize: '0.9rem', display: 'flex', justifyContent: 'center', gap: '8px', opacity: autoLoop ? 0.5 : 1
+                   }}>
+                      {running ? <RefreshCw className="spin" size={18} /> : <><Play size={18} /> 1 Ciclo</>}
+                   </button>
+                   <button onClick={() => setAutoLoop(a => !a)} style={{
+                      flex: 1, background: autoLoop ? '#ef4444' : '#10b981', color: '#fff', border: 'none', padding: '1rem',
+                      borderRadius: '16px', fontWeight: 900, cursor: 'pointer', fontSize: '0.9rem', display: 'flex', justifyContent: 'center', gap: '8px'
+                   }}>
+                      {autoLoop ? <><Settings size={18} className="spin" /> Detener</> : <><Settings size={18} /> Continuo</>}
+                   </button>
+                </div>
              </div>
 
              <div style={{ background: '#0f172a', padding: '3rem', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.05)' }}>

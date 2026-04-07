@@ -354,6 +354,16 @@
   color: #e2e8f0;
 }
 
+/* ── Spin animation ────────────────────────────────────────────────────────── */
+
+@keyframes lab3d-spin-anim {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.lab3d-spin {
+  animation: lab3d-spin-anim 1s linear infinite;
+}
+
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {

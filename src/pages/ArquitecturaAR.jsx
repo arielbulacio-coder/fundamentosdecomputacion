@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text, Line, Stars } from '@react-three/drei';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Play, Square, RotateCcw, Cpu, Database, Layers, MonitorSmartphone } from 'lucide-react';
+import { ArrowLeft, Play, Square, RotateCcw, Cpu, Database, Layers, MonitorSmartphone, HardDrive, MemoryStick, CircuitBoard, Fan, CheckCircle } from 'lucide-react';
 import './ArquitecturaAR.css';
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -404,6 +404,127 @@ const MemoryScene = ({ onSelect, selected }) => {
 
 
 /* ═══════════════════════════════════════════════════════════════════════════════
+   SCENE 4: PC ASSEMBLY — Armado de PC con componentes 3D
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+const PC_PARTS = [
+  { id: 'motherboard', label: 'MOTHERBOARD', color: '#059669', slot: [0, 0.15, 0], size: [5, 0.15, 4],
+    name: 'Placa Madre (Motherboard)', desc: 'La base donde se conectan todos los componentes. Contiene chipset, slots y conectores.',
+    detail: 'Formatos ATX, Micro-ATX, Mini-ITX. Incluye socket del CPU, slots DIMM para RAM, slots PCIe para GPU, y conectores SATA/M.2.' },
+  { id: 'cpu', label: 'CPU', color: '#3b82f6', slot: [-1.2, 0.55, -0.5], size: [1.2, 0.3, 1.2],
+    name: 'Procesador (CPU)', desc: 'El cerebro de la computadora. Se instala en el socket de la placa madre.',
+    detail: 'Se coloca con cuidado alineando la flecha dorada con el socket. Intel usa LGA (pines en el socket), AMD usa PGA (pines en el CPU) o AM5 LGA.' },
+  { id: 'cooler', label: 'COOLER', color: '#64748b', slot: [-1.2, 1.1, -0.5], size: [1.3, 0.8, 1.3],
+    name: 'Disipador / Cooler', desc: 'Extrae el calor del procesador para mantenerlo a temperatura segura.',
+    detail: 'Puede ser de aire (heatsink + ventilador) o líquido (AIO). El TDP del CPU determina qué cooler necesitás.' },
+  { id: 'ram1', label: 'RAM 1', color: '#22c55e', slot: [1.2, 0.65, -1.2], size: [0.3, 0.8, 1.5],
+    name: 'Módulo RAM DDR', desc: 'Memoria volátil de acceso rápido. Se inserta en los slots DIMM de la placa madre.',
+    detail: 'DDR5 actual: 4800-7200 MHz. Siempre instalar en pares (Dual Channel) para duplicar el ancho de banda.' },
+  { id: 'ram2', label: 'RAM 2', color: '#22c55e', slot: [1.7, 0.65, -1.2], size: [0.3, 0.8, 1.5],
+    name: 'Módulo RAM DDR (Dual Channel)', desc: 'Segundo módulo idéntico para activar Dual Channel y duplicar el rendimiento.',
+    detail: 'Los slots tienen colores alternados en la placa: instalar en el mismo color activa Dual Channel automáticamente.' },
+  { id: 'gpu', label: 'GPU', color: '#ef4444', slot: [0, 0.65, 1.2], size: [3.5, 0.5, 1],
+    name: 'Tarjeta Gráfica (GPU)', desc: 'Procesador especializado en gráficos. Se conecta al slot PCIe x16.',
+    detail: 'Contiene su propia VRAM (GDDR6/6X). Modelos actuales: NVIDIA RTX 40xx, AMD RX 7xxx. Necesita alimentación extra del PSU.' },
+  { id: 'ssd', label: 'SSD M.2', color: '#06b6d4', slot: [1.5, 0.35, 0.5], size: [0.6, 0.1, 1.8],
+    name: 'Disco SSD M.2 NVMe', desc: 'Almacenamiento ultrarrápido que se conecta directamente a la placa madre.',
+    detail: 'NVMe PCIe Gen 4: hasta 7000 MB/s lectura. Gen 5: hasta 14000 MB/s. Reemplazó a los discos SATA tradicionales.' },
+  { id: 'psu', label: 'FUENTE', color: '#f59e0b', slot: [-1.5, 0.55, 1.5], size: [1.6, 0.8, 1.2],
+    name: 'Fuente de Alimentación (PSU)', desc: 'Convierte la corriente alterna (220V) en corriente continua para los componentes.',
+    detail: 'Certificación 80 Plus (eficiencia). Para gaming se recomiendan 650-850W. Conectores: 24-pin ATX, 8-pin CPU, PCIe para GPU.' },
+];
+
+const PC_INSTALL_ORDER = ['motherboard', 'cpu', 'cooler', 'ram1', 'ram2', 'ssd', 'gpu', 'psu'];
+
+const PCPartBox = ({ part, installed, installing, onInstall, onSelect, isSelected }) => {
+  const meshRef = useRef();
+  const [hovered, setHovered] = useState(false);
+  const startY = useRef(part.slot[1] + 3);
+  const targetY = part.slot[1];
+
+  useFrame((_, delta) => {
+    if (!meshRef.current) return;
+    if (installing) {
+      startY.current += (targetY - startY.current) * delta * 3;
+      meshRef.current.position.y = startY.current;
+    } else if (installed) {
+      meshRef.current.position.y = targetY;
+    }
+    const glow = isSelected ? 0.4 : hovered ? 0.2 : 0.05;
+    meshRef.current.material.emissiveIntensity += (glow - meshRef.current.material.emissiveIntensity) * delta * 6;
+    const s = hovered ? 1.03 : 1;
+    meshRef.current.scale.lerp({ x: s, y: s, z: s }, delta * 8);
+  });
+
+  if (!installed && !installing) return null;
+
+  return (
+    <group>
+      <mesh
+        ref={meshRef}
+        position={[part.slot[0], part.slot[1] + 3, part.slot[2]]}
+        onClick={(e) => { e.stopPropagation(); onSelect?.(); }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto'; }}
+      >
+        <boxGeometry args={part.size} />
+        <meshPhysicalMaterial color={part.color} transparent opacity={0.85} emissive={part.color} emissiveIntensity={0.05} metalness={0.4} roughness={0.3} />
+      </mesh>
+      {installed && (
+        <Text position={[part.slot[0], part.slot[1] + part.size[1] / 2 + 0.25, part.slot[2]]}
+          fontSize={0.22} color="white" anchorX="center" anchorY="bottom" fontWeight="bold" outlineWidth={0.02} outlineColor="#000">
+          {part.label}
+        </Text>
+      )}
+    </group>
+  );
+};
+
+const PCAssemblyScene = ({ onSelect, selected, installedParts, installingPart }) => {
+  return (
+    <group>
+      {/* Case outline */}
+      <mesh position={[0, 1, 0]}>
+        <boxGeometry args={[6.5, 3, 5.5]} />
+        <meshPhysicalMaterial color="#1e293b" transparent opacity={0.04} wireframe />
+      </mesh>
+      <mesh position={[0, -0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[6.5, 5.5]} />
+        <meshStandardMaterial color="#0f172a" transparent opacity={0.5} />
+      </mesh>
+
+      {/* Slot guides for uninstalled parts */}
+      {PC_PARTS.map(part => {
+        if (installedParts.includes(part.id)) return null;
+        if (installingPart === part.id) return null;
+        return (
+          <mesh key={`ghost_${part.id}`} position={part.slot}>
+            <boxGeometry args={part.size} />
+            <meshBasicMaterial color={part.color} transparent opacity={0.08} wireframe />
+          </mesh>
+        );
+      })}
+
+      {/* Installed parts */}
+      {PC_PARTS.map(part => (
+        <PCPartBox key={part.id} part={part}
+          installed={installedParts.includes(part.id)}
+          installing={installingPart === part.id}
+          onSelect={() => onSelect(selected === part.id ? null : part.id)}
+          isSelected={selected === part.id}
+        />
+      ))}
+
+      {/* Labels */}
+      <Text position={[0, 2.8, 0]} fontSize={0.3} color="#475569" anchorX="center">
+        Armado de PC — Componentes Internos
+      </Text>
+    </group>
+  );
+};
+
+
+/* ═══════════════════════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════════════════════ */
 
@@ -411,6 +532,7 @@ const EXPERIENCES = [
   { id: 'vonneumann', label: 'Arquitectura Von Neumann', icon: Cpu, camera: [0, 10, 12], clase: 'Clase 2' },
   { id: 'cpu',        label: 'Interior del CPU',         icon: Layers, camera: [0, 8, 12], clase: 'Clase 3' },
   { id: 'memoria',    label: 'Jerarquía de Memoria',     icon: Database, camera: [8, 5, 5], clase: 'Clase 4' },
+  { id: 'armado',     label: 'Armado de PC',             icon: CircuitBoard, camera: [6, 6, 8], clase: 'RA' },
 ];
 
 const ArquitecturaAR = () => {
@@ -418,6 +540,8 @@ const ArquitecturaAR = () => {
   const [selected, setSelected] = useState(null);
   const [animating, setAnimating] = useState(false);
   const [cyclePhase, setCyclePhase] = useState(0);
+  const [installedParts, setInstalledParts] = useState([]);
+  const [installingPart, setInstallingPart] = useState(null);
 
   const currentExp = EXPERIENCES.find(e => e.id === experience);
 
@@ -426,7 +550,27 @@ const ArquitecturaAR = () => {
     setSelected(null);
     setAnimating(false);
     setCyclePhase(0);
+    setInstalledParts([]);
+    setInstallingPart(null);
   }, [experience]);
+
+  const installNextPart = () => {
+    const next = PC_INSTALL_ORDER.find(id => !installedParts.includes(id));
+    if (!next || installingPart) return;
+    setInstallingPart(next);
+    setTimeout(() => {
+      setInstalledParts(prev => [...prev, next]);
+      setInstallingPart(null);
+    }, 1200);
+  };
+
+  const resetAssembly = () => {
+    setInstalledParts([]);
+    setInstallingPart(null);
+    setSelected(null);
+  };
+
+  const pcComplete = installedParts.length === PC_INSTALL_ORDER.length;
 
   // Resolve selected component info
   const getInfo = () => {
@@ -441,6 +585,7 @@ const ArquitecturaAR = () => {
     }
     if (experience === 'vonneumann') return VN[selected] || null;
     if (experience === 'cpu') return CPU_DATA[selected] || null;
+    if (experience === 'armado') return PC_PARTS.find(p => p.id === selected) || null;
     return null;
   };
 
@@ -491,6 +636,7 @@ const ArquitecturaAR = () => {
           )}
           {experience === 'cpu' && <CPUScene onSelect={setSelected} selected={selected} />}
           {experience === 'memoria' && <MemoryScene onSelect={setSelected} selected={selected} />}
+          {experience === 'armado' && <PCAssemblyScene onSelect={setSelected} selected={selected} installedParts={installedParts} installingPart={installingPart} />}
         </Canvas>
 
         {/* Cycle phase overlay */}
@@ -521,6 +667,32 @@ const ArquitecturaAR = () => {
               <RotateCcw size={16} /> Reiniciar
             </button>
           )}
+        </div>
+      )}
+
+      {/* ── Assembly Controls ─────────────────────────────────────── */}
+      {experience === 'armado' && (
+        <div className="lab3d-controls">
+          {!pcComplete ? (
+            <button className="lab3d-btn play" onClick={installNextPart} disabled={!!installingPart}>
+              {installingPart
+                ? <><RotateCcw size={16} className="lab3d-spin" /> Instalando...</>
+                : <><Play size={16} /> Instalar: {PC_PARTS.find(p => p.id === PC_INSTALL_ORDER.find(id => !installedParts.includes(id)))?.label || ''}</>
+              }
+            </button>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#22c55e', fontWeight: 800, fontSize: '0.9rem' }}>
+              <CheckCircle size={20} /> PC Armada Correctamente
+            </div>
+          )}
+          {installedParts.length > 0 && (
+            <button className="lab3d-btn reset" onClick={resetAssembly}>
+              <RotateCcw size={16} /> Reiniciar Armado
+            </button>
+          )}
+          <div style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>
+            {installedParts.length}/{PC_INSTALL_ORDER.length} componentes
+          </div>
         </div>
       )}
 

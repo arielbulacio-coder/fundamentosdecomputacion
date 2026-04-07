@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Cpu, Landmark, History, Home, Database, Power, Share2, Shield } from 'lucide-react';
+import { Menu, X, Cpu, Landmark, History, Home, Database, Power, Share2, Shield, Box } from 'lucide-react';
 import logo from '../assets/logo_unpilar.png';
 
 const NavBar = () => {
@@ -15,7 +15,13 @@ const NavBar = () => {
     { name: 'Clase 3: Cerebro CPU', path: '/cpu' },
     { name: 'Clase 4: Jerarquía Memoria', path: '/memoria' },
     { name: 'Clase 5: Hardware y Boot', path: '/arranque' },
-    { name: 'Lab 3D Interactivo', path: '/ar-arquitectura' },
+  ];
+
+  const sim3dLinks = [
+    { name: 'Arquitectura Von Neumann', path: '/ar-arquitectura' },
+    { name: 'Interior del CPU (3D)', path: '/ar-arquitectura' },
+    { name: 'Jerarquía de Memoria', path: '/ar-arquitectura' },
+    { name: 'Armado de PC (RA)', path: '/ar-arquitectura' },
   ];
 
   const unit2Links = [
@@ -138,6 +144,26 @@ const NavBar = () => {
             )}
           </div>
 
+          {/* Simuladores 3D y RA Dropdown */}
+          <div
+            style={{ position: 'relative' }}
+            onMouseEnter={() => setActiveDropdown('sim3d')}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <button className={`nav-link ${location.pathname === '/ar-arquitectura' ? 'active' : ''}`} style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+              <Box size={18} /> 3D y RA <span style={{ fontSize: '0.7rem' }}>▼</span>
+            </button>
+            {activeDropdown === 'sim3d' && (
+              <div className="dropdown-menu">
+                {sim3dLinks.map(link => (
+                  <Link key={link.name} to={link.path} className={`drop-link ${location.pathname === link.path ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           <Link to="/portal-docente" className={`nav-link ${location.pathname === '/portal-docente' ? 'active' : ''}`} style={{ marginLeft: '1rem', borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem', color: '#3b82f6' }}>
             <Shield size={18} /> Acceso Docente
           </Link>
@@ -180,6 +206,13 @@ const NavBar = () => {
           <div className="mobile-unit-header">UNIDAD 4</div>
           {unit4Links.map(link => (
             <Link key={link.path} to={link.path} onClick={() => setIsOpen(false)} className={`mobile-nav-link ${location.pathname === link.path ? 'active' : ''}`}>
+              {link.name}
+            </Link>
+          ))}
+
+          <div className="mobile-unit-header">SIMULADORES 3D Y RA</div>
+          {sim3dLinks.map(link => (
+            <Link key={link.name} to={link.path} onClick={() => setIsOpen(false)} className={`mobile-nav-link ${location.pathname === link.path ? 'active' : ''}`}>
               {link.name}
             </Link>
           ))}
