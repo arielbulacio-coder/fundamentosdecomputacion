@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { DeviceOrientationControls } from '@react-three/drei';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Camera, RotateCcw, Info, ChevronRight,
@@ -972,9 +973,11 @@ const AnimatedPart = ({ partData, installed, installing, isSelected, onSelect })
 const FixedCamera = () => {
   const { camera } = useThree();
   useEffect(() => {
+    // Initial look at the center, but DeviceOrientationControls will take over rotation
+    camera.position.set(0, 2.5, 2.2);
     camera.lookAt(0, 0.15, 0);
   }, [camera]);
-  return null;
+  return <DeviceOrientationControls />;
 };
 
 const ARScene = ({ installedParts, installingPart, selected, onSelect, placed }) => {
@@ -1100,7 +1103,20 @@ const AREnsamblaje = () => {
   const isComplete = installedParts.length === INSTALL_ORDER.length;
 
   const handlePlace = useCallback(() => {
-    if (!placed) setPlaced(true);
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === 'granted') {
+            if (!placed) setPlaced(true);
+          } else {
+            alert('Se requiere acceso a los sensores de movimiento para la Experiencia AR.');
+            if (!placed) setPlaced(true); // fallback
+          }
+        })
+        .catch(console.error);
+    } else {
+      if (!placed) setPlaced(true);
+    }
   }, [placed]);
 
   const installNext = useCallback(() => {
