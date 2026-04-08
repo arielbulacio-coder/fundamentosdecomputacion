@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { DeviceOrientationControls } from '@react-three/drei';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Camera, RotateCcw, Info, ChevronRight,
@@ -970,14 +969,36 @@ const AnimatedPart = ({ partData, installed, installing, isSelected, onSelect })
    AR SCENE — All parts + marker cross + labels
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-const FixedCamera = () => {
+const CustomGyroCamera = () => {
   const { camera } = useThree();
+  const initRef = useRef({ beta: null, gamma: null, alpha: null });
+  
   useEffect(() => {
-    // Initial look at the center, but DeviceOrientationControls will take over rotation
     camera.position.set(0, 2.5, 2.2);
     camera.lookAt(0, 0.15, 0);
+    
+    const handleOrientation = (e) => {
+      // Relative Fake AR matching:
+      // We only apply fractional shifts so the object doesn't disappear from the screen
+      if (initRef.current.beta === null) {
+        initRef.current.beta = e.beta || 0;
+        initRef.current.gamma = e.gamma || 0;
+      }
+      
+      const db = (e.beta || 0) - initRef.current.beta;
+      const dg = (e.gamma || 0) - initRef.current.gamma;
+
+      // Parallax effect by moving camera slightly
+      camera.position.x = (dg / 45) * 1.5;
+      camera.position.y = 2.5 - (db / 45) * 1.5;
+      camera.lookAt(0, 0.15, 0);
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
   }, [camera]);
-  return <DeviceOrientationControls />;
+
+  return null;
 };
 
 const ARScene = ({ installedParts, installingPart, selected, onSelect, placed }) => {
@@ -1160,7 +1181,7 @@ const AREnsamblaje = () => {
             onSelect={setSelected}
             placed={placed}
           />
-          <FixedCamera />
+          <CustomGyroCamera />
         </Canvas>
       </div>
 
