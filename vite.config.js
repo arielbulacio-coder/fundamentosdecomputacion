@@ -21,6 +21,9 @@ export default defineConfig({
         short_name: 'Fundamentos',
         description: 'Plataforma educativa de arquitectura de computadoras',
         theme_color: '#004a99',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
         icons: [
           {
             src: 'pwa-192x192.png',
