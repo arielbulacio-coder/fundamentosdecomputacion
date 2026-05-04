@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Shield, BookOpen, Flag, CircuitBoard } from 'lucide-react';
+import { Menu, X, Home, Shield, BookOpen, Flag, CircuitBoard, Box, ClipboardList, Gamepad2 } from 'lucide-react';
 
 const NavBar = () => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -120,13 +120,39 @@ const NavBar = () => {
                         )}
                     </div>
 
-                    {/* Proyecto Malvinas (link directo) */}
-                    <Link
-                        to="/proyecto-malvinas"
-                        className={`nav-link malvinas-link ${location.pathname === '/proyecto-malvinas' ? 'active' : ''}`}
+                    {/* Proyecto Malvinas (dropdown con submenu) */}
+                    <div
+                        style={{ position: 'relative' }}
+                        onMouseEnter={() => setActiveDropdown('malvinas')}
+                        onMouseLeave={() => setActiveDropdown(null)}
                     >
-                        <Flag size={18} /> Proyecto Malvinas
-                    </Link>
+                        <Link
+                            to="/proyecto-malvinas"
+                            className={`nav-link malvinas-link ${location.pathname.startsWith('/proyecto-malvinas') ? 'active' : ''}`}
+                        >
+                            <Flag size={18} /> Proyecto Malvinas <span style={{ fontSize: '0.7rem', marginLeft: '0.25rem' }}>▼</span>
+                        </Link>
+                        {activeDropdown === 'malvinas' && (
+                            <div className="malvinas-menu">
+                                <Link to="/proyecto-malvinas" className={`drop-link ${location.pathname === '/proyecto-malvinas' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
+                                    <Flag size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
+                                    Visión general
+                                </Link>
+                                <Link to="/proyecto-malvinas/ra" className={`drop-link ${location.pathname === '/proyecto-malvinas/ra' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
+                                    <Box size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
+                                    Diorama RA
+                                </Link>
+                                <Link to="/proyecto-malvinas/juego" className={`drop-link ${location.pathname === '/proyecto-malvinas/juego' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
+                                    <Gamepad2 size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
+                                    Juego serio
+                                </Link>
+                                <Link to="/proyecto-malvinas/evaluacion" className={`drop-link ${location.pathname === '/proyecto-malvinas/evaluacion' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
+                                    <ClipboardList size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
+                                    Evaluación 20 preguntas
+                                </Link>
+                            </div>
+                        )}
+                    </div>
 
                     <Link
                         to="/portal-docente"
@@ -192,12 +218,21 @@ const NavBar = () => {
                     <div className="mobile-section-header" style={{ marginTop: '1.25rem' }}>
                         <Flag size={16} /> Proyecto Malvinas
                     </div>
-                    <Link
-                        to="/proyecto-malvinas"
-                        onClick={() => setIsOpen(false)}
-                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas' ? 'active' : ''}`}
-                    >
-                        Stand inmersivo + recorrido
+                    <Link to="/proyecto-malvinas" onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas' ? 'active' : ''}`}>
+                        <Flag size={16} /> Visión general
+                    </Link>
+                    <Link to="/proyecto-malvinas/ra" onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/ra' ? 'active' : ''}`}>
+                        <Box size={16} /> Diorama RA
+                    </Link>
+                    <Link to="/proyecto-malvinas/juego" onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/juego' ? 'active' : ''}`}>
+                        <Gamepad2 size={16} /> Juego serio
+                    </Link>
+                    <Link to="/proyecto-malvinas/evaluacion" onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/evaluacion' ? 'active' : ''}`}>
+                        <ClipboardList size={16} /> Evaluación · 20 preguntas
                     </Link>
 
                     <div style={{ margin: '1.5rem 0.5rem 0.5rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
@@ -277,6 +312,33 @@ const NavBar = () => {
                     min-width: 540px;
                     max-width: calc(100vw - 4rem);
                     z-index: 1001;
+                }
+                .malvinas-menu {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    background: #09090c;
+                    color: #f0ece5;
+                    border: 1px solid #35446a;
+                    border-radius: 14px;
+                    box-shadow: 0 12px 32px rgba(9,9,12,0.4);
+                    padding: 0.5rem;
+                    min-width: 240px;
+                    z-index: 1001;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                }
+                .malvinas-menu .drop-link {
+                    color: #f0ece5;
+                }
+                .malvinas-menu .drop-link:hover {
+                    background: rgba(180, 83, 84, 0.15);
+                    color: #b45354;
+                }
+                .malvinas-menu .drop-link.active {
+                    background: #b45354;
+                    color: #fff;
                 }
                 .mega-group {
                     display: flex;

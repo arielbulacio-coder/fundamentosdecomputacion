@@ -20,11 +20,17 @@ import PortalDocente from './pages/PortalDocente';
 import ArquitecturaAR from './pages/ArquitecturaAR';
 import AREnsamblaje from './pages/AREnsamblaje';
 import ProyectoMalvinas from './pages/ProyectoMalvinas';
+import MalvinasRA from './pages/MalvinasRA';
+import MalvinasEvaluacion from './pages/MalvinasEvaluacion';
+import MalvinasJuegoSerio from './pages/MalvinasJuegoSerio';
 
 // The portal takes over the full screen (no NavBar/Footer)
 function AppLayout() {
   const location = useLocation();
-  const isPortal = location.pathname === '/portal-docente' || location.pathname === '/ar-arquitectura' || location.pathname === '/ar-ensamblaje';
+  const isPortal = location.pathname === '/portal-docente'
+    || location.pathname === '/ar-arquitectura'
+    || location.pathname === '/ar-ensamblaje'
+    || location.pathname === '/proyecto-malvinas/ra';
 
   if (isPortal) {
     return (
@@ -32,6 +38,7 @@ function AppLayout() {
         <Route path="/portal-docente" element={<PortalDocente />} />
         <Route path="/ar-arquitectura" element={<ArquitecturaAR />} />
         <Route path="/ar-ensamblaje" element={<AREnsamblaje />} />
+        <Route path="/proyecto-malvinas/ra" element={<MalvinasRA />} />
       </Routes>
     );
   }
@@ -56,6 +63,8 @@ function AppLayout() {
           <Route path="/seguridad-informatica" element={<SeguridadInformatica />} />
           <Route path="/ar-arquitectura" element={<ArquitecturaAR />} />
           <Route path="/proyecto-malvinas" element={<ProyectoMalvinas />} />
+          <Route path="/proyecto-malvinas/evaluacion" element={<MalvinasEvaluacion />} />
+          <Route path="/proyecto-malvinas/juego" element={<MalvinasJuegoSerio />} />
         </Routes>
       </main>
       <Footer />
