@@ -260,7 +260,7 @@ const Generaciones = () => {
               Generaciones de Computadoras
             </h1>
             <p style={{ fontSize: '1.25rem', opacity: 0.7, maxWidth: '850px', margin: '0 auto', lineHeight: 1.7, color: '#94a3b8' }}>
-              Desde las válvulas termoiónicas hasta los qubits entrelazados. Un viaje interactivo por la evolución tecnológica (SimuUnpilar v2.2).
+              Desde las válvulas termoiónicas hasta los qubits entrelazados. Un viaje interactivo por la evolución tecnológica (SimuTec v2.4).
             </p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ marginTop: '3rem' }}>

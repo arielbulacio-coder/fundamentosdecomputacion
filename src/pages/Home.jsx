@@ -44,7 +44,7 @@ const Home = () => {
           transition={{ delay: 0.1 }}
           style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', color: 'var(--primary)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-1px' }}
         >
-          SimuUnpilar
+          SimuTec
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -59,7 +59,7 @@ const Home = () => {
            animate={{ opacity: 1 }}
            style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}
         >
-           v2.4 - SimuUnpilar - Actualizado
+           v2.4 - SimuTec - Actualizado
         </motion.div>
       </header>
 

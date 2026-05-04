@@ -17,9 +17,9 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Fundamentos de Computación',
-        short_name: 'Fundamentos',
-        description: 'Plataforma educativa de arquitectura de computadoras',
+        name: 'SimuTec – Simuladores Tecnológicos',
+        short_name: 'SimuTec',
+        description: 'Plataforma educativa de arquitectura de computadoras y simuladores interactivos',
         theme_color: '#004a99',
         background_color: '#ffffff',
         display: 'standalone',

@@ -37,7 +37,7 @@ const LoginScreen = () => {
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <Shield size={56} color="#3b82f6" style={{ margin: '0 auto 1.5rem' }} />
           <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff', margin: 0 }}>Portal Docente</h1>
-          <p style={{ color: '#64748b', marginTop: '0.75rem', fontSize: '1rem' }}>SimuUnpilar — Universidad Nacional de Pilar</p>
+          <p style={{ color: '#64748b', marginTop: '0.75rem', fontSize: '1rem' }}>SimuTec — Simuladores Tecnológicos</p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -339,7 +339,7 @@ const Dashboard = () => {
              Sitio Principal
           </a>
           <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
-            👤 <strong style={{ color: '#fff' }}>{docente?.nombre}</strong>
+            👤 <strong style={{ color: '#fff' }}>Docente Activo</strong>
             {docente?.admin && <span style={{ marginLeft: '0.5rem', background: '#3b82f620', color: '#3b82f6', borderRadius: '8px', padding: '2px 8px', fontSize: '0.7rem', fontWeight: 800 }}>ADMIN</span>}
           </span>
           <button onClick={logout} style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '0.6rem 1.25rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem' }}>
@@ -487,7 +487,7 @@ const Dashboard = () => {
                   {docentes.map((d) => (
                     <tr key={d.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <td style={{ padding: '1rem', fontWeight: 700 }}>{d.usuario}</td>
-                      <td style={{ padding: '1rem', color: '#94a3b8' }}>{d.nombre_completo}</td>
+                      <td style={{ padding: '1rem', color: '#94a3b8' }}>Usuario Autorizado</td>
                       <td style={{ padding: '1rem' }}>
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                           {(d.comisiones || []).length > 0
