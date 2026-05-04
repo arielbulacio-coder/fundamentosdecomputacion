@@ -19,6 +19,7 @@ import SeguridadInformatica from './pages/SeguridadInformatica';
 import PortalDocente from './pages/PortalDocente';
 import ArquitecturaAR from './pages/ArquitecturaAR';
 import AREnsamblaje from './pages/AREnsamblaje';
+import ProyectoMalvinas from './pages/ProyectoMalvinas';
 
 // The portal takes over the full screen (no NavBar/Footer)
 function AppLayout() {
@@ -54,6 +55,7 @@ function AppLayout() {
           <Route path="/sistema-operativo" element={<SistemaOperativo />} />
           <Route path="/seguridad-informatica" element={<SeguridadInformatica />} />
           <Route path="/ar-arquitectura" element={<ArquitecturaAR />} />
+          <Route path="/proyecto-malvinas" element={<ProyectoMalvinas />} />
         </Routes>
       </main>
       <Footer />
