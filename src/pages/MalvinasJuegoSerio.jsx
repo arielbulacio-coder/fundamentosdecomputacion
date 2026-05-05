@@ -16,6 +16,7 @@ const COLORS = {
 // ─── ESTRUCTURA DEL JUEGO ─────────────────────────────────────────────
 const SCENES = {
     intro: {
+        img: '/malvinas_hero.png',
         chapter: 'Prólogo',
         title: 'Otoño 1982 · Buenos Aires',
         text: 'Tenés 18 años. Acabás de empezar el Servicio Militar Obligatorio en Campo de Mayo. Una mañana, entre formaciones y limpieza, anuncian por altavoz: "Hoy todos los conscriptos forman para una misión especial". Te entregan un casco, un FAL viejo, y un boleto de avión hacia el sur.',
@@ -26,6 +27,7 @@ const SCENES = {
         ]
     },
     avion: {
+        img: '/malvinas_activacion.png',
         chapter: '1',
         title: 'Vuelo al sur',
         text: 'El Hércules está repleto y ruidoso. Los muchachos cantan la Marcha de Malvinas. Algunos nunca habían salido de su provincia ni habían visto la nieve. Mirando por la ventanilla descubrís el Atlántico Sur oscuro e infinito. Te reparten una hoja de papel.',
@@ -54,6 +56,7 @@ const SCENES = {
         ]
     },
     islas: {
+        img: '/malvinas_carta.png',
         chapter: '2',
         title: 'Puerto Argentino',
         text: 'Al bajar sentís que el viento te corta el rostro. Hace 2°C y garúa llovizna helada. Todo huele a turba húmeda y combustible. Te asignan junto a tu sección la defensa del Monte Tumbledown. La orden es clara: hay que cavar en la piedra.',
@@ -107,6 +110,7 @@ const SCENES = {
         ]
     },
     ataque_aereo_previo: {
+        img: '/malvinas_collage.png',
         chapter: '6',
         title: 'Fuego naval',
         text: 'Mayo avanza. Los británicos han desembarcado en San Carlos y avanzan. Por las noches, barcos británicos lanzan cañonazos de artillería sobre sus posiciones de manera constante para quebrar la moral y no dejarlos dormir.',
@@ -399,9 +403,15 @@ const MalvinasJuegoSerio = () => {
                         borderRadius: '24px',
                         padding: '2.5rem',
                         marginTop: '1.5rem',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.03)'
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.03)',
+                        overflow: 'hidden'
                     }}
                 >
+                    {scene.img && (
+                        <div style={{ margin: '-2.5rem -2.5rem 2rem -2.5rem', height: '280px', overflow: 'hidden' }}>
+                            <img src={scene.img} alt={`Ilustración del capítulo ${scene.chapter}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                    )}
                     <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: COLORS.base, whiteSpace: 'pre-line', margin: 0 }}>
                         {scene.text}
                     </p>
