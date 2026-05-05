@@ -87,20 +87,30 @@ const NavBar = () => {
                         <Home size={18} /> Inicio
                     </Link>
 
-                    {/* Fundamentos de la Computación (mega-dropdown) */}
+                    {/* Fundamentos de la Computación (mega-dropdown con link directo) */}
                     <div
                         style={{ position: 'relative' }}
                         onMouseEnter={() => setActiveDropdown('fundamentos')}
                         onMouseLeave={() => setActiveDropdown(null)}
                     >
-                        <button
-                            className={`nav-link ${isFundamentosActive ? 'active' : ''}`}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+                        <Link
+                            to="/fundamentos"
+                            className={`nav-link ${isFundamentosActive || location.pathname === '/fundamentos' ? 'active' : ''}`}
                         >
-                            <BookOpen size={18} /> Fundamentos de la Computación <span style={{ fontSize: '0.7rem' }}>▼</span>
-                        </button>
+                            <BookOpen size={18} /> Fundamentos de la Computación <span style={{ fontSize: '0.7rem', marginLeft: '0.25rem' }}>▼</span>
+                        </Link>
                         {activeDropdown === 'fundamentos' && (
                             <div className="mega-menu">
+                                <div className="mega-group" style={{ gridColumn: '1 / -1' }}>
+                                    <Link
+                                        to="/fundamentos"
+                                        className={`drop-link ${location.pathname === '/fundamentos' ? 'active' : ''}`}
+                                        onClick={() => setActiveDropdown(null)}
+                                        style={{ background: 'rgba(59,130,246,0.06)', fontWeight: 800 }}
+                                    >
+                                        📚 Ver portada de la materia
+                                    </Link>
+                                </div>
                                 {fundamentosGroups.map(group => (
                                     <div key={group.label} className="mega-group">
                                         <div className="mega-group-title">{group.label}</div>
@@ -199,6 +209,14 @@ const NavBar = () => {
                     <div className="mobile-section-header">
                         <BookOpen size={16} /> Fundamentos de la Computación
                     </div>
+                    <Link
+                        to="/fundamentos"
+                        onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/fundamentos' ? 'active' : ''}`}
+                        style={{ background: 'rgba(59,130,246,0.05)', fontWeight: 800 }}
+                    >
+                        📚 Portada de la materia
+                    </Link>
                     {fundamentosGroups.map(group => (
                         <div key={group.label} style={{ paddingLeft: '0.5rem' }}>
                             <div className="mobile-unit-header">{group.label}</div>

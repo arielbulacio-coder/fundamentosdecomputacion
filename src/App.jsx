@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
+import Fundamentos from './pages/Fundamentos';
 import VonNeumann from './pages/VonNeumann';
 import Harvard from './pages/Harvard';
 import Generaciones from './pages/Generaciones';
@@ -49,6 +50,7 @@ function AppLayout() {
       <main style={{ flex: 1, padding: '2rem 1rem 4rem' }}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/fundamentos" element={<Fundamentos />} />
           <Route path="/generaciones" element={<Generaciones />} />
           <Route path="/von-neumann" element={<VonNeumann />} />
           <Route path="/harvard" element={<Harvard />} />
