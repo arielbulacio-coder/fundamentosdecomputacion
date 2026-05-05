@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Heart, Snowflake, Utensils, Mail, Compass, RotateCcw,
-    AlertTriangle, BookOpen, ChevronRight
+    AlertTriangle, BookOpen, ChevronRight, Activity
 } from 'lucide-react';
 
 const COLORS = {
@@ -14,129 +14,156 @@ const COLORS = {
 };
 
 // ─── ESTRUCTURA DEL JUEGO ─────────────────────────────────────────────
-// El jugador encarna a Lautaro, un conscripto de 18 años de Buenos Aires,
-// enviado a Malvinas en abril de 1982. Cada decisión tiene impacto en sus
-// stats y revela información histórica/emocional real.
-// ─────────────────────────────────────────────────────────────────────
-
 const SCENES = {
     intro: {
         chapter: 'Prólogo',
         title: 'Otoño 1982 · Buenos Aires',
-        text: 'Tenés 18 años. Acabás de empezar el Servicio Militar Obligatorio en Campo de Mayo. Una mañana, entre formaciones y limpieza, anuncian por altavoz: "Hoy todos los conscriptos forman para una misión especial". Te entregan un casco, un FAL y un boleto de avión hacia el sur.',
+        text: 'Tenés 18 años. Acabás de empezar el Servicio Militar Obligatorio en Campo de Mayo. Una mañana, entre formaciones y limpieza, anuncian por altavoz: "Hoy todos los conscriptos forman para una misión especial". Te entregan un casco, un FAL viejo, y un boleto de avión hacia el sur.',
         choices: [
-            { label: 'Subo al avión sin preguntar.', next: 'avion', effects: { miedo: +1, conviccion: +2 } },
-            { label: 'Le pregunto al sargento qué está pasando.', next: 'pregunta_sgto', effects: { miedo: +0, conviccion: +1, info: +1 } },
-            { label: 'Le pido a mi mamá que me venga a buscar.', next: 'mama', effects: { miedo: +2, conviccion: -1 } }
+            { label: 'Subo al avión sin preguntar. Cumplo mi deber.', next: 'avion', effects: { miedo: +1, conviccion: +2 } },
+            { label: 'Le pregunto al sargento a dónde vamos.', next: 'pregunta_sgto', effects: { miedo: +0, conviccion: +1, info: +2 } },
+            { label: 'Intento avisarle a mi mamá antes de partir.', next: 'mama', effects: { miedo: +2, empatia: +1, conviccion: -1 } }
         ]
     },
     avion: {
         chapter: '1',
         title: 'Vuelo al sur',
-        text: 'El avión Hércules está repleto. Los muchachos cantan "Vamos a ganar". Algunos nunca vieron nieve. Mirando por la ventanilla descubrís un océano que jamás imaginaste tan oscuro. Te entregan una hoja para escribir a tu familia.',
+        text: 'El Hércules está repleto y ruidoso. Los muchachos cantan la Marcha de Malvinas. Algunos nunca habían salido de su provincia ni habían visto la nieve. Mirando por la ventanilla descubrís el Atlántico Sur oscuro e infinito. Te reparten una hoja de papel.',
         choices: [
             { label: 'Escribo: "No te preocupes mami, vuelvo pronto."', next: 'islas', effects: { empatia: +2 } },
-            { label: 'Escribo todo lo que siento, sin filtro.', next: 'islas', effects: { empatia: +3, miedo: +1 } },
-            { label: 'Guardo la hoja en blanco. No sé qué decir.', next: 'islas', effects: { miedo: +1 } }
+            { label: 'Escribo todo lo que siento: el miedo a lo desconocido.', next: 'islas', effects: { empatia: +3, miedo: +2 } },
+            { label: 'Guardo la hoja en el bolsillo de mi chaqueta. No escribo.', next: 'islas', effects: { miedo: +1 } }
         ]
     },
     pregunta_sgto: {
         chapter: '1',
         title: 'En el cuartel',
-        text: '"Vamos a recuperar las Malvinas, soldado. Los británicos ocupan nuestras islas desde 1833 y los vamos a echar." El sargento te mira fijo. "¿Algún problema?" Algunos compañeros agachan la cabeza. Otros aplauden.',
-        info: 'En 1833 Gran Bretaña ocupó militarmente las islas, expulsando a las autoridades argentinas. La Constitución de 1994 declara la recuperación como "objetivo permanente e irrenunciable".',
+        text: '"Vamos a recuperar nuestras Malvinas, soldado. Los ingleses las ocupan desde hace 149 años y las vamos a recuperar." El sargento te mira fijo y severo. "¿Alguna duda?"',
+        info: 'La ocupación británica data del 3 de enero de 1833. La decisión militar de 1982 fue tomada por la Junta Dictatorial liderada por Galtieri sin consultar al pueblo, usándola también para calmar el descontento social.',
         choices: [
-            { label: 'Saludo y subo al avión.', next: 'avion', effects: { conviccion: +1, info: +1 } },
-            { label: 'Pregunto si estamos preparados.', next: 'avion', effects: { miedo: +1, info: +1 } }
+            { label: 'Saludo firme y avanzo hacia la formación.', next: 'avion', effects: { conviccion: +2, info: +1 } },
+            { label: 'Me quedo callado, mirando al suelo.', next: 'avion', effects: { miedo: +1, info: +1 } }
         ]
     },
     mama: {
         chapter: '1',
         title: 'Sin opción',
-        text: 'No hay teléfono disponible. La cola al telefonito es de tres horas. Te formás igual. Tu mamá no se entera hasta días después por la radio. Te subís al avión con el corazón apretado.',
+        text: 'No hay teléfono fijo libre y hay orden estricta de no difundir movimientos de tropas. La fila al único teléfono público es de cien personas. Tu mamá no se entera hasta tres días después cuando lo dicen por cadena nacional.',
         choices: [
-            { label: 'Continuar', next: 'avion', effects: {} }
+            { label: 'Subir al avión con angustia contenida.', next: 'avion', effects: { miedo: +1, salud: -1 } }
         ]
     },
     islas: {
         chapter: '2',
-        title: 'Llegada — Puerto Argentino',
-        text: 'Bajás del avión y el viento te corta la cara. Hace 4°C y llueve casi horizontal. Todo huele a humedad y combustible. Un sargento divide al grupo: unos van a defender el aeropuerto, otros a las colinas. Te toca cavar un "pozo de zorro" sobre Mount Tumbledown.',
-        info: 'Los pozos de zorro eran trincheras individuales cavadas en el suelo congelado. Sin abrigo adecuado, los conscriptos sufrieron pie de trinchera, hipotermia y desnutrición.',
+        title: 'Puerto Argentino',
+        text: 'Al bajar sentís que el viento te corta el rostro. Hace 2°C y garúa llovizna helada. Todo huele a turba húmeda y combustible. Te asignan junto a tu sección la defensa del Monte Tumbledown. La orden es clara: hay que cavar en la piedra.',
+        info: 'El suelo malvinense retiene el agua (turbera). Al cavar trincheras ("pozos de zorro"), el agua subterránea inundaba el foso, obligando a los soldados a vivir empapados a temperaturas bajo cero.',
         choices: [
-            { label: 'Cavo profundo y rápido. Cuanto antes me cubra, mejor.', next: 'frio', effects: { conviccion: +2, frio: -1 } },
-            { label: 'Ayudo primero al compañero que tiembla.', next: 'frio', effects: { empatia: +3, conviccion: +1 } },
-            { label: 'Me siento agotado. Lo hago a media máquina.', next: 'frio', effects: { miedo: +1, frio: +2 } }
+            { label: 'Pico la piedra rápido para armar una buena defensa.', next: 'guardia_nocturna', effects: { conviccion: +2, hambre: +1 } },
+            { label: 'Ayudo primero a los compañeros que no tienen palas.', next: 'guardia_nocturna', effects: { empatia: +3, conviccion: +1, hambre: +1 } },
+            { label: 'Cavo despacio, tratando de conservar la poca energía.', next: 'guardia_nocturna', effects: { miedo: +1, frio: +2 } }
         ]
     },
-    frio: {
+    guardia_nocturna: {
         chapter: '3',
-        title: 'La primera noche',
-        text: 'A las 23:00 la temperatura es de -3°C. La carpa filtra agua. Tenés un pulóver de tu mamá debajo del uniforme. Tu compañero Ramón, de Misiones, nunca vio nieve en su vida. La radio del oficial dice: "Operación exitosa. Todo marcha según el plan".',
+        title: 'Primera Guardia',
+        text: '2AM. Tu turno de vigilancia. Estás solo en la intemperie. La humedad se cuela en los huesos y la campera militar parece de papel. Escuchás a lo lejos cañoneos navales.',
         choices: [
-            { label: 'Le doy mi pulóver a Ramón.', next: 'amigo', effects: { empatia: +3, frio: +2 } },
-            { label: 'Comparto un mate con Ramón.', next: 'amigo', effects: { empatia: +2 } },
-            { label: 'Me duermo abrazado al fusil.', next: 'amigo', effects: { miedo: +1 } }
+            { label: 'Abrazo mi fusil para tratar de no temblar.', next: 'amigo', effects: { frio: +2, miedo: +2 } },
+            { label: 'Me pongo a pensar en la cocina caliente de mi casa.', next: 'amigo', effects: { empatia: +1, frio: +2, hambre: +1 } },
+            { label: 'Intento mantener la visión enfocada en el horizonte.', next: 'amigo', effects: { conviccion: +1, frio: +1 } }
         ]
     },
     amigo: {
         chapter: '4',
-        title: 'Un amigo del sur',
-        text: 'En los días siguientes, Ramón se convierte en tu amigo. Aprendés que tiene una hermana enferma y una novia que lo espera. "Si volvemos vivos —te dice— te invito a mi pueblo. Hay un río donde se pesca dorado." Esa noche, a la luz de una vela, escuchan radio inglesa. Hablan en otro idioma pero el tono no es el mismo que en casa.',
-        info: 'Las radios británicas (BBC) transmitían información militar real, mientras los medios oficiales argentinos repetían "Estamos ganando".',
+        title: 'Ramón',
+        text: 'Al día siguiente descubrís que tu compañero de pozo es Ramón, de Corrientes. Nunca en su vida había sentido tanto frío. "Mi novia me preparó pulóveres, pero no me dejaron traerlos", cuenta riendo para no llorar. Por la noche sintonizan una radio en onda corta con un receptor a pilas.',
+        info: 'Para contrarrestar la censura del gobierno dictatorial argentino que decía "Estamos ganando", los soldados a menudo escuchaban radios uruguayas o la BBC (Radio Carve de Montevideo era muy escuchada) para entender la realidad del terreno.',
         choices: [
-            { label: 'Le creo a la radio inglesa.', next: 'realidad', effects: { conviccion: -1, info: +2 } },
-            { label: 'Le creo a la radio argentina.', next: 'realidad', effects: { conviccion: +2, info: -1 } },
-            { label: 'No entiendo nada. Apago.', next: 'realidad', effects: {} }
+            { label: 'Sintonizo radio de Argentina. Necesito buenas noticias.', next: 'hambre', effects: { conviccion: +2, info: -2 } },
+            { label: 'Sintonizo una radio de afuera (BBC/Uruguay).', next: 'hambre', effects: { conviccion: -1, info: +3, miedo: +1 } },
+            { label: 'Apago la radio. No me importa lo que digan allá lejos.', next: 'hambre', effects: {} }
         ]
     },
-    realidad: {
+    hambre: {
         chapter: '5',
-        title: 'La comida',
-        text: 'Llevás 12 días sin una comida caliente. La logística no llegó. Un compañero abre la lata de un oficial y come a escondidas. El sargento lo encuentra. Lo "estaquean" a la intemperie tres horas. Cuando lo levantan, no puede caminar.',
-        info: 'Los "estaqueamientos" están denunciados como crímenes de lesa humanidad por veteranos sobrevivientes. Algunos oficiales castigaban así a soldados hambrientos.',
+        title: 'La logística rota',
+        text: 'Pasaron 9 días. La "ración de combate" (mate cocido y un caldo de oveja aguado) llega fría y tarde, si es que llega. La artillería enemiga cortó los suministros. Un grupo planea bajar al pueblo de noche para robar comida del depósito de los oficiales.',
+        info: 'El desabastecimiento fue drástico y las diferencias de provisiones entre oficiales de alto rango y suboficiales/conscriptos crearon graves tensiones y sufrimiento (desnutrición).',
         choices: [
-            { label: 'Voy a verlo cuando los oficiales se duermen.', next: 'medios', effects: { empatia: +3, miedo: +1 } },
-            { label: 'Bajo la mirada y obedezco.', next: 'medios', effects: { miedo: +2 } },
-            { label: 'Me planto frente al sargento.', next: 'medios', effects: { conviccion: +3, miedo: +2 } }
+            { label: 'Me uno al grupo. La necesidad es más fuerte.', next: 'castigo', effects: { hambre: -2, miedo: +2 } },
+            { label: 'Decido aguantar. Es peligroso si nos descubren.', next: 'ataque_aereo_previo', effects: { hambre: +3, conviccion: +1 } },
+            { label: 'Le doy lo último que me queda a Ramón, que está peor.', next: 'ataque_aereo_previo', effects: { empatia: +4, hambre: +4 } }
+        ]
+    },
+    castigo: {
+        chapter: '5',
+        title: 'Descubiertos',
+        text: 'En plena madrugada, los sorprende una patrulla. Un cabo los reprende a gritos y castiga a uno de tus compañeros a ser "estaqueado" en la intemperie helada.',
+        info: 'Los estaqueamientos constituyeron torturas graves y fueron documentados como crímenes por veteranos tiempo después, mostrando la crueldad interna en algunos mandos autoritarios.',
+        choices: [
+            { label: 'Trato de cubrir a mi compañero durante la noche.', next: 'ataque_aereo_previo', effects: { empatia: +3, miedo: +1, frio: +2 } },
+            { label: 'Trago saliva y guardo mi frustración para sobrevivir.', next: 'ataque_aereo_previo', effects: { miedo: +2, info: +2 } }
+        ]
+    },
+    ataque_aereo_previo: {
+        chapter: '6',
+        title: 'Fuego naval',
+        text: 'Mayo avanza. Los británicos han desembarcado en San Carlos y avanzan. Por las noches, barcos británicos lanzan cañonazos de artillería sobre sus posiciones de manera constante para quebrar la moral y no dejarlos dormir.',
+        choices: [
+            { label: 'Tapo mis oídos y rezo.', next: 'hospital_campana', effects: { miedo: +3 } },
+            { label: 'Me asomo para intentar ver de dónde disparan.', next: 'hospital_campana', effects: { conviccion: +2, miedo: +1 } },
+            { label: 'Acuno a Ramón, que entró en pánico.', next: 'hospital_campana', effects: { empatia: +3 } }
+        ]
+    },
+    hospital_campana: {
+        chapter: '7',
+        title: 'Congelamiento',
+        text: 'Amanece y no sentís los dedos de los pies. Están negros. Te llevan caminando a la fuerza al hospital de campaña de Puerto Argentino. Allí ves a decenas de chicos como vos.',
+        info: 'El "Pie de trinchera" se causaba por la humedad permanente, inmovilidad y congelamiento. Generó múltiples amputaciones que hubieran sido evitables con el abrigo que las familias enviaban al continente pero jamás llegó a las islas.',
+        choices: [
+            { label: 'Pido volver a mi pozo. Está Ramón ahí y viene el ataque final.', next: 'medios', effects: { conviccion: +3, empatia: +2, frio: -1 } },
+            { label: 'Dejo que los médicos me atiendan y descansar un poco.', next: 'medios', effects: { frio: -3, hambre: -1 } }
         ]
     },
     medios: {
-        chapter: '6',
-        title: 'La carta de mamá',
-        text: 'Llega correo después de tres semanas. Tu mamá te escribió. "Hijo, en la TV dicen que vas ganando. Estoy orgullosa. Te mando chocolate y un escapulario. Volvé pronto." Adentro hay una foto de tu perro. Atrás, ella escribió: "Te esperamos para la pizza del sábado".',
+        chapter: '8',
+        title: 'Revistas del continente',
+        text: 'En el centro de salud ves una revista "Gente" llegada desde el continente. La tapa muestra sonrisas y dice "ESTAMOS GANANDO". En el centro de la revista hay listas de donaciones millonarias que nunca vieron.',
         choices: [
-            { label: 'Lloro. Sin disimular.', next: 'final_ataque', effects: { empatia: +3 } },
-            { label: 'Guardo todo en el bolsillo del corazón.', next: 'final_ataque', effects: { empatia: +2 } },
-            { label: 'Le respondo: "Mami, no es como dicen".', next: 'final_ataque', effects: { empatia: +2, info: +2 } }
+            { label: 'Lloro de impotencia. Alguien nos mintió.', next: 'final_ataque', effects: { info: +3, miedo: +1 } },
+            { label: 'Tiro la revista. Acá la única verdad es el plomo que viene.', next: 'final_ataque', effects: { conviccion: +1, empatia: -1 } }
         ]
     },
     final_ataque: {
-        chapter: '7',
-        title: 'La noche del 13 de junio',
-        text: 'Los británicos avanzan sobre Tumbledown. Ramón está a tu lado. El frío, el hambre y la falta de balas son insostenibles. Una bengala ilumina el cielo. Escuchás morteros muy cerca. Tu sargento grita: "Aguantar".',
+        chapter: '9',
+        title: 'La Batalla Final',
+        text: 'Noche del 13 al 14 de junio. Monte Longdon, Dos Hermanas y Tumbledown. Todo es fuego intenso, bengalas que iluminan como el día blanco y cuerpos cayendo.',
+        info: 'Los enfrentamientos cuerpo a cuerpo en los cerros perimetrales fueron de altísima carnicería. Algunos grupos resistieron hasta agotar municiones contra tropas de élite y paracaidistas británicos que avanzaban en la noche.',
         choices: [
-            { label: 'Aguanto la posición.', next: 'rendicion', effects: { conviccion: +3, miedo: +2 } },
-            { label: 'Cubro a Ramón con mi cuerpo.', next: 'rendicion', effects: { empatia: +5 } },
-            { label: 'Disparo todo lo que tengo.', next: 'rendicion', effects: { conviccion: +1, miedo: +1 } }
+            { label: 'Soporto la posición y devuelvo el fuego.', next: 'rendicion', effects: { conviccion: +4, miedo: +3 } },
+            { label: 'Trato de replegar al grupo a una posición segura.', next: 'rendicion', effects: { empatia: +2, info: +2 } },
+            { label: 'Todo es caos. Sigo a mi compañero a ciegas.', next: 'rendicion', effects: { miedo: +4 } }
         ]
     },
     rendicion: {
-        chapter: '8',
-        title: '14 de junio · Rendición',
-        text: 'Despertás con el sol gris. El silencio es raro: ya no se escuchan disparos. Llega la orden por la radio. El General Menéndez firmó la rendición. Te formás en columna junto a miles de compañeros. Tirás el FAL al barro. Caminás hacia el puerto, prisionero. Estás vivo. Ramón también. La guerra duró 74 días.',
-        info: 'El 14 de junio de 1982 el general Mario Benjamín Menéndez firmó la rendición ante las fuerzas británicas. Murieron 649 argentinos. Cientos de veteranos se suicidaron en los años posteriores por falta de contención psicológica del Estado.',
+        chapter: '10',
+        title: 'Fin',
+        text: 'Humo sobre Puerto Argentino. La orden es romper las armas y rendirse. El General Menéndez firmó la capitulación. Caminás hacia el galpón inglés para ser tomado prisionero. Terminó. 74 días que cambiaron para siempre quién eras.',
+        info: 'Saldo del conflicto: 649 caídos argentinos. Fueron capturados, registrados y poco a poco devueltos al continente en barcos transatlánticos (como el Canberra) y vuelos.',
         choices: [
-            { label: 'Continuar al regreso →', next: 'regreso', effects: {} }
+            { label: 'Cerrar los ojos, respirar la paz de estar vivo.', next: 'regreso', effects: { empatia: +1 } },
+            { label: 'Sentir vergüenza de haber perdido.', next: 'regreso', effects: { conviccion: -2 } },
+            { label: 'Jurar que nadie los va a olvidar.', next: 'regreso', effects: { info: +3, conviccion: +2 } }
         ]
     },
     regreso: {
         chapter: 'Epílogo',
-        title: 'Volver',
-        text: 'Te bajan de un barco en Puerto Madryn de noche y a escondidas. El gobierno militar prefirió no hacer un recibimiento. Tu mamá te espera con la pizza del sábado de hace tres meses, fría. Nadie te pregunta. La gente cruza la calle cuando ve el uniforme.\n\nDurante años no podrás hablar. Ramón sí: en su pueblo lo reciben con un asado. Te llama todos los meses. Cuando lo escuchás, lloran los dos sin decir nada.',
-        info: 'El "desmalvinizar" fue una política de silencio que llevó al ostracismo a los veteranos. Recién en 2007 se reconoció oficialmente el papel del Equipo Argentino de Antropología Forense en identificar a los caídos del Cementerio de Darwin.',
+        title: 'La vuelta',
+        text: 'Desembarcan en Madryn un día a escondidas, en micros sin parar porque el gobierno teme el fracaso expuesto. Tu madre dejó tu cama intacta. Pero los primeros años fueron los de la Desmalvinización y el olvido profundo. El Estado les dio la espalda.',
+        info: 'Más de 500 veteranos argentinos se suicidaron en las tres décadas posteriores a 1982 a causa del trastorno por estrés postraumático, falta de reconocimiento social e incapacidad psicológica para reinsertarse laboralmente.',
         choices: [
-            { label: 'Ver mi recorrido emocional →', next: 'final', effects: {} }
+            { label: 'Descubrir cómo el viaje me ha marcado →', next: 'final', effects: {} }
         ]
     }
 };
@@ -146,15 +173,17 @@ const initialStats = {
     conviccion: 0,
     empatia: 0,
     info: 0,
-    frio: 0
+    frio: 0,
+    hambre: 0
 };
 
 const STAT_META = {
-    miedo: { label: 'Miedo', color: '#9c27b0', icon: AlertTriangle },
+    empatia: { label: 'Empatía y Vínculo', color: '#43a047', icon: Heart },
     conviccion: { label: 'Convicción', color: COLORS.accent, icon: Compass },
-    empatia: { label: 'Empatía', color: '#43a047', icon: Heart },
-    info: { label: 'Información', color: COLORS.sky, icon: BookOpen },
-    frio: { label: 'Frío sufrido', color: '#1565c0', icon: Snowflake }
+    miedo: { label: 'Miedo / Trauma', color: '#9c27b0', icon: AlertTriangle },
+    info: { label: 'Conciencia Crítica', color: COLORS.sky, icon: BookOpen },
+    frio: { label: 'Daño Físico (Frío)', color: '#3b82f6', icon: Snowflake },
+    hambre: { label: 'Desnutrición', color: '#f59e0b', icon: Utensils },
 };
 
 const MalvinasJuegoSerio = () => {
@@ -165,7 +194,6 @@ const MalvinasJuegoSerio = () => {
     const [finished, setFinished] = useState(false);
     const sceneRef = useRef(null);
 
-    // scroll to top of card when scene changes
     useEffect(() => {
         if (sceneRef.current) sceneRef.current.scrollTop = 0;
     }, [sceneId]);
@@ -200,70 +228,100 @@ const MalvinasJuegoSerio = () => {
     if (finished) {
         const reflection = generateReflection(stats);
         return (
-            <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 1rem 4rem', fontFamily: '"Public Sans", sans-serif' }}>
+            <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1rem 4rem', fontFamily: '"Public Sans", sans-serif' }}>
                 <style>{`@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');`}</style>
+                
+                {/* Cabecera de fin de juego */}
                 <motion.div
-                    initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                    initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                     style={{
                         background: `linear-gradient(135deg, ${COLORS.base}, ${COLORS.deep})`,
                         color: COLORS.paper,
                         borderRadius: '22px',
-                        padding: '2.5rem 1.5rem',
+                        padding: '3rem 2rem',
                         marginTop: '1rem',
                         textAlign: 'center'
                     }}
                 >
-                    <Heart size={48} color={COLORS.accent} />
-                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '4px', color: COLORS.accent, fontWeight: 800, marginTop: '0.5rem' }}>Tu recorrido</div>
-                    <h1 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', margin: '0.5rem 0' }}>
+                    <Heart size={42} color={COLORS.accent} />
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '4px', color: COLORS.accent, fontWeight: 800, marginTop: '1rem' }}>Despliegue Finalizado</div>
+                    <h1 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0.5rem 0 1rem', lineHeight: 1.1 }}>
                         {reflection.title}
                     </h1>
-                    <p style={{ maxWidth: '650px', margin: '1rem auto', opacity: 0.95, lineHeight: 1.7, fontSize: '1.05rem' }}>
+                    <p style={{ maxWidth: '750px', margin: '0 auto', opacity: 0.95, lineHeight: 1.8, fontSize: '1.1rem' }}>
                         {reflection.text}
                     </p>
                 </motion.div>
 
-                <section style={{ background: COLORS.paper, color: COLORS.base, borderRadius: '18px', padding: '1.75rem', marginTop: '1.5rem' }}>
-                    <h2 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', color: COLORS.deep, marginTop: 0 }}>Tus marcas internas</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem' }}>
-                        {Object.entries(STAT_META).map(([k, m]) => {
-                            const v = stats[k] || 0;
-                            const max = 12;
-                            const pct = Math.min(100, Math.max(0, (v / max) * 100));
-                            const Icon = m.icon;
-                            return (
-                                <div key={k} style={{ background: '#fff', border: `1px solid ${m.color}33`, borderRadius: '12px', padding: '0.85rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: m.color, fontWeight: 800, fontSize: '0.9rem' }}>
-                                        <Icon size={16} /> {m.label}
-                                    </div>
-                                    <div style={{ marginTop: '0.4rem', height: '8px', background: '#eef0f3', borderRadius: '999px', overflow: 'hidden' }}>
-                                        <div style={{ width: `${pct}%`, height: '100%', background: m.color, transition: 'width 0.4s' }} />
-                                    </div>
-                                    <div style={{ fontWeight: 800, fontSize: '1.4rem', marginTop: '0.3rem' }}>{v}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                {/* Dashboard de resumen visual dos columnas */}
+                <section style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) minmax(300px, 2fr)', gap: '2rem', marginTop: '2rem' }}>
+                    
+                    {/* Izquierda: Imagen del soldado de Malvinas */}
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                        <div style={{ borderRadius: '18px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative', height: '100%', minHeight: '400px' }}>
+                            <img src="/malvinas_soldado_reflexion.png" alt="Soldado en postguerra reflexionando" style={{ width: '100%', height: '100%', minHeight: '400px', objectFit: 'cover', display: 'block' }} />
+                            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(9,9,12,0.95) 10%, transparent)', padding: '3rem 1.5rem 1.5rem' }}>
+                                <p style={{ color: COLORS.accent, fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', margin: '0 0 0.5rem' }}>LA MEMORIA ACTIVA</p>
+                                <p style={{ color: COLORS.paper, margin: 0, fontSize: '0.95rem', lineHeight: 1.5, opacity: 0.9 }}>
+                                    Entender Malvinas es ir mucho más allá del hecho bélico. Es abrazar el dolor e incorporar la disputa pacífica desde nuestra identidad.
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
 
-                    <h2 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', color: COLORS.deep, marginTop: '2rem' }}>Recorrido de decisiones</h2>
-                    <ol style={{ paddingLeft: '1.25rem', lineHeight: 1.7 }}>
-                        {path.map((p, i) => (
-                            <li key={i} style={{ marginBottom: '0.4rem' }}>
-                                <span style={{ color: COLORS.accent, fontWeight: 700 }}>{SCENES[p.sceneId]?.title || p.sceneId}:</span> {p.label}
-                            </li>
-                        ))}
-                    </ol>
+                    {/* Derecha: Stats y decisiones */}
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        
+                        <div style={{ background: COLORS.paper, padding: '2rem', borderRadius: '18px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
+                            <h2 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', color: COLORS.deep, marginTop: 0, fontSize: '1.6rem' }}>Tus Marcas de Guerra</h2>
+                            <p style={{ fontSize: '0.85rem', color: COLORS.base, opacity: 0.7, marginBottom: '1.5rem' }}>Perfil psicológico y físico según tus elecciones.</p>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem' }}>
+                                {Object.entries(STAT_META).map(([k, m]) => {
+                                    const v = stats[k] || 0;
+                                    const max = 15;
+                                    const pct = Math.min(100, Math.max(0, (v / max) * 100));
+                                    const Icon = m.icon;
+                                    return (
+                                        <div key={k} style={{ background: '#fff', border: `1px solid ${m.color}33`, borderRadius: '12px', padding: '0.85rem' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: m.color, fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                                                <Icon size={14} /> {m.label}
+                                            </div>
+                                            <div style={{ marginTop: '0.6rem', height: '6px', background: '#eef0f3', borderRadius: '999px', overflow: 'hidden' }}>
+                                                <div style={{ width: `${pct}%`, height: '100%', background: m.color, transition: 'width 0.4s' }} />
+                                            </div>
+                                            <div style={{ fontWeight: 900, fontSize: '1.6rem', marginTop: '0.3rem', color: COLORS.base }}>
+                                                {v} <span style={{ fontSize: '0.75rem', opacity: 0.4, fontWeight: 500 }}>/{max}</span>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
 
-                    <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(53,68,106,0.07)', borderRadius: '12px', borderLeft: `4px solid ${COLORS.deep}` }}>
-                        <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', color: COLORS.accent, fontWeight: 800 }}>Para reflexionar</div>
-                        <p style={{ margin: '0.4rem 0 0', lineHeight: 1.6 }}>
-                            Este juego es una ficción didáctica basada en testimonios reales. Cada personaje representa cientos de jóvenes que vivieron la guerra en carne propia. Recordarlos es honrarlos. Hablar de Malvinas es construir país.
-                        </p>
-                    </div>
-
-                    <button onClick={restart} style={{ marginTop: '1.5rem', padding: '0.85rem 1.25rem', background: COLORS.accent, color: COLORS.paper, border: 'none', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <RotateCcw size={16} /> Volver a empezar
-                    </button>
+                        <div style={{ background: '#fff', padding: '2rem', borderRadius: '18px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', border: `1px solid rgba(9,9,12,0.05)` }}>
+                            <h2 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', color: COLORS.deep, marginTop: 0, fontSize: '1.6rem' }}>Hoja de Ruta</h2>
+                            <div style={{ maxHeight: '250px', overflowY: 'auto', paddingRight: '1rem' }}>
+                                <ol style={{ paddingLeft: '1rem', margin: 0, color: COLORS.base }}>
+                                    {path.map((p, i) => (
+                                        <li key={i} style={{ marginBottom: '0.6rem', fontSize: '0.85rem', lineHeight: 1.5, borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.6rem' }}>
+                                            <div style={{ color: COLORS.accent, fontWeight: 800, letterSpacing: '0.5px' }}>{SCENES[p.sceneId]?.title || `CAP ${i}`}</div>
+                                            <div style={{ opacity: 0.9 }}>{p.label}</div>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+                            
+                            <button onClick={restart} style={{ 
+                                marginTop: '1.5rem', width: '100%', padding: '1rem', background: COLORS.accent, 
+                                color: COLORS.paper, border: 'none', borderRadius: '12px', fontWeight: 800, 
+                                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                                transition: 'all 0.2s', boxShadow: '0 5px 15px rgba(180, 83, 84, 0.4)'
+                            }}>
+                                <RotateCcw size={18} /> Reintentar Experiencia
+                            </button>
+                        </div>
+                    </motion.div>
                 </section>
             </div>
         );
@@ -272,115 +330,133 @@ const MalvinasJuegoSerio = () => {
     return (
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 1rem 4rem', fontFamily: '"Public Sans", sans-serif' }}>
             <style>{`@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');`}</style>
-
+            
             <header style={{
                 background: `linear-gradient(135deg, ${COLORS.base}, ${COLORS.deep})`,
                 color: COLORS.paper,
                 borderRadius: '20px',
-                padding: '1.25rem 1.5rem',
+                padding: '1.5rem 2rem',
                 marginTop: '1rem',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: '1rem',
-                flexWrap: 'wrap'
+                flexWrap: 'wrap',
+                boxShadow: '0 10px 30px rgba(9,9,12,0.2)'
             }}>
                 <div>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.accent, fontWeight: 800 }}>
-                        Juego serio · Malvinas en primera persona
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.paper, background: 'rgba(180,83,84,0.6)', padding: '0.2rem 0.6rem', borderRadius: '999px', fontWeight: 800 }}>
+                        <Activity size={12}/> Juego de Decisiones
                     </div>
-                    <h1 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', margin: '0.25rem 0 0', fontWeight: 700 }}>
-                        Capítulo {scene.chapter}: {scene.title}
+                    <h1 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', margin: '0.5rem 0 0', fontWeight: 700 }}>
+                        {scene.chapter}: {scene.title}
                     </h1>
                 </div>
-                <button onClick={restart} title="Reiniciar" style={{ background: 'rgba(240,236,229,0.1)', border: `1px solid ${COLORS.paper}`, color: COLORS.paper, borderRadius: '999px', padding: '0.4rem 0.85rem', cursor: 'pointer', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <RotateCcw size={14} /> Reiniciar
+                <button onClick={restart} title="Reiniciar" style={{ background: 'rgba(240,236,229,0.05)', border: `1px solid rgba(240,236,229,0.2)`, color: COLORS.paper, borderRadius: '999px', padding: '0.5rem 1rem', cursor: 'pointer', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700 }}>
+                    <RotateCcw size={16} /> Reiniciar
                 </button>
             </header>
 
-            {/* Stats */}
-            <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
+            {/* Stats en tiempo real */}
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {Object.entries(STAT_META).map(([k, m]) => {
                     const v = stats[k] || 0;
+                    if(v <= 0) return null; // Solo mostrar las que tengan puntos para más inmersión
                     const Icon = m.icon;
                     return (
                         <div key={k} style={{
                             background: '#fff',
-                            border: `1px solid ${m.color}55`,
+                            border: `1px solid ${m.color}33`,
                             color: m.color,
                             borderRadius: '999px',
-                            padding: '0.3rem 0.65rem',
+                            padding: '0.4rem 0.85rem',
                             fontSize: '0.75rem',
-                            fontWeight: 700,
+                            fontWeight: 800,
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '0.3rem'
+                            gap: '0.4rem',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
                         }}>
-                            <Icon size={12} /> {m.label}: {v}
+                            <Icon size={14} /> {m.label}: {v}
                         </div>
                     );
                 })}
             </div>
 
-            {/* Scene */}
+            {/* Scene Body */}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={sceneId}
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -12 }}
-                    transition={{ duration: 0.35 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.4 }}
                     ref={sceneRef}
                     style={{
-                        background: COLORS.paper,
+                        background: '#fff',
+                        border: '1px solid rgba(9,9,12,0.08)',
                         color: COLORS.base,
-                        borderRadius: '20px',
-                        padding: '2rem 1.5rem',
-                        marginTop: '0.75rem'
+                        borderRadius: '24px',
+                        padding: '2.5rem',
+                        marginTop: '1.5rem',
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.03)'
                     }}
                 >
-                    <p style={{ fontSize: '1.05rem', lineHeight: 1.75, color: COLORS.base, whiteSpace: 'pre-line', margin: 0, fontFamily: '"Public Sans", sans-serif' }}>
+                    <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: COLORS.base, whiteSpace: 'pre-line', margin: 0 }}>
                         {scene.text}
                     </p>
 
                     {scene.info && (
-                        <div style={{ marginTop: '1rem' }}>
-                            <button onClick={() => setShowInfo(s => !s)} style={{ background: 'rgba(53,68,106,0.1)', border: `1px dashed ${COLORS.deep}`, color: COLORS.deep, borderRadius: '8px', padding: '0.4rem 0.75rem', cursor: 'pointer', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                                <BookOpen size={14} /> {showInfo ? 'Ocultar' : 'Ver'} contexto histórico
+                        <div style={{ marginTop: '1.5rem' }}>
+                            <button onClick={() => setShowInfo(s => !s)} style={{ background: 'transparent', border: `1px solid ${COLORS.deep}40`, color: COLORS.deep, borderRadius: '999px', padding: '0.5rem 1rem', cursor: 'pointer', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700 }}>
+                                <BookOpen size={16} /> {showInfo ? 'Ocultar bitácora histórica' : 'Abrir contexto histórico'}
                             </button>
-                            {showInfo && (
-                                <div style={{ marginTop: '0.6rem', padding: '0.85rem 1rem', background: 'rgba(53,68,106,0.08)', borderLeft: `3px solid ${COLORS.deep}`, borderRadius: '8px', fontSize: '0.9rem', color: COLORS.base, lineHeight: 1.6 }}>
-                                    {scene.info}
-                                </div>
-                            )}
+                            <AnimatePresence>
+                                {showInfo && (
+                                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden' }}>
+                                        <div style={{ marginTop: '0.8rem', padding: '1.25rem', background: '#f5fbff', borderLeft: `4px solid ${COLORS.deep}`, borderRadius: '0 12px 12px 0', fontSize: '0.95rem', color: COLORS.deep, lineHeight: 1.6, fontWeight: 500 }}>
+                                            {scene.info}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     )}
 
-                    <div style={{ marginTop: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ borderTop: `1px dashed rgba(9,9,12,0.1)`, margin: '2rem 0', }} />
+
+                    <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: COLORS.base, opacity: 0.6, letterSpacing: '1px', marginBottom: '1rem', fontWeight: 800 }}>
+                        ¿Qué hacés?
+                    </h3>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         {scene.choices.map((c, i) => (
                             <motion.button
                                 key={i}
-                                whileHover={{ x: 4, background: COLORS.deep, color: COLORS.paper }}
+                                whileHover={{ x: 6, background: COLORS.deep, color: COLORS.paper, borderColor: COLORS.deep }}
                                 onClick={() => choose(c)}
                                 style={{
-                                    background: '#fff',
+                                    background: COLORS.paper,
                                     color: COLORS.base,
-                                    border: `2px solid ${COLORS.deep}`,
-                                    borderRadius: '12px',
-                                    padding: '0.85rem 1rem',
+                                    border: `1px solid rgba(9,9,12,0.15)`,
+                                    borderRadius: '16px',
+                                    padding: '1.2rem',
                                     cursor: 'pointer',
                                     fontWeight: 600,
-                                    fontSize: '0.95rem',
+                                    fontSize: '1rem',
                                     textAlign: 'left',
                                     fontFamily: 'inherit',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    gap: '0.5rem'
+                                    gap: '1rem',
+                                    transition: 'all 0.2s ease-out'
                                 }}
                             >
-                                <span>{c.label}</span>
-                                <ChevronRight size={16} />
+                                <span style={{ flex: 1, lineHeight: 1.4 }}>{c.label}</span>
+                                <div style={{ minWidth: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,9,12,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <ChevronRight size={18} />
+                                </div>
                             </motion.button>
                         ))}
                     </div>
@@ -391,29 +467,36 @@ const MalvinasJuegoSerio = () => {
 };
 
 const generateReflection = (stats) => {
-    const { empatia, miedo, info, conviccion } = stats;
+    const { empatia, miedo, info, conviccion, frio, hambre } = stats;
 
-    if (empatia >= 10) {
+    if (empatia >= 7) {
         return {
             title: 'Caminaste con el corazón abierto',
-            text: 'Tus decisiones priorizaron al otro: al amigo del sur, a la madre que escribe, al compañero que tiembla. Esa empatía es lo que sostiene la memoria de Malvinas. La guerra no fue de banderas: fue de pibes. Honrarlos es seguir hablando de ellos.'
+            text: 'Tus decisiones priorizaron al compañero. La empatía es lo que sostiene la memoria de Malvinas. La guerra no fue solo un choque bélico: afectó a pibes como vos. Honrarlos es seguir cuidando esa memoria.'
         };
     }
-    if (info >= 5 && conviccion >= 5) {
+    if (info >= 6 && conviccion >= 4) {
         return {
-            title: 'Pensaste con cabeza fría y patria caliente',
-            text: 'Buscaste información, dudaste de los relatos oficiales y sostuviste tu convicción sin dejar de mirar críticamente. Esa es la actitud que necesita la causa Malvinas hoy: defender la soberanía con conocimiento.'
+            title: 'Peleaste con conciencia social',
+            text: 'Dudaste de los relatos oficiales y descubriste la dura verdad logística y mediática, pero sostuviste tu puesto. Hoy defender a Malvinas es exactamente eso: usar el pensamiento crítico y el conocimiento histórico.'
         };
     }
-    if (miedo >= 5) {
+    if (frio >= 5 || hambre >= 3) {
         return {
-            title: 'El miedo te acompañó · y eso también es honesto',
-            text: 'Tener miedo en una guerra es lo más humano del mundo. Los pibes de Malvinas lo tuvieron. Que vos lo hayas reconocido es el primer paso para entenderlos. Nadie va a la guerra valiente: la valentía se construye al lado de los compañeros.'
+            title: 'El flagelo del clima y la desidia',
+            text: 'Sentiste en tu cuerpo virtual lo peor de Tumbledown. La inmensa mayoría del daño a los soldados argentinos no fue por fuego inglés, sino por el abandono logístico. Tu historia es un reclamo permanente.'
         };
     }
+    if (miedo >= 6) {
+        return {
+            title: 'Miedo humano: la verdad de la guerra',
+            text: 'Nadie va a una guerra valiente. Tu recorrido fue profundamente sincero. Reconocer el miedo, el frío extremo y la ansiedad bajo el fuego naval es la única manera realista de hablar de la trágica guerra de 1982.'
+        };
+    }
+    
     return {
-        title: 'Cruzaste el sur en una pieza',
-        text: 'Salir vivo no es ganar. Volver y poder contarlo, sí. Que esta experiencia de juego haya servido para que recuerdes: detrás de cada caído hay una madre, un perro, una pizza del sábado. Recordarlos es honrarlos.'
+        title: '74 Días en la Inmensidad',
+        text: 'Sobreviviste a las Islas. Tu paso por San Carlos / Tumbledown resume el caos táctico. Detrás del armamento existían personas con emociones complejas. Esta reflexión es un pequeño homenaje a quienes no volvieron.'
     };
 };
 
