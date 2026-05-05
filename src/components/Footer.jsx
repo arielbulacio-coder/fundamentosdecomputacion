@@ -36,10 +36,11 @@ const Footer = () => {
           <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>
             SimuTec · Plataforma de Simuladores Tecnológicos
           </p>
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <a href="https://www.activsoft.com.ar" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 700, fontSize: '0.85rem' }}>
               Desarrollado por Activsoft
             </a>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', opacity: 0.8, fontWeight: 700 }}>v2.5.0</span>
           </div>
         </div>
       </div>
