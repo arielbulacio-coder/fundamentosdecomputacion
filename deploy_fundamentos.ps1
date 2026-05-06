@@ -39,8 +39,8 @@ if (Test-Path $ArchiveLocal) { Remove-Item $ArchiveLocal -Force }
 if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force }
 New-Item -ItemType Directory -Path $TempDir | Out-Null
 
-Write-Host '[1/5] Copiando archivos (sin node_modules / .git / dist)...' -ForegroundColor Yellow
-robocopy $Source $TempDir /E /XD node_modules .git dist /NFL /NDL /NJH /NJS /NC /NS | Out-Null
+Write-Host '[1/5] Copiando archivos (sin node_modules / .git / dist / zips / logs)...' -ForegroundColor Yellow
+robocopy $Source $TempDir /E /XD node_modules .git dist /XF '*.zip' '*.log' 'caddy_*.txt' 'remote_*.yml.tmp' 'temp_*.txt' /NFL /NDL /NJH /NJS /NC /NS | Out-Null
 # robocopy: exits 0..7 = éxito, 8+ = error real
 if ($LASTEXITCODE -ge 8) { throw "robocopy falló (exit $LASTEXITCODE)" }
 $global:LASTEXITCODE = 0

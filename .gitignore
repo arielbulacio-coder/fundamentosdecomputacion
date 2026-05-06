@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Build artifacts y zips de deploy (no deben commitearse)
+*.zip
+*.tgz
+caddy_*.txt
+remote_*.yml.tmp
+temp_*.txt
+inspect.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
