@@ -32,7 +32,7 @@ const Home = () => {
             badge: 'Materia',
             title: 'Fundamentos de la Computación',
             desc: 'Las 4 unidades de la UNPilar: arquitectura, sistemas, datos y seguridad. 11 clases interactivas + simuladores 3D/RA.',
-            gradient: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)'
+            background: 'linear-gradient(135deg, rgba(30,58,138,0.8) 0%, rgba(59,130,246,0.6) 100%), url(/assets/cpu_architecture_modern_1775235433327.png) center/cover no-repeat'
         },
         {
             to: '/proyecto-malvinas',
@@ -40,7 +40,7 @@ const Home = () => {
             badge: 'Transmedia',
             title: 'Proyecto Malvinas',
             desc: 'Stand inmersivo + diorama 3D, juego serio, evaluación cronometrada y video documental. Memoria viva, en primera persona.',
-            gradient: 'linear-gradient(135deg, #09090c 0%, #b45354 100%)'
+            background: 'linear-gradient(135deg, rgba(9,9,12,0.85) 0%, rgba(180,83,84,0.6) 100%), url(/malvinas_hero.png) center/cover no-repeat'
         }
     ];
 
@@ -55,6 +55,15 @@ const Home = () => {
                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.55rem 1.25rem', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: '999px', color: '#3b82f6', fontWeight: 800, fontSize: '0.78rem', marginBottom: '1.75rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}
                 >
                     <Lightbulb size={14} /> Aprender como en el nuevo siglo
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.05 }}
+                    style={{ marginBottom: '1.5rem' }}
+                >
+                    <img src="/simutec_icon.png" alt="SimuTec Icon" style={{ width: '90px', height: '90px', filter: 'drop-shadow(0 10px 15px rgba(0,242,255,0.4))' }} />
                 </motion.div>
 
                 <motion.h1
@@ -114,7 +123,7 @@ const Home = () => {
                         <motion.div key={i} whileHover={{ y: -5, scale: 1.01 }}>
                             <Link to={d.to} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                                 <div style={{
-                                    background: d.gradient,
+                                    background: d.background,
                                     color: '#fff',
                                     borderRadius: '20px',
                                     padding: '2rem',

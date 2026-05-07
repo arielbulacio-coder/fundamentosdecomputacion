@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Heart, Snowflake, Utensils, Compass, RotateCcw,
     AlertTriangle, BookOpen, ChevronRight, Activity, HeartPulse,
-    Volume2, VolumeX, Calendar, Save
+    Volume2, VolumeX, Calendar, Save,
+    Award, Download, Printer, FastForward
 } from 'lucide-react';
 
 const COLORS = {
@@ -33,6 +34,22 @@ const useGameAudio = () => {
     const initialVol = typeof window !== 'undefined' ? Number(localStorage.getItem('malvinas_juego_volume') || '0.7') : 0.7;
     const [volume, setVolumeState] = useState(initialVol);
     const volumeRef = useRef(initialVol);
+    const reverbBufferRef = useRef(null);
+
+    const getReverbBuffer = (ctx) => {
+        if (reverbBufferRef.current) return reverbBufferRef.current;
+        const length = ctx.sampleRate * 2.5; // 2.5s reverb decay
+        const impulse = ctx.createBuffer(2, length, ctx.sampleRate);
+        const left = impulse.getChannelData(0);
+        const right = impulse.getChannelData(1);
+        for (let i = 0; i < length; i++) {
+            const decay = Math.exp(-i / (ctx.sampleRate * 0.4));
+            left[i] = (Math.random() * 2 - 1) * decay;
+            right[i] = (Math.random() * 2 - 1) * decay;
+        }
+        reverbBufferRef.current = impulse;
+        return impulse;
+    };
 
     const ensureCtx = () => {
         if (typeof window === 'undefined') return null;
@@ -85,11 +102,20 @@ const useGameAudio = () => {
         const ctx = ensureCtx();
         if (!ctx) return null;
 
-        // El graph se conecta al masterGain (no directo a destination)
         const out = ctx.createGain();
         out.gain.value = 0;
-        out.connect(masterGainRef.current);
-        const nodes = [];
+
+        const convolver = ctx.createConvolver();
+        convolver.buffer = getReverbBuffer(ctx);
+        const wetGain = ctx.createGain();
+        wetGain.gain.value = 0.55; 
+        const dryGain = ctx.createGain();
+        dryGain.gain.value = 0.85;
+
+        out.connect(dryGain).connect(masterGainRef.current);
+        out.connect(convolver).connect(wetGain).connect(masterGainRef.current);
+
+        const nodes = [convolver, wetGain, dryGain];
         let cleanup = null;
 
         const addOsc = (type, freq, gainVal, detuneLfoFreq) => {
@@ -708,7 +734,7 @@ const SCENES = {
         img: '/malvinas_hero.png',
         mood: 'home', day: 0,
         chapter: 'Prólogo', title: 'Otoño 1982 · Buenos Aires',
-        text: 'Tenés 18 años. Acabás de empezar el Servicio Militar Obligatorio en Campo de Mayo. Una mañana de abril, entre formaciones y limpieza de cuarteles, anuncian por altavoz: "Hoy todos los conscriptos forman para una misión especial". Te entregan un casco verde, un fusil FAL viejo, y un boleto de avión hacia el sur.\n\nEl sargento te grita el apellido. Hay nervios pero también orgullo en el aire. Algunos compañeros se ríen para no llorar. Tu cuerpo no termina de entender qué está pasando.',
+        text: 'Tenés 18 años. Acabás de empezar el Servicio Militar Obligatorio en Campo de Mayo y tu mundo no es más grande que las calles de tu barrio. Una mañana de abril, de forma abrupta, anuncian por altavoz: "Hoy todos los conscriptos forman para una misión especial". Te entregan un casco verde demasiado pesado, un fusil FAL viejo con la correa gastada, y un boleto de avión hacia un sur helado que apenas conocés de los mapas escolares.\n\nEl sargento te grita el apellido rompiendo el silencio. Hay nervios palpables pero también un orgullo confuso flotando en el aire. Algunos compañeros se ríen para no dejar escapar el llanto. Tu cuerpo, tenso y congelado, todavía no termina de entender hacia qué abismo te están empujando.',
         choices: [
             { label: 'Subo al avión sin preguntar. Cumplo mi deber.', next: 'casa_familia', effects: { miedo: +1, conviccion: +2 } },
             { label: 'Le pregunto al sargento a dónde vamos exactamente.', next: 'pregunta_sgto', effects: { miedo: 0, conviccion: +1, info: +2 } },
@@ -716,7 +742,7 @@ const SCENES = {
         ]
     },
     casa_familia: {
-        kind: 'home', mood: 'home', day: 0,
+        img: '/malvinas_carta.png', mood: 'home', day: 0,
         chapter: '0', title: 'La cena que no fue',
         text: 'Esa noche, mientras esperás el llamado a la formación final, te acordás de la última cena del domingo. Mamá había hecho milanesas con puré. Tu hermana chica te contaba un chiste de la escuela y vos no te reíste porque ya estabas pensando en el cuartel.\n\nAhora, sentado en el catre, con la mochila a tus pies, te das cuenta: no le diste el beso de despedida. No te despediste de tu perro. No le respondiste el último mensaje a tu novia.\n\nMañana muy temprano partís en avión.',
         choices: [
@@ -726,7 +752,7 @@ const SCENES = {
         ]
     },
     pregunta_sgto: {
-        kind: 'default', mood: 'tense', day: 0,
+        img: '/malvinas_hero.png', mood: 'tense', day: 0,
         chapter: '1', title: 'En el cuartel',
         text: '"Vamos a recuperar nuestras Malvinas, soldado. Los ingleses las ocupan desde hace 149 años y las vamos a recuperar." El sargento te mira fijo y severo. "¿Alguna duda?"\n\nUn par de compañeros tuyos asienten con orgullo. Otros tragan saliva. Vos pensás en el mapa que te mostró el profesor de Geografía en quinto año: dos islas grises en una esquina del Atlántico, lejos de todo.',
         info: 'La ocupación británica data del 3 de enero de 1833. La decisión militar de 1982 fue tomada por la Junta Dictatorial liderada por Galtieri sin consultar al pueblo, en parte para canalizar el descontento social por la crisis económica y los crímenes del régimen.',
@@ -739,7 +765,7 @@ const SCENES = {
         img: '/malvinas_activacion.png',
         mood: 'tense', day: 1,
         chapter: '1', title: 'Vuelo al sur',
-        text: 'El Hércules está repleto y ruidoso. Sus turbinas vibran toda la chapa del fuselaje. Los muchachos cantan la Marcha de Malvinas; algunos cuatro veces, cinco. Hay risas nerviosas, alguien hace bromas pesadas, un suboficial reza en voz baja.\n\nMirás por la ventanilla circular descubriendo, a través de un colchón de nubes blancas, el Atlántico Sur oscuro e infinito. Algunos en este avión nunca habían salido de su provincia. Algunos nunca habían visto la nieve. Algunos no van a volver.\n\nUn cabo te reparte una hoja en blanco. "Si querés escribirle a tu vieja, escribile ahora. Después no se va a poder."',
+        text: 'El Hércules está repleto, sofocante y ensordecedor. Sus gigantescas turbinas hacen vibrar cada centímetro de chapa del fuselaje, metiéndose en los huesos. Los muchachos, tratando de espantar el silencio, cantan la Marcha de Malvinas a todo pulmón; algunos ya van por la quinta vez. Hay risas nerviosas, bromas pesadas para disimular la ansiedad, y un suboficial en el rincón que reza apretando un rosario.\n\nMirás por la pequeña ventanilla circular y descubrís, a través de un denso colchón de nubes blancas, la inmensidad del Atlántico Sur: oscuro, profundo e infinito. Algunos en este avión jamás habían salido de los límites de su provincia. Muchos jamás habían visto la nieve o sentido verdadero frío. Demasiados no van a tener la oportunidad de volver.\n\nUn cabo te reparte de prisa una hoja de papel en blanco. "Si querés escribirle unas últimas líneas a tu vieja, hacelo ahora. Allá, en el barro, después no se va a poder".',
         choices: [
             { label: 'Escribo: "No te preocupes mami, vuelvo pronto."', next: 'islas', effects: { empatia: +2 } },
             { label: 'Escribo todo lo que siento: el miedo, la nieve, la lejanía.', next: 'islas', effects: { empatia: +3, miedo: +2 } },
@@ -759,7 +785,7 @@ const SCENES = {
         ]
     },
     guardia_nocturna: {
-        kind: 'cold', mood: 'cold', day: 3,
+        img: '/malvinas_soldado_reflexion.png', mood: 'cold', day: 3,
         chapter: '3', title: 'Primera Guardia',
         text: '2 AM. Tu turno de vigilancia. Estás solo en la intemperie. La humedad se cuela por los puños del capote y se mete en los huesos. La campera militar de mala calidad parece de papel mojado.\n\nA lo lejos escuchás el cañoneo naval británico contra la pista del aeropuerto. Cada estallido te hace temblar el suelo bajo las botas. Mirás las estrellas: en Buenos Aires nunca se veían tantas. Acá sí. Acá brillan como si fueran clavos en el techo del mundo.\n\nIntentás recordar el olor del café con leche de tu casa pero no lo lográs. El frío borra los olores antes que los recuerdos.',
         choices: [
@@ -769,7 +795,7 @@ const SCENES = {
         ]
     },
     amigo: {
-        kind: 'friend', mood: 'home', day: 4,
+        img: '/malvinas_soldado_reflexion.png', mood: 'home', day: 4,
         chapter: '4', title: 'Ramón',
         text: 'Al día siguiente descubrís que tu compañero de pozo es Ramón Antúnez, de un pueblo cerca de Goya, Corrientes. Tiene 19 años, una hermana enferma y una novia llamada Alicia que le tejió tres pulóveres de lana gruesa. "Pero no me dejaron traer ni uno", te cuenta riéndose para no llorar.\n\nA la noche, Ramón saca un transistor a pilas que escondió en la mochila bajo unas medias. Sintoniza onda corta. La señal viene y va con el viento. Una voz seca dice algo en inglés. Después llega un acento uruguayo: "Versión británica indica que el avance hacia Puerto Argentino es sostenido."',
         info: 'Para contrarrestar la censura del gobierno dictatorial argentino que insistía con "Estamos ganando", muchos soldados sintonizaban radios uruguayas (Radio Carve de Montevideo era muy escuchada) o la propia BBC para entender la realidad del terreno.',
@@ -780,7 +806,7 @@ const SCENES = {
         ]
     },
     oficial_humano: {
-        kind: 'mail', mood: 'home', day: 5,
+        img: '/malvinas_carta.png', mood: 'home', day: 5,
         chapter: '4', title: 'El Subteniente Mendoza',
         text: 'Al amanecer aparece en el pozo el Subteniente Carlos Mendoza, un cordobés de 24 años recién egresado del Colegio Militar. No es como los otros oficiales. Lleva la misma cara de cansancio que vos.\n\n"Pibes" — les dice — "vengo de la cocina del Estado Mayor. Me afané dos latas." Las pone sobre el barro: corned beef y duraznos en almíbar. "Compártanlas. Y si alguien pregunta, no me vieron."\n\nAntes de irse te aprieta el hombro y te dice: "Vos sos de Buenos Aires, ¿no? Tengo una novia ahí. Si no vuelvo, contale que la pensé hasta el final."',
         info: 'Hubo oficiales y suboficiales argentinos que se comportaron con dignidad y empatía hacia la tropa, contrastando con los casos documentados de maltrato. Muchos cayeron en combate junto a sus conscriptos. La memoria de Malvinas también es la de ellos.',
@@ -791,7 +817,7 @@ const SCENES = {
         ]
     },
     hambre: {
-        kind: 'hunger', mood: 'tense', day: 14,
+        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 14,
         chapter: '5', title: 'La logística rota',
         text: 'Pasaron 9 días desde la última ración caliente. La "ración de combate" — un mate cocido fingido y un caldo de oveja aguado — llega tarde y fría, si es que llega. La artillería enemiga cortó casi todos los suministros desde San Carlos.\n\nUn grupo del pozo de al lado planea una incursión nocturna a Puerto Argentino para robar comida del depósito reservado a los oficiales. "Allá hay corned beef, fideos, dulce de leche, vino", susurra uno con los ojos brillantes. "Está todo, pibe. Está todo."',
         info: 'El desabastecimiento fue dramático. Las diferencias de provisiones entre oficiales de alto rango y suboficiales/conscriptos crearon graves tensiones. La desnutrición aguda fue diagnosticada en cientos de soldados al volver al continente.',
@@ -802,7 +828,7 @@ const SCENES = {
         ]
     },
     castigo: {
-        kind: 'punishment', mood: 'tense', day: 16,
+        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 16,
         chapter: '5', title: 'Descubiertos',
         text: 'Madrugada. La incursión sale mal. Un cabo los sorprende a la vuelta y les arranca las latas de las manos. A uno de los pibes — Sosa, de Tucumán, 18 años — el cabo lo manda al "estaqueamiento": cuatro estacas en la tierra helada, las muñecas y los tobillos atados, la cara contra el barro mojado.\n\nLo dejan tres horas. Cuando lo desatan no se puede parar. Tiene los dedos azules y las venas explotadas en las piernas. Pasarán semanas hasta que la denuncia llegue a Buenos Aires.',
         info: 'Los estaqueamientos están documentados como tortura grave por veteranos sobrevivientes y constituyen causas judiciales abiertas. En 2023 la Cámara Federal de Comodoro Rivadavia los calificó formalmente como "delitos de lesa humanidad".',
@@ -812,7 +838,7 @@ const SCENES = {
         ]
     },
     ataque_aereo_previo: {
-        kind: 'naval_fire', mood: 'battle', day: 50,
+        img: '/malvinas_collage.png', mood: 'battle', day: 50,
         chapter: '6', title: 'Fuego naval',
         text: 'Mayo avanza. Los británicos desembarcan en San Carlos el 21. Avanzan lento pero seguros. Las noches se vuelven una pesadilla de hierro: barcos británicos disparan andanadas de cañón naval sobre las posiciones argentinas para quebrar la moral y no dejarlos dormir.\n\nLos proyectiles silban sobre el techo de la trinchera. Cada uno suena como un tren cayendo del cielo. Algunos explotan a metros, otros a kilómetros. Nunca sabés cuál te va a tocar.\n\nRamón te aprieta el brazo. No habla. Tiene los ojos cerrados y la boca apretada. Vos sentís el corazón en las orejas.',
         choices: [
@@ -822,7 +848,7 @@ const SCENES = {
         ]
     },
     paramedico: {
-        kind: 'default', mood: 'battle', day: 52,
+        img: '/malvinas_hero.png', mood: 'battle', day: 52,
         chapter: '6', title: 'Sangre joven',
         text: 'Antes del amanecer, una explosión muy cercana. Salen cuatro pibes corriendo del pozo de al lado. Tres traen al cuarto desmayado, sangrando del muslo. Le tiraron una andanada arriba.\n\nEl paramédico — un suboficial que en la vida civil era enfermero en Mar del Plata — corta el pantalón con tijera y aprieta. "Pinza, pinza, pinza", grita. No hay morfina. Le dan whisky de una petaca.\n\nEl chico abre los ojos. Pregunta por su mamá. El paramédico dice que sí, que ya viene, mientras ata el torniquete con desesperación.',
         info: 'Los paramédicos y enfermeros argentinos en Malvinas trabajaron con suministros mínimos en hospitales de campaña improvisados. Salvaron cientos de vidas con coraje y muchos cayeron junto a quienes intentaban salvar.',
@@ -833,7 +859,7 @@ const SCENES = {
         ]
     },
     hospital_campana: {
-        kind: 'hospital', mood: 'tense', day: 60,
+        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 60,
         chapter: '7', title: 'Congelamiento',
         text: 'Amanece y al sacarte las botas no sentís los dedos del pie izquierdo. Cuando los ves, están negros. Negros como los de un cadáver. El sargento te ordena ir caminando hasta el hospital de campaña en Puerto Argentino. Cuatro kilómetros que se sienten cuarenta.\n\nAdentro hay decenas de pibes como vos. Algunos sin un dedo, otros sin un pie. Una enfermera de Catamarca te lava con agua tibia. Te dice algo en voz baja para que no la escuche el médico: "Mové los dedos así, así. Quizás todavía los podés salvar."\n\nMirás el techo de lona y entendés: esto que vivís no se lo van a creer en tu casa.',
         info: 'El "Pie de trinchera" se causaba por la humedad permanente, la inmovilidad y el congelamiento. Generó múltiples amputaciones que hubieran sido evitables con el abrigo que las familias enviaban al continente — pero las donaciones llamadas "Operación Lana" jamás llegaron en su mayoría a las islas.',
@@ -843,7 +869,7 @@ const SCENES = {
         ]
     },
     medios: {
-        kind: 'media', mood: 'tense', day: 65,
+        img: '/malvinas_carta.png', mood: 'tense', day: 65,
         chapter: '8', title: 'Revistas del continente',
         text: 'En la sala de espera del hospital ves una pila de revistas "Gente" llegada en un Hércules de logística. La tapa muestra a una madre sonriente con la foto de su hijo conscripto. El título grita en mayúsculas: "ESTAMOS GANANDO".\n\nAdentro hay listas de donaciones millonarias: golosinas, abrigos, cigarrillos, chocolates. Toneladas. Vos no comiste un chocolate en treinta días.\n\nUn compañero, sentado al lado tuyo, abre la revista. Lee los nombres. Después la cierra y mira al vacío. "Mi vieja debe estar leyendo esto ahora mismo en el living", dice.',
         choices: [
@@ -853,7 +879,7 @@ const SCENES = {
         ]
     },
     final_ataque: {
-        kind: 'battle', mood: 'battle', day: 73,
+        img: '/malvinas_collage.png', mood: 'battle', day: 73,
         img: '/malvinas_collage.png',
         chapter: '9', title: 'La Batalla Final',
         text: 'Noche del 13 al 14 de junio de 1982. Monte Longdon, Dos Hermanas y Tumbledown caen uno tras otro. Todo es fuego intenso, bengalas británicas que iluminan los cerros como si fuera mediodía blanco, gritos en dos idiomas, disparos que pasan zumbando.\n\nVos y Ramón están atrincherados con el último cargador. A 200 metros se escucha la respiración del enemigo entre las piedras. Un compañero al lado tuyo grita "¡Viva la Patria!". Otro reza. Otro llora. Otro hace todas esas cosas a la vez.\n\nLa orden por radio es clara: aguantar hasta el último cartucho. Nadie te dice qué hacer después.',
@@ -865,7 +891,7 @@ const SCENES = {
         ]
     },
     rendicion: {
-        kind: 'surrender', mood: 'cold', day: 74,
+        img: '/malvinas_soldado_reflexion.png', mood: 'cold', day: 74,
         chapter: '10', title: 'La rendición',
         text: 'Humo blanco sobre Puerto Argentino. La orden es romper las armas y rendirse. Vos rompés el cerrojo de tu fusil contra una roca. El golpe seco te suena como el cierre de un libro.\n\nEl General Menéndez firma la capitulación a las 23:30 horas. Caminás hacia el galpón gris donde te van a registrar como prisionero de guerra. Hay miles. Pibes mojados, sucios, hambrientos, callados. Un teniente inglés joven, casi de tu edad, te ofrece un cigarrillo. Lo aceptás.\n\nTerminó. 74 días que cambiaron para siempre quién eras.',
         info: 'Saldo del conflicto: 649 caídos argentinos, 255 británicos y 3 isleños. Los conscriptos argentinos fueron capturados, registrados en el Boletín de Cautivos y devueltos al continente en barcos transatlánticos como el Canberra y vuelos comerciales fletados.',
@@ -876,7 +902,7 @@ const SCENES = {
         ]
     },
     prisionero: {
-        kind: 'prisoner', mood: 'cold', day: 75,
+        img: '/malvinas_hero.png', mood: 'cold', day: 75,
         chapter: '10', title: 'Prisionero de guerra',
         text: 'Te alojan en el galpón de un frigorífico abandonado. Hay alambre de púas y guardias. Pero también — para tu sorpresa — hay galletas inglesas con manteca, té caliente, primeros vendajes que no viste en 60 días. Un médico militar inglés te examina los pies y dice algo en su idioma; otro traduce: "Por suerte vas a conservarlos".\n\nA tu lado, Ramón duerme por primera vez en semanas. Tres horas seguidas. Cuando se despierta, te pregunta si esto es el cielo. "No, Ramón. Es el principio de la vuelta."\n\nDos días después los embarcan en el Canberra rumbo a Puerto Madryn.',
         info: 'El trato británico a los prisioneros argentinos fue mayoritariamente correcto y ajustado a la Convención de Ginebra. Para muchos conscriptos fue la primera comida caliente y atención médica decente en semanas. La Cruz Roja Internacional supervisó el proceso de repatriación.',
@@ -887,7 +913,7 @@ const SCENES = {
         ]
     },
     regreso: {
-        kind: 'return', mood: 'tense', day: 90,
+        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 90,
         chapter: 'Epílogo', title: 'La vuelta del silencio',
         text: 'Desembarcan en Puerto Madryn una madrugada, a escondidas. El gobierno teme que los argentinos vean en sus propios ojos lo que pasó. No hay banderas, no hay diarios, no hay aplausos. Hay micros sin parar y rutas vacías hasta Bahía Blanca.\n\nEn casa, tu mamá dejó tu cama tendida intacta los 74 días. Pero esa misma semana, los vecinos cruzan a la otra vereda cuando te ven. La frase "héroe de Malvinas" tarda 25 años en pronunciarse en voz alta.\n\nLos primeros años son los del olvido oficial: la "desmalvinización". Te ofrecen un trabajo en una panadería; el dueño te dice "que lo de Malvinas no se diga acá, ¿no?". Te quedan los amigos del CECIM y las cartas de Ramón desde Corrientes.',
         info: 'Más de 500 veteranos argentinos se suicidaron en las décadas posteriores a 1982 por trastorno de estrés post-traumático, falta de reconocimiento social, abandono del Estado e incapacidad para reinsertarse. Hubo que esperar hasta 2007 para que la Pensión Vitalicia para Veteranos de Guerra fuera reformada significativamente.',
@@ -898,9 +924,9 @@ const SCENES = {
         ]
     },
     reencuentro: {
-        kind: 'reunion', mood: 'reunion', day: null,
+        img: '/malvinas_soldado_reflexion.png', mood: 'reunion', day: null,
         chapter: 'Epílogo II', title: '10 años después',
-        text: '1992. La plaza San Martín de Buenos Aires está iluminada por velitas. Es el 10° aniversario. Ramón vino desde Corrientes en un colectivo de 18 horas. Te abraza fuerte. Tiene una hija nueva: Malvina. La trae en brazos.\n\n"Pibe", te dice apretando la frente contra la tuya. "Volveríamos a ese frío si fuera para abrazarnos."\n\nEn la plaza hay 649 velitas. Una por cada compañero. La de Sosa, de Tucumán, está en el medio. La encendiste vos. Ramón te aprieta la mano. Llueve fino. Nadie se va.',
+        text: 'Año 1992. La inmensa plaza San Martín de Buenos Aires está iluminada débilmente por cientos de velitas que parpadean contra el viento. Es el décimo aniversario. Ramón viajó desde su pueblo en Corrientes en un colectivo destartalado de 18 horas de viaje solo para verte. Te abraza fuerte, con esa fuerza bruta que solo se aprende en la guerra. Te presenta a su hija pequeña: la llamó Malvina, y la sostiene orgulloso en brazos.\n\n"Pibe...", te murmura apretando su frente contra la tuya, con los ojos vidriosos. "Volveríamos a ese frío maldito mil veces... si fuera para abrazarnos de nuevo".\n\nEn la plaza brillan exactamente 649 velitas silenciosas. Una por cada compañero que se quedó haciendo guardia eterna en el sur. La velita de Sosa, el chico de Tucumán, está justo en el centro. La encendiste vos con las manos temblando. Ramón te aprieta el hombro. Una llovizna fina y fría comienza a caer sobre la ciudad, pero nadie en la plaza se mueve un solo centímetro.',
         info: 'El CECIM (Centro de Excombatientes de las Islas Malvinas) y otras organizaciones de veteranos sostuvieron durante décadas el reclamo por reconocimiento, salud, educación y pensiones. Su trabajo militante y el aporte del Equipo Argentino de Antropología Forense permitieron, a partir de 2017, identificar a casi 120 caídos del Cementerio de Darwin.',
         choices: [
             { label: 'Descubrir cómo el viaje me ha marcado para siempre →', next: 'final', effects: {} }
@@ -1082,14 +1108,17 @@ const MalvinasJuegoSerio = () => {
             <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1rem 4rem', fontFamily: '"Public Sans", sans-serif' }}>
                 <style>{`@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');`}</style>
                 <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                    style={{ background: `linear-gradient(135deg, ${COLORS.base}, ${COLORS.deep})`, color: COLORS.paper, borderRadius: '22px', padding: '3rem 2rem', marginTop: '1rem', textAlign: 'center' }}
+                    style={{ background: `linear-gradient(135deg, ${COLORS.base}, ${COLORS.deep})`, color: COLORS.paper, borderRadius: '22px', padding: '3rem 2rem', marginTop: '1rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
                 >
-                    <Heart size={42} color={COLORS.accent} />
-                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '4px', color: COLORS.accent, fontWeight: 800, marginTop: '1rem' }}>Despliegue Finalizado · 74 días</div>
-                    <h1 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0.5rem 0 1rem', lineHeight: 1.1 }}>
-                        {reflection.title}
-                    </h1>
-                    <p style={{ maxWidth: '750px', margin: '0 auto', opacity: 0.95, lineHeight: 1.8, fontSize: '1.1rem' }}>{reflection.text}</p>
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.15, backgroundImage: 'url(/malvinas_marcas_guerra.png)', backgroundSize: 'cover', backgroundPosition: 'center', mixBlendMode: 'luminosity' }}></div>
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <Heart size={42} color={COLORS.accent} />
+                        <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '4px', color: COLORS.accent, fontWeight: 800, marginTop: '1rem' }}>Despliegue Finalizado · 74 días</div>
+                        <h1 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0.5rem 0 1rem', lineHeight: 1.1, textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+                            {reflection.title}
+                        </h1>
+                        <p style={{ maxWidth: '750px', margin: '0 auto', opacity: 0.95, lineHeight: 1.8, fontSize: '1.1rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>{reflection.text}</p>
+                    </div>
                 </motion.div>
 
                 <section style={{ marginTop: '2rem', background: COLORS.paper, borderRadius: '22px', padding: '2.25rem', boxShadow: '0 12px 30px rgba(9,9,12,0.06)' }}>
