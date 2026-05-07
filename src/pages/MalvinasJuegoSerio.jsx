@@ -21,19 +21,29 @@ const AUDIO_KEY = 'malvinas_juego_audio';
 // Genera ambient music por "mood" y SFX de click. Cross-fade entre escenas.
 const useGameAudio = () => {
     const ctxRef = useRef(null);
+    const masterGainRef = useRef(null);
     const currentMoodRef = useRef(null);
+    const pendingMoodRef = useRef(null);
     const currentGraphRef = useRef(null);
     const initialEnabled = typeof window !== 'undefined' ? localStorage.getItem(AUDIO_KEY) !== 'off' : true;
     const [enabled, setEnabledState] = useState(initialEnabled);
     const enabledRef = useRef(initialEnabled);
+    const [started, setStarted] = useState(false);
+    const startedRef = useRef(false);
+    const initialVol = typeof window !== 'undefined' ? Number(localStorage.getItem('malvinas_juego_volume') || '0.7') : 0.7;
+    const [volume, setVolumeState] = useState(initialVol);
+    const volumeRef = useRef(initialVol);
 
     const ensureCtx = () => {
-        if (!ctxRef.current && typeof window !== 'undefined') {
+        if (typeof window === 'undefined') return null;
+        if (!ctxRef.current) {
             const Ctx = window.AudioContext || window.webkitAudioContext;
-            if (Ctx) ctxRef.current = new Ctx();
-        }
-        if (ctxRef.current && ctxRef.current.state === 'suspended') {
-            ctxRef.current.resume().catch(() => {});
+            if (!Ctx) return null;
+            ctxRef.current = new Ctx();
+            // master gain → destination
+            masterGainRef.current = ctxRef.current.createGain();
+            masterGainRef.current.gain.value = volumeRef.current;
+            masterGainRef.current.connect(ctxRef.current.destination);
         }
         return ctxRef.current;
     };
@@ -55,13 +65,30 @@ const useGameAudio = () => {
         }, 1500);
     };
 
+    // Toca una nota corta con envelope ADSR simple (para arpeggios/melodías)
+    const playNote = (ctx, dest, freq, startTime, duration, volNote = 0.18, type = 'sine') => {
+        const osc = ctx.createOscillator();
+        osc.type = type;
+        osc.frequency.value = freq;
+        const g = ctx.createGain();
+        g.gain.value = 0;
+        g.gain.setValueAtTime(0, startTime);
+        g.gain.linearRampToValueAtTime(volNote, startTime + 0.04);
+        g.gain.linearRampToValueAtTime(volNote * 0.6, startTime + duration * 0.4);
+        g.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+        osc.connect(g).connect(dest);
+        osc.start(startTime);
+        osc.stop(startTime + duration + 0.05);
+    };
+
     const buildMoodGraph = (mood) => {
         const ctx = ensureCtx();
         if (!ctx) return null;
 
+        // El graph se conecta al masterGain (no directo a destination)
         const out = ctx.createGain();
         out.gain.value = 0;
-        out.connect(ctx.destination);
+        out.connect(masterGainRef.current);
         const nodes = [];
         let cleanup = null;
 
@@ -86,13 +113,26 @@ const useGameAudio = () => {
         };
 
         if (mood === 'home') {
-            // Acorde mayor cálido C: C2, G2, C3, E3
-            [65.41, 98, 130.81, 164.81].forEach((f, i) => addOsc(i % 2 ? 'sine' : 'triangle', f, 0.06, 0.18 + i * 0.07));
+            // Acorde C mayor (4 voces) + arpeggio melódico cíclico
+            [65.41, 98, 130.81, 164.81].forEach((f, i) =>
+                addOsc(i % 2 ? 'sine' : 'triangle', f, 0.18, 0.18 + i * 0.07)
+            );
+            // Arpeggio: C5, E5, G5, E5 cada 1.5 s
+            const notes = [523.25, 659.25, 783.99, 659.25];
+            let i = 0;
+            const tick = () => {
+                if (currentMoodRef.current !== 'home') return;
+                const t = ctx.currentTime;
+                playNote(ctx, out, notes[i % notes.length], t, 0.6, 0.14, 'triangle');
+                i++;
+            };
+            const arpTimer = setInterval(tick, 1500);
+            cleanup = () => clearInterval(arpTimer);
         } else if (mood === 'cold') {
-            // Viento + drone bajo
+            // Viento + drone bajo + melodía solitaria descendente
             const buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
             const data = buf.getChannelData(0);
-            for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.45;
+            for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
             const noise = ctx.createBufferSource();
             noise.buffer = buf;
             noise.loop = true;
@@ -101,10 +141,9 @@ const useGameAudio = () => {
             filter.frequency.value = 700;
             filter.Q.value = 0.6;
             const ng = ctx.createGain();
-            ng.gain.value = 0.15;
+            ng.gain.value = 0.30;
             noise.connect(filter).connect(ng).connect(out);
             noise.start();
-            // sweep filter
             const lfo = ctx.createOscillator();
             lfo.frequency.value = 0.06;
             const lfoG = ctx.createGain();
@@ -113,11 +152,22 @@ const useGameAudio = () => {
             lfo.start();
             nodes.push(noise, filter, ng, lfo, lfoG);
             // drone bajo
-            addOsc('sine', 55, 0.10);
-            addOsc('sine', 82.41, 0.05);
+            addOsc('sine', 55, 0.22);
+            addOsc('sine', 82.41, 0.12);
+            // melodía lenta solitaria — A4 → G4 → E4 → C4
+            const melodyNotes = [440, 392, 329.63, 261.63];
+            let i = 0;
+            const tick = () => {
+                if (currentMoodRef.current !== 'cold') return;
+                playNote(ctx, out, melodyNotes[i % melodyNotes.length], ctx.currentTime, 1.6, 0.12, 'sine');
+                i++;
+            };
+            setTimeout(tick, 2000);
+            const melTimer = setInterval(tick, 5000);
+            cleanup = () => clearInterval(melTimer);
         } else if (mood === 'battle') {
-            // Drone tenso + booms intermitentes
-            addOsc('sawtooth', 49, 0.10);
+            // Drone tenso + booms + war drum
+            addOsc('sawtooth', 49, 0.18);
             const drone2 = ctx.createOscillator();
             drone2.type = 'sawtooth';
             drone2.frequency.value = 73.42;
@@ -126,62 +176,96 @@ const useGameAudio = () => {
             droneFilter.frequency.value = 200;
             droneFilter.Q.value = 4;
             const dg = ctx.createGain();
-            dg.gain.value = 0.08;
+            dg.gain.value = 0.16;
             drone2.connect(droneFilter).connect(dg).connect(out);
             drone2.start();
             nodes.push(drone2, droneFilter, dg);
-            // booms periódicos
+            // tambores de guerra (kick) cada 1.2 s
+            const playKick = () => {
+                if (!ctxRef.current || ctxRef.current.state !== 'running') return;
+                if (currentMoodRef.current !== 'battle') return;
+                const c = ctxRef.current;
+                const osc = c.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(80, c.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(35, c.currentTime + 0.18);
+                const bg = c.createGain();
+                bg.gain.setValueAtTime(0.6, c.currentTime);
+                bg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.18);
+                osc.connect(bg).connect(out);
+                osc.start();
+                osc.stop(c.currentTime + 0.22);
+            };
+            // boom lejano cada 3-5 s (cañón naval)
             const playBoom = () => {
                 if (!ctxRef.current || ctxRef.current.state !== 'running') return;
                 if (currentMoodRef.current !== 'battle') return;
                 const c = ctxRef.current;
                 const osc = c.createOscillator();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(120, c.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(25, c.currentTime + 0.4);
+                osc.frequency.setValueAtTime(150, c.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(20, c.currentTime + 0.6);
                 const bg = c.createGain();
-                bg.gain.setValueAtTime(0.5, c.currentTime);
-                bg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.4);
+                bg.gain.setValueAtTime(0.7, c.currentTime);
+                bg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.6);
                 osc.connect(bg).connect(out);
                 osc.start();
-                osc.stop(c.currentTime + 0.5);
+                osc.stop(c.currentTime + 0.7);
             };
-            const boomTimer = setInterval(playBoom, 2800 + Math.random() * 1500);
-            cleanup = () => clearInterval(boomTimer);
+            const kickTimer = setInterval(playKick, 1200);
+            const boomTimer = setInterval(playBoom, 3500 + Math.random() * 1500);
+            cleanup = () => { clearInterval(kickTimer); clearInterval(boomTimer); };
         } else if (mood === 'tense') {
-            // A menor: A2, D3, F3 con tremolo
+            // A menor con tremolo + acentos de piano fantasma
             [110, 146.83, 174.61].forEach(f => {
                 const osc = ctx.createOscillator();
                 osc.type = 'triangle';
                 osc.frequency.value = f;
                 const g = ctx.createGain();
-                g.gain.value = 0.07;
+                g.gain.value = 0.18;
                 osc.connect(g).connect(out);
                 osc.start();
                 const trem = ctx.createOscillator();
                 trem.frequency.value = 0.5;
                 const tremG = ctx.createGain();
-                tremG.gain.value = 0.04;
+                tremG.gain.value = 0.08;
                 trem.connect(tremG).connect(g.gain);
                 trem.start();
                 nodes.push(osc, g, trem, tremG);
             });
+            // acento ocasional cada 6 s — un Mi grave
+            const tick = () => {
+                if (currentMoodRef.current !== 'tense') return;
+                playNote(ctx, out, 164.81, ctx.currentTime, 1.2, 0.20, 'triangle');
+            };
+            setTimeout(tick, 1500);
+            const accentTimer = setInterval(tick, 6000);
+            cleanup = () => clearInterval(accentTimer);
         } else if (mood === 'reunion') {
-            // G mayor con shimmer suave: G2, B2, D3, G3
-            [98, 123.47, 146.83, 196].forEach((f, i) => addOsc(i === 0 ? 'triangle' : 'sine', f, 0.07, 0.15 + i * 0.05));
+            // G mayor con shimmer + melodía esperanzada
+            [98, 123.47, 146.83, 196].forEach((f, i) =>
+                addOsc(i === 0 ? 'triangle' : 'sine', f, 0.20, 0.15 + i * 0.05)
+            );
+            // melodía: G4, B4, D5, G5 ascendente cada 2s
+            const melodyNotes = [392, 493.88, 587.33, 783.99];
+            let i = 0;
+            const tick = () => {
+                if (currentMoodRef.current !== 'reunion') return;
+                playNote(ctx, out, melodyNotes[i % melodyNotes.length], ctx.currentTime, 1.0, 0.18, 'sine');
+                i++;
+            };
+            const melTimer = setInterval(tick, 2000);
+            cleanup = () => clearInterval(melTimer);
         }
-        // 'default' / 'silent': sin sonido
 
-        // fade in
-        out.gain.setTargetAtTime(0.4, ctx.currentTime, 0.6);
+        // fade in (master 0.85 = más fuerte que antes)
+        out.gain.setTargetAtTime(0.85, ctx.currentTime, 0.6);
 
         return { gain: out, nodes, cleanup };
     };
 
-    const setMood = useCallback((mood) => {
-        if (!enabledRef.current) return;
+    const applyMoodNow = (mood) => {
         if (currentMoodRef.current === mood) return;
-        ensureCtx();
         if (currentGraphRef.current) {
             fadeOutGraph(currentGraphRef.current);
         }
@@ -191,6 +275,37 @@ const useGameAudio = () => {
         } else {
             currentGraphRef.current = null;
         }
+    };
+
+    const setMood = useCallback((mood) => {
+        if (!enabledRef.current) return;
+        // Si el audio aún no fue activado por el usuario, sólo guardamos
+        // el mood pendiente para reproducirlo cuando se active.
+        if (!startedRef.current) {
+            pendingMoodRef.current = mood;
+            return;
+        }
+        applyMoodNow(mood);
+    }, []);
+
+    const start = useCallback(() => {
+        const ctx = ensureCtx();
+        if (!ctx) return;
+        // resume() debe ejecutarse dentro de un user gesture
+        if (ctx.state === 'suspended') {
+            ctx.resume().catch(() => {});
+        }
+        startedRef.current = true;
+        setStarted(true);
+        const moodToApply = pendingMoodRef.current || currentMoodRef.current;
+        pendingMoodRef.current = null;
+        if (moodToApply) {
+            // forzamos rebuild aunque coincida (porque el graph anterior pudo no haber sonado)
+            const prev = currentMoodRef.current;
+            currentMoodRef.current = null;
+            applyMoodNow(prev || moodToApply);
+            if (prev && prev !== moodToApply) applyMoodNow(moodToApply);
+        }
     }, []);
 
     const stopAll = useCallback(() => {
@@ -199,10 +314,11 @@ const useGameAudio = () => {
             currentGraphRef.current = null;
         }
         currentMoodRef.current = null;
+        pendingMoodRef.current = null;
     }, []);
 
     const playClick = useCallback(() => {
-        if (!enabledRef.current) return;
+        if (!enabledRef.current || !startedRef.current) return;
         const ctx = ensureCtx();
         if (!ctx) return;
         const buf = ctx.createBuffer(1, ctx.sampleRate * 0.06, ctx.sampleRate);
@@ -215,9 +331,9 @@ const useGameAudio = () => {
         filter.frequency.value = 1800;
         filter.Q.value = 1;
         const g = ctx.createGain();
-        g.gain.value = 0.18;
+        g.gain.value = 0.25;
         g.gain.setTargetAtTime(0, ctx.currentTime + 0.02, 0.02);
-        noise.connect(filter).connect(g).connect(ctx.destination);
+        noise.connect(filter).connect(g).connect(masterGainRef.current);
         noise.start();
         noise.stop(ctx.currentTime + 0.12);
     }, []);
@@ -229,7 +345,24 @@ const useGameAudio = () => {
         if (!v) stopAll();
     }, [stopAll]);
 
-    const toggle = useCallback(() => setEnabled(!enabledRef.current), [setEnabled]);
+    const toggle = useCallback(() => {
+        const newEnabled = !enabledRef.current;
+        setEnabled(newEnabled);
+        // Si se activa pero aún no había arrancado, intentamos arrancar
+        if (newEnabled && !startedRef.current) {
+            start();
+        }
+    }, [setEnabled, start]);
+
+    const setVolume = useCallback((v) => {
+        const clamped = Math.max(0, Math.min(1, v));
+        volumeRef.current = clamped;
+        setVolumeState(clamped);
+        if (masterGainRef.current && ctxRef.current) {
+            masterGainRef.current.gain.setTargetAtTime(clamped, ctxRef.current.currentTime, 0.05);
+        }
+        try { localStorage.setItem('malvinas_juego_volume', String(clamped)); } catch (e) {}
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -240,7 +373,7 @@ const useGameAudio = () => {
         };
     }, [stopAll]);
 
-    return { enabled, toggle, setMood, playClick, stopAll };
+    return { enabled, started, volume, toggle, setMood, playClick, stopAll, start, setVolume };
 };
 
 // ─── ILUSTRACIONES SVG (fallback cuando una escena no tiene .img) ────
@@ -880,6 +1013,9 @@ const MalvinasJuegoSerio = () => {
     useEffect(() => () => audio.stopAll(), [audio]);
 
     const choose = useCallback((choice) => {
+        // El primer click de elección sirve también como gesto para
+        // activar el AudioContext (política de autoplay del navegador).
+        if (!audio.started) audio.start();
         audio.playClick();
         const eff = choice.effects || {};
         // floating deltas
@@ -1082,17 +1218,57 @@ const MalvinasJuegoSerio = () => {
                         {scene.title}
                     </h1>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <button onClick={audio.toggle} title="Sonido (M)" style={{
-                        background: audio.enabled ? 'rgba(67,160,71,0.2)' : 'rgba(240,236,229,0.05)',
-                        border: `1px solid rgba(240,236,229,0.2)`,
-                        color: COLORS.paper, borderRadius: '999px', padding: '0.5rem 0.75rem',
-                        cursor: 'pointer', fontSize: '0.8rem',
-                        display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 700
-                    }}>
-                        {audio.enabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
-                        {audio.enabled ? 'On' : 'Off'}
-                    </button>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                    {!audio.started ? (
+                        <button
+                            onClick={() => { audio.start(); audio.playClick(); }}
+                            title="Iniciar música ambient (requiere un click por política del navegador)"
+                            style={{
+                                background: COLORS.accent,
+                                border: `1px solid ${COLORS.accent}`,
+                                color: COLORS.paper,
+                                borderRadius: '999px',
+                                padding: '0.55rem 1rem',
+                                cursor: 'pointer',
+                                fontSize: '0.85rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.4rem',
+                                fontWeight: 800,
+                                boxShadow: '0 4px 14px rgba(180,83,84,0.4)',
+                                animation: 'pulse 1.6s ease-in-out infinite'
+                            }}
+                        >
+                            <Volume2 size={16} /> Activar música
+                        </button>
+                    ) : (
+                        <>
+                            <button
+                                onClick={audio.toggle}
+                                title="Sonido (M)"
+                                style={{
+                                    background: audio.enabled ? 'rgba(67,160,71,0.2)' : 'rgba(240,236,229,0.05)',
+                                    border: `1px solid rgba(240,236,229,0.2)`,
+                                    color: COLORS.paper, borderRadius: '999px', padding: '0.5rem 0.75rem',
+                                    cursor: 'pointer', fontSize: '0.8rem',
+                                    display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 700
+                                }}
+                            >
+                                {audio.enabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+                                {audio.enabled ? 'On' : 'Off'}
+                            </button>
+                            {audio.enabled && (
+                                <input
+                                    type="range"
+                                    min="0" max="1" step="0.05"
+                                    value={audio.volume}
+                                    onChange={(e) => audio.setVolume(Number(e.target.value))}
+                                    title={`Volumen ${Math.round(audio.volume * 100)}%`}
+                                    style={{ width: '90px', accentColor: COLORS.accent }}
+                                />
+                            )}
+                        </>
+                    )}
                     <button onClick={restart} title="Reiniciar (R)" style={{
                         background: 'rgba(240,236,229,0.05)', border: `1px solid rgba(240,236,229,0.2)`,
                         color: COLORS.paper, borderRadius: '999px', padding: '0.5rem 1rem',
@@ -1102,6 +1278,7 @@ const MalvinasJuegoSerio = () => {
                         <RotateCcw size={16} /> Reiniciar
                     </button>
                 </div>
+                <style>{`@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }`}</style>
             </header>
 
             {/* Stats activas */}
