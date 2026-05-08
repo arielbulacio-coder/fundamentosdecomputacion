@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   fundamentos:
     image: nginx:stable-alpine
