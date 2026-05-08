@@ -206,7 +206,7 @@ const MalvinasRA = () => {
                     <button onClick={() => setShowMarker(true)} style={{ pointerEvents: 'auto', background: COLORS.accent, color: COLORS.paper, border: 'none', borderRadius: '8px', padding: '0.5rem 1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
                         <QrCode size={16} /> Ver Marcador
                     </button>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', display: window.innerWidth > 768 ? 'flex' : 'none' }}>
+                    <div style={{ flexDirection: 'column', alignItems: 'flex-end', display: window.innerWidth > 768 ? 'flex' : 'none' }}>
                         <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.accent, fontWeight: 800 }}>Diorama 3D</div>
                         <div style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: '1.4rem', fontWeight: 700, fontStyle: 'italic' }}>Malvinas</div>
                     </div>
