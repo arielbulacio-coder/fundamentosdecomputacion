@@ -35,6 +35,7 @@ const useGameAudio = () => {
     const [volume, setVolumeState] = useState(initialVol);
     const volumeRef = useRef(initialVol);
     const reverbBufferRef = useRef(null);
+    const soundtrackRef = useRef(null);
 
     const getReverbBuffer = (ctx) => {
         if (reverbBufferRef.current) return reverbBufferRef.current;
@@ -323,6 +324,19 @@ const useGameAudio = () => {
         }
         startedRef.current = true;
         setStarted(true);
+
+        if (!soundtrackRef.current && typeof window !== 'undefined') {
+            const audio = new Audio('https://upload.wikimedia.org/wikipedia/commons/7/7b/JOHN_MICHEL_CELLO-BEETHOVEN_SYMPHONY_7_Allegretto.ogg');
+            audio.crossOrigin = 'anonymous';
+            audio.loop = true;
+            audio.volume = volumeRef.current * 0.45;
+            soundtrackRef.current = audio;
+        }
+
+        if (enabledRef.current && soundtrackRef.current) {
+            soundtrackRef.current.play().catch(e => console.log('Autoplay prevent', e));
+        }
+
         const moodToApply = pendingMoodRef.current || currentMoodRef.current;
         pendingMoodRef.current = null;
         if (moodToApply) {
@@ -341,6 +355,9 @@ const useGameAudio = () => {
         }
         currentMoodRef.current = null;
         pendingMoodRef.current = null;
+        if (soundtrackRef.current) {
+            soundtrackRef.current.pause();
+        }
     }, []);
 
     const playClick = useCallback(() => {
@@ -387,6 +404,9 @@ const useGameAudio = () => {
         if (masterGainRef.current && ctxRef.current) {
             masterGainRef.current.gain.setTargetAtTime(clamped, ctxRef.current.currentTime, 0.05);
         }
+        if (soundtrackRef.current) {
+            soundtrackRef.current.volume = clamped * 0.45;
+        }
         try { localStorage.setItem('malvinas_juego_volume', String(clamped)); } catch (e) {}
     }, []);
 
@@ -395,6 +415,10 @@ const useGameAudio = () => {
             stopAll();
             if (ctxRef.current) {
                 try { ctxRef.current.close(); } catch (e) {}
+            }
+            if (soundtrackRef.current) {
+                soundtrackRef.current.pause();
+                soundtrackRef.current = null;
             }
         };
     }, [stopAll]);

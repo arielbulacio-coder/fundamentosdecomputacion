@@ -1,0 +1,1 @@
+const https = require("https"); const fs = require("fs"); https.get("https://cdn.pixabay.com/download/audio/2022/10/25/audio_b282d5a3ef.mp3", {headers: {"User-Agent": "Mozilla/5.0"}}, (res) => { const file = fs.createWriteStream("public/malvinas_soundtrack.mp3"); res.pipe(file); file.on("finish", () => console.log("Downloaded")); });

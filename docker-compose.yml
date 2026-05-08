@@ -1,48 +1,14 @@
 version: '3.8'
-
 services:
   fundamentos:
-    build: .
+    image: nginx:stable-alpine
     container_name: fundamentos-app
     restart: always
-    networks:
-      - web
-
-  fundamentos-api:
-    build: ./backend
-    container_name: fundamentos-api
-    restart: always
-    environment:
-      - PORT=3010
-      - DB_HOST=fundamentos-db
-      - DB_PORT=5432
-      - DB_NAME=fundamentos
-      - DB_USER=fundamentos
-      - DB_PASSWORD=fundamentos123
-    depends_on:
-      - fundamentos-db
-    networks:
-      - web
-      - fundamentos-internal
-
-  fundamentos-db:
-    image: postgres:16-alpine
-    container_name: fundamentos-db
-    restart: always
-    environment:
-      - POSTGRES_DB=fundamentos
-      - POSTGRES_USER=fundamentos
-      - POSTGRES_PASSWORD=fundamentos123
     volumes:
-      - fundamentos-db-data:/var/lib/postgresql/data
+      - ./dist:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
-      - fundamentos-internal
-
-volumes:
-  fundamentos-db-data:
-
+      - web
 networks:
   web:
     external: true
-  fundamentos-internal:
-    driver: bridge
