@@ -18,7 +18,22 @@ const COLORS = {
 const SAVE_KEY = 'malvinas_juego_save_v2';
 const AUDIO_KEY = 'malvinas_juego_audio';
 
-// ─── HOOK DE AUDIO (Web Audio sintetizado, sin archivos externos) ─────
+// ─── MÚSICA AMBIENT desde Wikimedia Commons (PD / CC) ────────────────
+// URLs verificadas en upload.wikimedia.org. Si una falla (404/CORS/red),
+// el hook hace fallback automático al sintetizador.
+const MOOD_AUDIO_URLS = {
+    // Pachelbel - Canon en D (PD): cálido, hogar y reencuentro
+    home:    'https://upload.wikimedia.org/wikipedia/commons/b/bc/Pachelbel%27s_Canon_01.wav',
+    reunion: 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Pachelbel%27s_Canon_01.wav',
+    // Albinoni - Concerto Op.9 No.2 II Adagio (CC0): melancólico, frío
+    cold:    'https://upload.wikimedia.org/wikipedia/commons/d/da/Albinoni%2C_Concerto_for_Oboe_and_Strings_No._2_in_D_minor%2C_Op._9%2C_II._Adagio.ogg',
+    // Beethoven - Moonlight Sonata 1er mov. (CC-BY-SA, atribución abajo)
+    tense:   'https://upload.wikimedia.org/wikipedia/commons/e/eb/Beethoven_Moonlight_1st_movement.ogg',
+    // Tchaikovsky - Obertura 1812 (PD UE, grabación 1951): batalla
+    battle:  'https://upload.wikimedia.org/wikipedia/commons/4/45/Tchaikovsky_-_Op.49_Ouverture_solennelle_1812.ogg'
+};
+
+// ─── HOOK DE AUDIO (Wikimedia Commons + synth fallback) ──────────────
 // Genera ambient music por "mood" y SFX de click. Cross-fade entre escenas.
 const useGameAudio = () => {
     const ctxRef = useRef(null);
@@ -35,7 +50,7 @@ const useGameAudio = () => {
     const [volume, setVolumeState] = useState(initialVol);
     const volumeRef = useRef(initialVol);
     const reverbBufferRef = useRef(null);
-    const soundtrackRef = useRef(null);
+    const audioFileRef = useRef(null);
 
     const getReverbBuffer = (ctx) => {
         if (reverbBufferRef.current) return reverbBufferRef.current;
@@ -291,23 +306,93 @@ const useGameAudio = () => {
         return { gain: out, nodes, cleanup };
     };
 
+    // Reproduce un archivo HTMLAudioElement loopeado para el mood.
+    // Se conecta al masterGain (respeta el slider de volumen).
+    // Si la URL falla, devuelve false → caller hace fallback al synth.
+    const playMoodFile = (mood) => {
+        const url = MOOD_AUDIO_URLS[mood];
+        if (!url) return false;
+        const ctx = ensureCtx();
+        if (!ctx || !masterGainRef.current) return false;
+
+        const el = new Audio();
+        el.crossOrigin = 'anonymous';
+        el.loop = true;
+        el.preload = 'auto';
+        el.src = url;
+
+        let mediaSource;
+        try {
+            mediaSource = ctx.createMediaElementSource(el);
+        } catch (e) {
+            // Algunos browsers re-bloquean el mismo MediaElement en otra fuente; abortamos
+            return false;
+        }
+        const gain = ctx.createGain();
+        gain.gain.value = 0;
+        mediaSource.connect(gain).connect(masterGainRef.current);
+
+        const ref = { el, gain, mediaSource, mood, ok: true };
+
+        const startPlay = () => {
+            if (!ref.ok) return;
+            el.play().catch(() => { ref.ok = false; });
+            // fade in
+            try {
+                gain.gain.cancelScheduledValues(ctx.currentTime);
+                gain.gain.setTargetAtTime(0.85, ctx.currentTime, 0.6);
+            } catch (e) { /* ignore */ }
+        };
+        el.addEventListener('canplay', startPlay, { once: true });
+        // Si tarda demasiado, intento play igual (algunos browsers no emiten canplay)
+        setTimeout(() => { if (ref.ok && !el.paused === false) startPlay(); }, 800);
+        // Si falla la carga, marcamos para fallback
+        el.addEventListener('error', () => { ref.ok = false; }, { once: true });
+
+        audioFileRef.current = ref;
+        return true;
+    };
+
+    const fadeOutFile = (ref) => {
+        if (!ref) return;
+        const ctx = ctxRef.current;
+        if (!ctx) return;
+        try {
+            ref.gain.gain.cancelScheduledValues(ctx.currentTime);
+            ref.gain.gain.setTargetAtTime(0, ctx.currentTime, 0.5);
+        } catch (e) { /* ignore */ }
+        setTimeout(() => {
+            try { ref.el.pause(); } catch (e) { /* ignore */ }
+            try { ref.gain.disconnect(); } catch (e) { /* ignore */ }
+            try { ref.mediaSource.disconnect(); } catch (e) { /* ignore */ }
+            ref.ok = false;
+        }, 1300);
+    };
+
     const applyMoodNow = (mood) => {
         if (currentMoodRef.current === mood) return;
+        // fade out anterior (synth y/o file)
         if (currentGraphRef.current) {
             fadeOutGraph(currentGraphRef.current);
+            currentGraphRef.current = null;
+        }
+        if (audioFileRef.current) {
+            fadeOutFile(audioFileRef.current);
+            audioFileRef.current = null;
         }
         currentMoodRef.current = mood;
         if (mood && mood !== 'silent') {
-            currentGraphRef.current = buildMoodGraph(mood);
-        } else {
-            currentGraphRef.current = null;
+            // 1) intentar archivo de Wikimedia
+            const playedFile = playMoodFile(mood);
+            // 2) si no hay URL para ese mood o falló, usar synth
+            if (!playedFile) {
+                currentGraphRef.current = buildMoodGraph(mood);
+            }
         }
     };
 
     const setMood = useCallback((mood) => {
         if (!enabledRef.current) return;
-        // Si el audio aún no fue activado por el usuario, sólo guardamos
-        // el mood pendiente para reproducirlo cuando se active.
         if (!startedRef.current) {
             pendingMoodRef.current = mood;
             return;
@@ -318,29 +403,15 @@ const useGameAudio = () => {
     const start = useCallback(() => {
         const ctx = ensureCtx();
         if (!ctx) return;
-        // resume() debe ejecutarse dentro de un user gesture
         if (ctx.state === 'suspended') {
             ctx.resume().catch(() => {});
         }
         startedRef.current = true;
         setStarted(true);
 
-        if (!soundtrackRef.current && typeof window !== 'undefined') {
-            const audio = new Audio('https://upload.wikimedia.org/wikipedia/commons/7/7b/JOHN_MICHEL_CELLO-BEETHOVEN_SYMPHONY_7_Allegretto.ogg');
-            audio.crossOrigin = 'anonymous';
-            audio.loop = true;
-            audio.volume = volumeRef.current * 0.45;
-            soundtrackRef.current = audio;
-        }
-
-        if (enabledRef.current && soundtrackRef.current) {
-            soundtrackRef.current.play().catch(e => console.log('Autoplay prevent', e));
-        }
-
         const moodToApply = pendingMoodRef.current || currentMoodRef.current;
         pendingMoodRef.current = null;
         if (moodToApply) {
-            // forzamos rebuild aunque coincida (porque el graph anterior pudo no haber sonado)
             const prev = currentMoodRef.current;
             currentMoodRef.current = null;
             applyMoodNow(prev || moodToApply);
@@ -353,11 +424,12 @@ const useGameAudio = () => {
             fadeOutGraph(currentGraphRef.current);
             currentGraphRef.current = null;
         }
+        if (audioFileRef.current) {
+            fadeOutFile(audioFileRef.current);
+            audioFileRef.current = null;
+        }
         currentMoodRef.current = null;
         pendingMoodRef.current = null;
-        if (soundtrackRef.current) {
-            soundtrackRef.current.pause();
-        }
     }, []);
 
     const playClick = useCallback(() => {
@@ -404,9 +476,6 @@ const useGameAudio = () => {
         if (masterGainRef.current && ctxRef.current) {
             masterGainRef.current.gain.setTargetAtTime(clamped, ctxRef.current.currentTime, 0.05);
         }
-        if (soundtrackRef.current) {
-            soundtrackRef.current.volume = clamped * 0.45;
-        }
         try { localStorage.setItem('malvinas_juego_volume', String(clamped)); } catch (e) {}
     }, []);
 
@@ -415,10 +484,6 @@ const useGameAudio = () => {
             stopAll();
             if (ctxRef.current) {
                 try { ctxRef.current.close(); } catch (e) {}
-            }
-            if (soundtrackRef.current) {
-                soundtrackRef.current.pause();
-                soundtrackRef.current = null;
             }
         };
     }, [stopAll]);
@@ -1823,6 +1888,12 @@ const MalvinasJuegoSerio = () => {
                         </motion.div>
                     ))}
                 </AnimatePresence>
+            </div>
+
+            {/* Atribución de música — pequeña, en el footer */}
+            <div style={{ textAlign: 'center', marginTop: '2rem', padding: '0.75rem', fontSize: '0.7rem', color: COLORS.base, opacity: 0.45, lineHeight: 1.5 }}>
+                Música ambient: Pachelbel · Albinoni · Beethoven · Tchaikovsky — desde Wikimedia Commons (PD / CC).
+                <br />Beethoven Moonlight 1er mov.: <a href="https://commons.wikimedia.org/wiki/File:Beethoven_Moonlight_1st_movement.ogg" target="_blank" rel="noreferrer" style={{ color: COLORS.deep }}>CC-BY-SA</a> Bernd Krueger.
             </div>
         </div>
     );
