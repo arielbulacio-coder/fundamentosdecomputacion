@@ -1381,8 +1381,20 @@ const MalvinasJuegoSerio = () => {
     if (finished) {
         const reflection = generateReflection(stats);
         return (
-            <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1rem 4rem', fontFamily: '"Public Sans", sans-serif' }}>
-                <style>{`@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');`}</style>
+            <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 1rem 4rem', fontFamily: '"Public Sans", sans-serif' }} className="malvinas-final">
+                <style>{`
+                    @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+                    @media print {
+                        @page { size: A4; margin: 1.5cm; }
+                        nav, header, footer, .malvinas-actions, button { display: none !important; }
+                        body, html { background: #fff !important; color: #000 !important; }
+                        .malvinas-final * { box-shadow: none !important; }
+                        .malvinas-final { color: #000 !important; padding: 0 !important; max-width: 100% !important; }
+                        .malvinas-final h1, .malvinas-final h2, .malvinas-final h3 { color: #000 !important; }
+                        .malvinas-final section, .malvinas-final div { background: #fff !important; border-color: #ddd !important; page-break-inside: avoid; }
+                        .malvinas-badges { page-break-before: avoid; }
+                    }
+                `}</style>
                 <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                     style={{ background: `linear-gradient(135deg, ${COLORS.base}, ${COLORS.deep})`, color: COLORS.paper, borderRadius: '22px', padding: '3rem 2rem', marginTop: '1rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
                 >
@@ -1439,6 +1451,67 @@ const MalvinasJuegoSerio = () => {
                             );
                         })}
                     </div>
+                </section>
+
+                {/* INSIGNIAS DESBLOQUEADAS */}
+                <section className="malvinas-badges" style={{ marginTop: '1.5rem', background: COLORS.paper, borderRadius: '22px', padding: '2rem', boxShadow: '0 12px 30px rgba(9,9,12,0.06)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                        <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: COLORS.deep, color: COLORS.paper, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Award size={22} />
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.accent, fontWeight: 800 }}>Logros</div>
+                            <h2 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', color: COLORS.deep, margin: '0.2rem 0 0', fontSize: '1.6rem' }}>Insignias desbloqueadas</h2>
+                        </div>
+                    </div>
+                    <p style={{ color: COLORS.base, opacity: 0.7, marginBottom: '1.25rem', fontSize: '0.9rem' }}>
+                        Reconocimientos según el camino que tomaste.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+                        {BADGES.map((b) => {
+                            const unlocked = b.check(stats, path);
+                            return (
+                                <motion.div
+                                    key={b.id}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: BADGES.indexOf(b) * 0.04 }}
+                                    style={{
+                                        background: unlocked ? '#fff' : 'rgba(9,9,12,0.04)',
+                                        border: `1px solid ${unlocked ? COLORS.accent + '55' : 'rgba(9,9,12,0.1)'}`,
+                                        borderRadius: '14px',
+                                        padding: '1rem',
+                                        opacity: unlocked ? 1 : 0.4,
+                                        textAlign: 'center',
+                                        filter: unlocked ? 'none' : 'grayscale(100%)'
+                                    }}
+                                >
+                                    <div style={{ fontSize: '2rem', marginBottom: '0.4rem' }}>{b.emoji}</div>
+                                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: COLORS.deep, marginBottom: '0.3rem' }}>{b.title}</div>
+                                    <div style={{ fontSize: '0.78rem', color: COLORS.base, opacity: 0.75, lineHeight: 1.4 }}>{b.desc}</div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                {/* Botones de export / impresión */}
+                <section className="malvinas-actions" style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+                    <button
+                        onClick={() => {
+                            const badgesUnlocked = BADGES.map(b => ({ ...b, unlocked: b.check(stats, path) }));
+                            exportSummaryPNG(stats, path, reflection.title, badgesUnlocked);
+                        }}
+                        style={{ background: COLORS.accent, color: COLORS.paper, border: 'none', borderRadius: '12px', padding: '0.85rem 1.5rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem', boxShadow: '0 6px 18px rgba(180,83,84,0.3)' }}
+                    >
+                        <Download size={16} /> Descargar resumen (PNG)
+                    </button>
+                    <button
+                        onClick={() => window.print()}
+                        style={{ background: COLORS.deep, color: COLORS.paper, border: 'none', borderRadius: '12px', padding: '0.85rem 1.5rem', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}
+                    >
+                        <Printer size={16} /> Imprimir / PDF
+                    </button>
                 </section>
 
                 <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
