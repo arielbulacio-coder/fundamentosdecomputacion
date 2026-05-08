@@ -731,7 +731,7 @@ const SceneIllustration = ({ kind = 'default' }) => {
 // img opcional, choices con effects.
 const SCENES = {
     intro: {
-        img: '/malvinas_hero.png',
+        img: '/malvinas_intro.png',
         mood: 'home', day: 0,
         chapter: 'Prólogo', title: 'Otoño 1982 · Buenos Aires',
         text: 'Tenés 18 años. Acabás de empezar el Servicio Militar Obligatorio en Campo de Mayo y tu mundo no es más grande que las calles de tu barrio. Una mañana de abril, de forma abrupta, anuncian por altavoz: "Hoy todos los conscriptos forman para una misión especial". Te entregan un casco verde demasiado pesado, un fusil FAL viejo con la correa gastada, y un boleto de avión hacia un sur helado que apenas conocés de los mapas escolares.\n\nEl sargento te grita el apellido rompiendo el silencio. Hay nervios palpables pero también un orgullo confuso flotando en el aire. Algunos compañeros se ríen para no dejar escapar el llanto. Tu cuerpo, tenso y congelado, todavía no termina de entender hacia qué abismo te están empujando.',
@@ -742,7 +742,7 @@ const SCENES = {
         ]
     },
     casa_familia: {
-        img: '/malvinas_carta.png', mood: 'home', day: 0,
+        img: '/malvinas_casa.png', mood: 'home', day: 0,
         chapter: '0', title: 'La cena que no fue',
         text: 'Esa noche, mientras esperás el llamado a la formación final, te acordás de la última cena del domingo. Mamá había hecho milanesas con puré. Tu hermana chica te contaba un chiste de la escuela y vos no te reíste porque ya estabas pensando en el cuartel.\n\nAhora, sentado en el catre, con la mochila a tus pies, te das cuenta: no le diste el beso de despedida. No te despediste de tu perro. No le respondiste el último mensaje a tu novia.\n\nMañana muy temprano partís en avión.',
         choices: [
@@ -752,7 +752,7 @@ const SCENES = {
         ]
     },
     pregunta_sgto: {
-        img: '/malvinas_hero.png', mood: 'tense', day: 0,
+        img: '/malvinas_cuartel.png', mood: 'tense', day: 0,
         chapter: '1', title: 'En el cuartel',
         text: '"Vamos a recuperar nuestras Malvinas, soldado. Los ingleses las ocupan desde hace 149 años y las vamos a recuperar." El sargento te mira fijo y severo. "¿Alguna duda?"\n\nUn par de compañeros tuyos asienten con orgullo. Otros tragan saliva. Vos pensás en el mapa que te mostró el profesor de Geografía en quinto año: dos islas grises en una esquina del Atlántico, lejos de todo.',
         info: 'La ocupación británica data del 3 de enero de 1833. La decisión militar de 1982 fue tomada por la Junta Dictatorial liderada por Galtieri sin consultar al pueblo, en parte para canalizar el descontento social por la crisis económica y los crímenes del régimen.',
@@ -762,7 +762,7 @@ const SCENES = {
         ]
     },
     avion: {
-        img: '/malvinas_activacion.png',
+        img: '/malvinas_avion.png',
         mood: 'tense', day: 1,
         chapter: '1', title: 'Vuelo al sur',
         text: 'El Hércules está repleto, sofocante y ensordecedor. Sus gigantescas turbinas hacen vibrar cada centímetro de chapa del fuselaje, metiéndose en los huesos. Los muchachos, tratando de espantar el silencio, cantan la Marcha de Malvinas a todo pulmón; algunos ya van por la quinta vez. Hay risas nerviosas, bromas pesadas para disimular la ansiedad, y un suboficial en el rincón que reza apretando un rosario.\n\nMirás por la pequeña ventanilla circular y descubrís, a través de un denso colchón de nubes blancas, la inmensidad del Atlántico Sur: oscuro, profundo e infinito. Algunos en este avión jamás habían salido de los límites de su provincia. Muchos jamás habían visto la nieve o sentido verdadero frío. Demasiados no van a tener la oportunidad de volver.\n\nUn cabo te reparte de prisa una hoja de papel en blanco. "Si querés escribirle unas últimas líneas a tu vieja, hacelo ahora. Allá, en el barro, después no se va a poder".',
@@ -773,7 +773,7 @@ const SCENES = {
         ]
     },
     islas: {
-        img: '/malvinas_carta.png',
+        img: '/malvinas_llegada.png',
         mood: 'cold', day: 2,
         chapter: '2', title: 'Puerto Argentino',
         text: 'Al bajar la rampa del avión, el viento te corta la cara como si te hubieran tirado un balde de cuchillos. Hace 2°C. Llovizna helada y horizontal. Todo huele a turba húmeda y a combustible JP-1 derramado.\n\nTu sección es asignada a defender el Monte Tumbledown, un cerro pelado al oeste de Puerto Argentino. La orden es clara y categórica: hay que cavar pozos de zorro en la piedra. Los ingleses van a venir desde el mar; hay que esperarlos.\n\nUn cabo veterano te muestra el suelo: "Pico, pala, paciencia. Y cuidado con el agua subterránea."',
@@ -785,7 +785,7 @@ const SCENES = {
         ]
     },
     guardia_nocturna: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'cold', day: 3,
+        img: '/malvinas_guardia.png', mood: 'cold', day: 3,
         chapter: '3', title: 'Primera Guardia',
         text: '2 AM. Tu turno de vigilancia. Estás solo en la intemperie. La humedad se cuela por los puños del capote y se mete en los huesos. La campera militar de mala calidad parece de papel mojado.\n\nA lo lejos escuchás el cañoneo naval británico contra la pista del aeropuerto. Cada estallido te hace temblar el suelo bajo las botas. Mirás las estrellas: en Buenos Aires nunca se veían tantas. Acá sí. Acá brillan como si fueran clavos en el techo del mundo.\n\nIntentás recordar el olor del café con leche de tu casa pero no lo lográs. El frío borra los olores antes que los recuerdos.',
         choices: [
@@ -795,7 +795,7 @@ const SCENES = {
         ]
     },
     amigo: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'home', day: 4,
+        img: '/malvinas_radio.png', mood: 'home', day: 4,
         chapter: '4', title: 'Ramón',
         text: 'Al día siguiente descubrís que tu compañero de pozo es Ramón Antúnez, de un pueblo cerca de Goya, Corrientes. Tiene 19 años, una hermana enferma y una novia llamada Alicia que le tejió tres pulóveres de lana gruesa. "Pero no me dejaron traer ni uno", te cuenta riéndose para no llorar.\n\nA la noche, Ramón saca un transistor a pilas que escondió en la mochila bajo unas medias. Sintoniza onda corta. La señal viene y va con el viento. Una voz seca dice algo en inglés. Después llega un acento uruguayo: "Versión británica indica que el avance hacia Puerto Argentino es sostenido."',
         info: 'Para contrarrestar la censura del gobierno dictatorial argentino que insistía con "Estamos ganando", muchos soldados sintonizaban radios uruguayas (Radio Carve de Montevideo era muy escuchada) o la propia BBC para entender la realidad del terreno.',
@@ -806,7 +806,7 @@ const SCENES = {
         ]
     },
     oficial_humano: {
-        img: '/malvinas_carta.png', mood: 'home', day: 5,
+        img: '/malvinas_oficial.png', mood: 'home', day: 5,
         chapter: '4', title: 'El Subteniente Mendoza',
         text: 'Al amanecer aparece en el pozo el Subteniente Carlos Mendoza, un cordobés de 24 años recién egresado del Colegio Militar. No es como los otros oficiales. Lleva la misma cara de cansancio que vos.\n\n"Pibes" — les dice — "vengo de la cocina del Estado Mayor. Me afané dos latas." Las pone sobre el barro: corned beef y duraznos en almíbar. "Compártanlas. Y si alguien pregunta, no me vieron."\n\nAntes de irse te aprieta el hombro y te dice: "Vos sos de Buenos Aires, ¿no? Tengo una novia ahí. Si no vuelvo, contale que la pensé hasta el final."',
         info: 'Hubo oficiales y suboficiales argentinos que se comportaron con dignidad y empatía hacia la tropa, contrastando con los casos documentados de maltrato. Muchos cayeron en combate junto a sus conscriptos. La memoria de Malvinas también es la de ellos.',
@@ -817,7 +817,7 @@ const SCENES = {
         ]
     },
     hambre: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 14,
+        img: '/malvinas_hambre.png', mood: 'tense', day: 14,
         chapter: '5', title: 'La logística rota',
         text: 'Pasaron 9 días desde la última ración caliente. La "ración de combate" — un mate cocido fingido y un caldo de oveja aguado — llega tarde y fría, si es que llega. La artillería enemiga cortó casi todos los suministros desde San Carlos.\n\nUn grupo del pozo de al lado planea una incursión nocturna a Puerto Argentino para robar comida del depósito reservado a los oficiales. "Allá hay corned beef, fideos, dulce de leche, vino", susurra uno con los ojos brillantes. "Está todo, pibe. Está todo."',
         info: 'El desabastecimiento fue dramático. Las diferencias de provisiones entre oficiales de alto rango y suboficiales/conscriptos crearon graves tensiones. La desnutrición aguda fue diagnosticada en cientos de soldados al volver al continente.',
@@ -828,7 +828,7 @@ const SCENES = {
         ]
     },
     castigo: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 16,
+        img: '/malvinas_castigo.png', mood: 'tense', day: 16,
         chapter: '5', title: 'Descubiertos',
         text: 'Madrugada. La incursión sale mal. Un cabo los sorprende a la vuelta y les arranca las latas de las manos. A uno de los pibes — Sosa, de Tucumán, 18 años — el cabo lo manda al "estaqueamiento": cuatro estacas en la tierra helada, las muñecas y los tobillos atados, la cara contra el barro mojado.\n\nLo dejan tres horas. Cuando lo desatan no se puede parar. Tiene los dedos azules y las venas explotadas en las piernas. Pasarán semanas hasta que la denuncia llegue a Buenos Aires.',
         info: 'Los estaqueamientos están documentados como tortura grave por veteranos sobrevivientes y constituyen causas judiciales abiertas. En 2023 la Cámara Federal de Comodoro Rivadavia los calificó formalmente como "delitos de lesa humanidad".',
@@ -848,7 +848,7 @@ const SCENES = {
         ]
     },
     paramedico: {
-        img: '/malvinas_hero.png', mood: 'battle', day: 52,
+        img: '/malvinas_paramedico.png', mood: 'battle', day: 52,
         chapter: '6', title: 'Sangre joven',
         text: 'Antes del amanecer, una explosión muy cercana. Salen cuatro pibes corriendo del pozo de al lado. Tres traen al cuarto desmayado, sangrando del muslo. Le tiraron una andanada arriba.\n\nEl paramédico — un suboficial que en la vida civil era enfermero en Mar del Plata — corta el pantalón con tijera y aprieta. "Pinza, pinza, pinza", grita. No hay morfina. Le dan whisky de una petaca.\n\nEl chico abre los ojos. Pregunta por su mamá. El paramédico dice que sí, que ya viene, mientras ata el torniquete con desesperación.',
         info: 'Los paramédicos y enfermeros argentinos en Malvinas trabajaron con suministros mínimos en hospitales de campaña improvisados. Salvaron cientos de vidas con coraje y muchos cayeron junto a quienes intentaban salvar.',
@@ -859,7 +859,7 @@ const SCENES = {
         ]
     },
     hospital_campana: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 60,
+        img: '/malvinas_hospital.png', mood: 'tense', day: 60,
         chapter: '7', title: 'Congelamiento',
         text: 'Amanece y al sacarte las botas no sentís los dedos del pie izquierdo. Cuando los ves, están negros. Negros como los de un cadáver. El sargento te ordena ir caminando hasta el hospital de campaña en Puerto Argentino. Cuatro kilómetros que se sienten cuarenta.\n\nAdentro hay decenas de pibes como vos. Algunos sin un dedo, otros sin un pie. Una enfermera de Catamarca te lava con agua tibia. Te dice algo en voz baja para que no la escuche el médico: "Mové los dedos así, así. Quizás todavía los podés salvar."\n\nMirás el techo de lona y entendés: esto que vivís no se lo van a creer en tu casa.',
         info: 'El "Pie de trinchera" se causaba por la humedad permanente, la inmovilidad y el congelamiento. Generó múltiples amputaciones que hubieran sido evitables con el abrigo que las familias enviaban al continente — pero las donaciones llamadas "Operación Lana" jamás llegaron en su mayoría a las islas.',
@@ -869,7 +869,7 @@ const SCENES = {
         ]
     },
     medios: {
-        img: '/malvinas_carta.png', mood: 'tense', day: 65,
+        img: '/malvinas_medios.png', mood: 'tense', day: 65,
         chapter: '8', title: 'Revistas del continente',
         text: 'En la sala de espera del hospital ves una pila de revistas "Gente" llegada en un Hércules de logística. La tapa muestra a una madre sonriente con la foto de su hijo conscripto. El título grita en mayúsculas: "ESTAMOS GANANDO".\n\nAdentro hay listas de donaciones millonarias: golosinas, abrigos, cigarrillos, chocolates. Toneladas. Vos no comiste un chocolate en treinta días.\n\nUn compañero, sentado al lado tuyo, abre la revista. Lee los nombres. Después la cierra y mira al vacío. "Mi vieja debe estar leyendo esto ahora mismo en el living", dice.',
         choices: [
@@ -879,7 +879,7 @@ const SCENES = {
         ]
     },
     final_ataque: {
-        img: '/malvinas_collage.png', mood: 'battle', day: 73,
+        img: '/malvinas_batalla.png', mood: 'battle', day: 73,
         chapter: '9', title: 'La Batalla Final',
         text: 'Noche del 13 al 14 de junio de 1982. Monte Longdon, Dos Hermanas y Tumbledown caen uno tras otro. Todo es fuego intenso, bengalas británicas que iluminan los cerros como si fuera mediodía blanco, gritos en dos idiomas, disparos que pasan zumbando.\n\nVos y Ramón están atrincherados con el último cargador. A 200 metros se escucha la respiración del enemigo entre las piedras. Un compañero al lado tuyo grita "¡Viva la Patria!". Otro reza. Otro llora. Otro hace todas esas cosas a la vez.\n\nLa orden por radio es clara: aguantar hasta el último cartucho. Nadie te dice qué hacer después.',
         info: 'Los enfrentamientos cuerpo a cuerpo en los cerros perimetrales fueron de altísima intensidad. Algunos grupos resistieron hasta agotar municiones contra tropas de élite paracaidistas británicas que avanzaban en la noche con visión nocturna. Por la madrugada del 14 quedó claro que la posición era insostenible.',
@@ -890,7 +890,7 @@ const SCENES = {
         ]
     },
     rendicion: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'cold', day: 74,
+        img: '/malvinas_rendicion.png', mood: 'cold', day: 74,
         chapter: '10', title: 'La rendición',
         text: 'Humo blanco sobre Puerto Argentino. La orden es romper las armas y rendirse. Vos rompés el cerrojo de tu fusil contra una roca. El golpe seco te suena como el cierre de un libro.\n\nEl General Menéndez firma la capitulación a las 23:30 horas. Caminás hacia el galpón gris donde te van a registrar como prisionero de guerra. Hay miles. Pibes mojados, sucios, hambrientos, callados. Un teniente inglés joven, casi de tu edad, te ofrece un cigarrillo. Lo aceptás.\n\nTerminó. 74 días que cambiaron para siempre quién eras.',
         info: 'Saldo del conflicto: 649 caídos argentinos, 255 británicos y 3 isleños. Los conscriptos argentinos fueron capturados, registrados en el Boletín de Cautivos y devueltos al continente en barcos transatlánticos como el Canberra y vuelos comerciales fletados.',
@@ -901,10 +901,16 @@ const SCENES = {
         ]
     },
     prisionero: {
-        img: '/malvinas_hero.png', mood: 'cold', day: 75,
+        img: '/malvinas_prisionero.png', mood: 'cold', day: 75,
         chapter: '10', title: 'Prisionero de guerra',
         text: 'Te alojan en el galpón de un frigorífico abandonado. Hay alambre de púas y guardias. Pero también — para tu sorpresa — hay galletas inglesas con manteca, té caliente, primeros vendajes que no viste en 60 días. Un médico militar inglés te examina los pies y dice algo en su idioma; otro traduce: "Por suerte vas a conservarlos".\n\nA tu lado, Ramón duerme por primera vez en semanas. Tres horas seguidas. Cuando se despierta, te pregunta si esto es el cielo. "No, Ramón. Es el principio de la vuelta."\n\nDos días después los embarcan en el Canberra rumbo a Puerto Madryn.',
-        info: 'El trato británico a los prisioneros argentinos fue mayoritariamente correcto y ajustado a la Convención de Ginebra. Para muchos conscriptos fue la primera comida caliente y atención médica decente en semanas. La Cruz Roja Internacional supervisó el proceso de repatriación.',
+        memories: (path) => {
+            const lines = [];
+            if (path.some(p => p.label.includes('Acuno a Ramón'))) lines.push('Te das cuenta de algo: aquella noche bajo el fuego naval cuando lo abrazaste, lo tuyo no fue valentía. Fue todo lo contrario. Y ahí está él durmiendo profundo, vivo, junto a vos.');
+            if (path.some(p => p.label.includes('Le doy lo último'))) lines.push('La galletita inglesa se siente extraña en la mano. Pensás que las pocas raciones que le diste a Ramón en Tumbledown valieron cada gramo de hambre tuyo.');
+            if (path.some(p => p.label.includes('Trato de cubrir a Sosa'))) lines.push('Sosa, el de Tucumán al que cubriste con tu capote, está en otro galpón. Lo ves de lejos por una rendija. Levanta la mano. Vos también.');
+            return lines;
+        },
         choices: [
             { label: 'Le pido a Ramón que me prometa volver a vernos en libertad.', next: 'regreso', effects: { empatia: +3 } },
             { label: 'Hablo con el médico inglés en mi inglés básico de la escuela.', next: 'regreso', effects: { info: +2, salud: +1 } },
@@ -912,9 +918,19 @@ const SCENES = {
         ]
     },
     regreso: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'tense', day: 90,
+        img: '/malvinas_hero.png', mood: 'tense', day: 90,
         chapter: 'Epílogo', title: 'La vuelta del silencio',
         text: 'Desembarcan en Puerto Madryn una madrugada, a escondidas. El gobierno teme que los argentinos vean en sus propios ojos lo que pasó. No hay banderas, no hay diarios, no hay aplausos. Hay micros sin parar y rutas vacías hasta Bahía Blanca.\n\nEn casa, tu mamá dejó tu cama tendida intacta los 74 días. Pero esa misma semana, los vecinos cruzan a la otra vereda cuando te ven. La frase "héroe de Malvinas" tarda 25 años en pronunciarse en voz alta.\n\nLos primeros años son los del olvido oficial: la "desmalvinización". Te ofrecen un trabajo en una panadería; el dueño te dice "que lo de Malvinas no se diga acá, ¿no?". Te quedan los amigos del CECIM y las cartas de Ramón desde Corrientes.',
+        memories: (path, stats) => {
+            const lines = [];
+            if (path.some(p => p.label.includes('Escribo una carta breve'))) lines.push('Tu mamá te muestra la carta que escribiste antes de partir: la guardó en una caja de zapatos junto al escapulario y una foto del perro. Está abierta, abierta, abierta. La leyó cien veces.');
+            if (path.some(p => p.label.includes('No te preocupes mami'))) lines.push('La carta del avión, la que decía "vuelvo pronto", tu mamá la tiene pegada en el espejo de la cómoda. Te dice que la leía cada noche para dormirse.');
+            if (path.some(p => p.label.includes('Le prometo que voy a buscar a su novia'))) lines.push('El Subteniente Mendoza no volvió. Cumplís tu promesa: buscás a su novia, la encontrás en una facultad de Belgrano. Ella te abraza llorando entre las aulas. "Lo soñé toda la guerra", te dice.');
+            if (path.some(p => p.label.includes('Guardo una página para mostrarle'))) lines.push('Le mostrás a tu mamá la página que arrancaste de la revista Gente en el hospital de campaña. Le explicás todo. Ella la rompe en pedazos sobre la mesa de la cocina y se queda mirando el rincón.');
+            if (stats.frio >= 7) lines.push('Cada cambio de tiempo te punzan los pies. Aprendiste el nombre técnico de tu dolencia recién en una atención médica del CECIM, años después: secuelas de pie de trinchera.');
+            if (stats.empatia >= 7) lines.push('Ramón te llama por teléfono cada primer domingo del mes. Treinta años. Treinta años de domingos.');
+            return lines;
+        },
         info: 'Más de 500 veteranos argentinos se suicidaron en las décadas posteriores a 1982 por trastorno de estrés post-traumático, falta de reconocimiento social, abandono del Estado e incapacidad para reinsertarse. Hubo que esperar hasta 2007 para que la Pensión Vitalicia para Veteranos de Guerra fuera reformada significativamente.',
         choices: [
             { label: 'Me sumo al CECIM. Acompañar a otros me devuelve algo.', next: 'reencuentro', effects: { empatia: +3, info: +2 } },
@@ -926,6 +942,14 @@ const SCENES = {
         img: '/malvinas_soldado_reflexion.png', mood: 'reunion', day: null,
         chapter: 'Epílogo II', title: '10 años después',
         text: 'Año 1992. La inmensa plaza San Martín de Buenos Aires está iluminada débilmente por cientos de velitas que parpadean contra el viento. Es el décimo aniversario. Ramón viajó desde su pueblo en Corrientes en un colectivo destartalado de 18 horas de viaje solo para verte. Te abraza fuerte, con esa fuerza bruta que solo se aprende en la guerra. Te presenta a su hija pequeña: la llamó Malvina, y la sostiene orgulloso en brazos.\n\n"Pibe...", te murmura apretando su frente contra la tuya, con los ojos vidriosos. "Volveríamos a ese frío maldito mil veces... si fuera para abrazarnos de nuevo".\n\nEn la plaza brillan exactamente 649 velitas silenciosas. Una por cada compañero que se quedó haciendo guardia eterna en el sur. La velita de Sosa, el chico de Tucumán, está justo en el centro. La encendiste vos con las manos temblando. Ramón te aprieta el hombro. Una llovizna fina y fría comienza a caer sobre la ciudad, pero nadie en la plaza se mueve un solo centímetro.',
+        memories: (path, stats) => {
+            const lines = [];
+            if (path.some(p => p.label.includes('Me sumo al CECIM'))) lines.push('Mirás alrededor: media plaza son compañeros del CECIM. Vos los trajiste a muchos. Acompañaste sus papeles, sus pensiones, sus crisis. Esta plaza la armaste un poco vos.');
+            if (path.some(p => p.label.includes('Estudio'))) lines.push('Hace dos meses presentaste tu tesina sobre Malvinas en la facultad. La gente aplaudió de pie. Tu vieja vino con la bufanda azul y blanco que tejió para vos en 1982 y nunca te llegó a las islas.');
+            if (path.some(p => p.label.includes('Me encierro'))) lines.push('Es la primera plaza pública a la que entrás en diez años. Ramón te sacó de tu casa casi a la fuerza. Te das cuenta, llorando, de que estuvo bien venir.');
+            if (stats.miedo >= 8) lines.push('Cuando una bengala publicitaria estalla a lo lejos, te agachás instintivamente. Ramón te pone la mano en la espalda. "Tranquilo, hermano. Estás en Buenos Aires. Estás conmigo."');
+            return lines;
+        },
         info: 'El CECIM (Centro de Excombatientes de las Islas Malvinas) y otras organizaciones de veteranos sostuvieron durante décadas el reclamo por reconocimiento, salud, educación y pensiones. Su trabajo militante y el aporte del Equipo Argentino de Antropología Forense permitieron, a partir de 2017, identificar a casi 120 caídos del Cementerio de Darwin.',
         choices: [
             { label: 'Descubrir cómo el viaje me ha marcado para siempre →', next: 'final', effects: {} }
@@ -976,6 +1000,225 @@ const generateReflection = (stats) => {
     return { title: '74 días en la inmensidad', text: 'Sobreviviste a las islas. Tu paso por Tumbledown resume el caos táctico, el frío, el hambre, la espera y las decisiones imposibles. Detrás de cada estadística existían personas con biografías complejas. Esta reflexión es un pequeño homenaje a quienes no volvieron y a quienes volvieron pero perdieron parte de sí mismos en el camino.' };
 };
 
+// ─── INSIGNIAS según camino dominante ────────────────────────────────
+// Cada badge tiene una condición sobre stats/path y desbloquea un texto.
+const BADGES = [
+    {
+        id: 'corazon_abierto',
+        title: 'Corazón abierto',
+        desc: 'Priorizaste a tus compañeros. Volviste con el alma cargada de nombres.',
+        emoji: '🫂',
+        check: (stats) => stats.empatia >= 9
+    },
+    {
+        id: 'critico_mediatico',
+        title: 'Crítico mediático',
+        desc: 'Dudaste de los relatos oficiales y entendiste cómo se construye una verdad.',
+        emoji: '📰',
+        check: (stats) => stats.info >= 8
+    },
+    {
+        id: 'sobreviviente_frio',
+        title: 'Sobreviviente del frío',
+        desc: 'Tu cuerpo recordará Tumbledown cada invierno.',
+        emoji: '❄️',
+        check: (stats) => stats.frio >= 7
+    },
+    {
+        id: 'bandera_alta',
+        title: 'Bandera alta',
+        desc: 'Sostuviste tu puesto incluso cuando la guerra ya estaba perdida.',
+        emoji: '🇦🇷',
+        check: (stats) => stats.conviccion >= 8
+    },
+    {
+        id: 'carta_a_mama',
+        title: 'Carta a mamá',
+        desc: 'Escribiste antes de partir. Esa carta cruzó océanos en una caja de zapatos.',
+        emoji: '✉️',
+        check: (stats, path) => path.some(p => p.label.includes('carta breve') || p.label.includes('No te preocupes mami'))
+    },
+    {
+        id: 'cuidador_ramon',
+        title: 'Hermano de pozo',
+        desc: 'Cuidaste a Ramón cuando temblaba. Ese vínculo va a durarte la vida.',
+        emoji: '🤝',
+        check: (stats, path) => path.filter(p => /Ramón|cubro a Ramón|Acuno/i.test(p.label)).length >= 2
+    },
+    {
+        id: 'mendoza_recuerda',
+        title: 'Mensajero de Mendoza',
+        desc: 'Le prometiste al subteniente que buscarías a su novia. Cumpliste.',
+        emoji: '🎖️',
+        check: (stats, path) => path.some(p => p.label.includes('voy a buscar a su novia'))
+    },
+    {
+        id: 'pan_compartido',
+        title: 'Pan compartido',
+        desc: 'Diste tu última ración cuando Ramón estaba peor.',
+        emoji: '🍞',
+        check: (stats, path) => path.some(p => p.label.includes('Le doy lo último'))
+    },
+    {
+        id: 'velita_sosa',
+        title: 'Velita por Sosa',
+        desc: 'Cubriste a Sosa cuando lo estaquearon. No te olvides nunca de él.',
+        emoji: '🕯️',
+        check: (stats, path) => path.some(p => p.label.includes('cubrir a Sosa') || p.label.includes('cubrir a mi compañero'))
+    },
+    {
+        id: 'cecim',
+        title: 'CECIM',
+        desc: 'Te sumaste a la lucha colectiva de los veteranos. Ya no estás solo.',
+        emoji: '⚓',
+        check: (stats, path) => path.some(p => p.label.includes('CECIM'))
+    },
+    {
+        id: 'estudioso',
+        title: 'Tesis de Malvinas',
+        desc: 'Estudiaste para entender. Convertiste el dolor en pensamiento.',
+        emoji: '🎓',
+        check: (stats, path) => path.some(p => p.label.includes('Estudio'))
+    },
+    {
+        id: 'sobrevive',
+        title: 'Volvió',
+        desc: 'Llegaste al final. Eso, en Malvinas, ya es una historia.',
+        emoji: '🌅',
+        check: () => true // siempre desbloqueado al terminar
+    }
+];
+
+// ─── EXPORT PNG: dibuja en Canvas el resumen final ────────────────────
+const exportSummaryPNG = (stats, path, reflectionTitle, badges) => {
+    const W = 1080, H = 1500;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, COLORS.base);
+    grad.addColorStop(1, COLORS.deep);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Grain (decorativo)
+    ctx.fillStyle = 'rgba(240,236,229,0.04)';
+    for (let i = 0; i < 800; i++) {
+        ctx.fillRect(Math.random() * W, Math.random() * H, 2, 2);
+    }
+
+    // Top decoration: línea accent
+    ctx.fillStyle = COLORS.accent;
+    ctx.fillRect(0, 0, W, 8);
+
+    // Header
+    ctx.fillStyle = COLORS.accent;
+    ctx.font = '700 28px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('MALVINAS · EN PRIMERA PERSONA', W / 2, 90);
+
+    ctx.fillStyle = COLORS.paper;
+    ctx.font = 'italic 700 64px Georgia, serif';
+    // Título reflexión (puede ser largo, partir si hace falta)
+    const titleWords = reflectionTitle.split(' ');
+    let line = '', y = 170;
+    for (const w of titleWords) {
+        const test = (line + ' ' + w).trim();
+        if (ctx.measureText(test).width > W - 100) {
+            ctx.fillText(line, W / 2, y);
+            line = w; y += 70;
+        } else line = test;
+    }
+    if (line) ctx.fillText(line, W / 2, y);
+    y += 80;
+
+    // Subtítulo
+    ctx.fillStyle = COLORS.sky;
+    ctx.font = '400 20px Arial';
+    ctx.fillText('Resumen de mis marcas de guerra', W / 2, y);
+    y += 60;
+
+    // STATS
+    ctx.textAlign = 'left';
+    const statRows = Object.entries(STAT_META);
+    const statLeft = 80;
+    const statRight = W - 80;
+    const statW = statRight - statLeft;
+    ctx.font = '700 22px Arial';
+    for (const [k, m] of statRows) {
+        const v = stats[k] || 0;
+        const max = 15;
+        const pct = Math.max(0, Math.min(1, v / max));
+        // Label
+        ctx.fillStyle = m.color;
+        ctx.fillText(m.label.toUpperCase(), statLeft, y);
+        // Valor
+        ctx.textAlign = 'right';
+        ctx.fillStyle = COLORS.paper;
+        ctx.font = '900 24px Arial';
+        ctx.fillText(`${v}/${max}`, statRight, y);
+        ctx.textAlign = 'left';
+        ctx.font = '700 22px Arial';
+        // Bar bg
+        ctx.fillStyle = 'rgba(240,236,229,0.12)';
+        ctx.fillRect(statLeft, y + 12, statW, 12);
+        // Bar fg
+        ctx.fillStyle = m.color;
+        ctx.fillRect(statLeft, y + 12, statW * pct, 12);
+        y += 60;
+    }
+
+    // BADGES
+    y += 30;
+    ctx.fillStyle = COLORS.accent;
+    ctx.font = '700 22px Arial';
+    ctx.fillText('INSIGNIAS DESBLOQUEADAS', statLeft, y);
+    y += 40;
+    const unlockedBadges = badges.filter(b => b.unlocked);
+    const badgeCols = 3;
+    const badgeW = statW / badgeCols;
+    let bi = 0;
+    for (const badge of unlockedBadges) {
+        const col = bi % badgeCols, row = Math.floor(bi / badgeCols);
+        const bx = statLeft + col * badgeW;
+        const by = y + row * 90;
+        // emoji
+        ctx.font = '40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(badge.emoji, bx + badgeW / 2, by + 42);
+        // título
+        ctx.fillStyle = COLORS.paper;
+        ctx.font = '700 16px Arial';
+        ctx.fillText(badge.title, bx + badgeW / 2, by + 70);
+        bi++;
+    }
+    y += Math.ceil(unlockedBadges.length / badgeCols) * 90 + 40;
+
+    // Footer
+    ctx.textAlign = 'center';
+    ctx.fillStyle = COLORS.accent;
+    ctx.font = 'italic 22px Georgia';
+    ctx.fillText('"Que las nuevas generaciones no aprendan Malvinas', W / 2, H - 90);
+    ctx.fillText('como una fecha, sino como una experiencia."', W / 2, H - 60);
+    ctx.fillStyle = COLORS.sky;
+    ctx.font = '400 16px Arial';
+    ctx.fillText('SimuTec · simuunpilar.com.ar', W / 2, H - 25);
+
+    // Download
+    canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `malvinas-marcas-${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 'image/png');
+};
+
 const MalvinasJuegoSerio = () => {
     const [sceneId, setSceneId] = useState('intro');
     const [stats, setStats] = useState(initialStats);
@@ -984,6 +1227,8 @@ const MalvinasJuegoSerio = () => {
     const [finished, setFinished] = useState(false);
     const [floatingDeltas, setFloatingDeltas] = useState([]);
     const [resumePromptVisible, setResumePromptVisible] = useState(false);
+    const [typedChars, setTypedChars] = useState(0);
+    const [typewriterDone, setTypewriterDone] = useState(false);
     const sceneRef = useRef(null);
     const audio = useGameAudio();
 
@@ -1033,6 +1278,32 @@ const MalvinasJuegoSerio = () => {
         if (sceneRef.current) sceneRef.current.scrollTop = 0;
         if (scene && scene.mood) audio.setMood(scene.mood);
     }, [sceneId, scene, audio]);
+
+    // ── Typewriter: tipear el texto carácter por carácter ─────────────
+    useEffect(() => {
+        if (!scene || !scene.text) return;
+        setTypedChars(0);
+        setTypewriterDone(false);
+        const total = scene.text.length;
+        // velocidad: ~3 chars cada 25ms (≈120 cps), +pausa al final de oración
+        let i = 0;
+        const id = setInterval(() => {
+            i = Math.min(total, i + 3);
+            setTypedChars(i);
+            if (i >= total) {
+                clearInterval(id);
+                setTypewriterDone(true);
+            }
+        }, 22);
+        return () => clearInterval(id);
+    }, [sceneId, scene]);
+
+    const skipTypewriter = useCallback(() => {
+        if (scene && scene.text) {
+            setTypedChars(scene.text.length);
+            setTypewriterDone(true);
+        }
+    }, [scene]);
 
     // ── Detener audio al desmontar ────────────────────────────────────
     useEffect(() => () => audio.stopAll(), [audio]);
@@ -1091,14 +1362,20 @@ const MalvinasJuegoSerio = () => {
             const key = e.key.toLowerCase();
             if (key === 'm') { audio.toggle(); return; }
             if (key === 'r') { restart(); return; }
+            // Espacio o Enter: skip del typewriter si está animando
+            if ((e.key === ' ' || e.key === 'Enter') && !typewriterDone) {
+                e.preventDefault();
+                skipTypewriter();
+                return;
+            }
             const n = parseInt(key, 10);
-            if (!Number.isNaN(n) && scene && scene.choices && scene.choices[n - 1]) {
+            if (!Number.isNaN(n) && typewriterDone && scene && scene.choices && scene.choices[n - 1]) {
                 choose(scene.choices[n - 1]);
             }
         };
         window.addEventListener('keydown', handler);
         return () => window.removeEventListener('keydown', handler);
-    }, [scene, choose, restart, audio, finished]);
+    }, [scene, choose, restart, audio, finished, typewriterDone, skipTypewriter]);
 
     // ─── PANTALLA FINAL ────────────────────────────────────────────────
     if (finished) {
@@ -1343,11 +1620,35 @@ const MalvinasJuegoSerio = () => {
                         </div>
                     ) : null}
 
-                    <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: COLORS.base, whiteSpace: 'pre-line', margin: 0 }}>
-                        {scene.text}
-                    </p>
+                    <div onClick={!typewriterDone ? skipTypewriter : undefined} style={{ cursor: !typewriterDone ? 'pointer' : 'default', position: 'relative' }}>
+                        <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: COLORS.base, whiteSpace: 'pre-line', margin: 0, minHeight: '3em' }}>
+                            {scene.text.slice(0, typedChars)}
+                            {!typewriterDone && (
+                                <span style={{ display: 'inline-block', width: '0.5em', height: '1em', background: COLORS.accent, marginLeft: '2px', verticalAlign: 'text-bottom', animation: 'blink 0.8s infinite' }} />
+                            )}
+                        </p>
+                        {!typewriterDone && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); skipTypewriter(); }}
+                                title="Saltar animación (Espacio o Enter)"
+                                style={{ position: 'absolute', top: 0, right: 0, background: COLORS.deep, color: COLORS.paper, border: 'none', borderRadius: '999px', padding: '0.3rem 0.7rem', fontSize: '0.7rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700, opacity: 0.8 }}
+                            >
+                                <FastForward size={11} /> Saltar
+                            </button>
+                        )}
+                    </div>
 
-                    {scene.info && (
+                    {/* Recuerdos: referencias a elecciones previas (memoria narrativa) */}
+                    {typewriterDone && scene.memories && scene.memories(path, stats).length > 0 && (
+                        <div style={{ marginTop: '1.25rem', padding: '1rem 1.2rem', background: 'rgba(180,83,84,0.06)', borderLeft: `3px solid ${COLORS.accent}`, borderRadius: '0 12px 12px 0' }}>
+                            <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', color: COLORS.accent, fontWeight: 800, marginBottom: '0.4rem' }}>Te acordás...</div>
+                            {scene.memories(path, stats).map((m, i) => (
+                                <p key={i} style={{ margin: '0.4rem 0', fontSize: '0.95rem', lineHeight: 1.6, color: COLORS.base, fontStyle: 'italic' }}>{m}</p>
+                            ))}
+                        </div>
+                    )}
+
+                    {typewriterDone && scene.info && (
                         <div style={{ marginTop: '1.5rem' }}>
                             <button onClick={() => setShowInfo(s => !s)} style={{ background: 'transparent', border: `1px solid ${COLORS.deep}40`, color: COLORS.deep, borderRadius: '999px', padding: '0.5rem 1rem', cursor: 'pointer', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700 }}>
                                 <BookOpen size={16} /> {showInfo ? 'Ocultar bitácora histórica' : 'Abrir contexto histórico'}
@@ -1364,35 +1665,36 @@ const MalvinasJuegoSerio = () => {
                         </div>
                     )}
 
-                    <div style={{ borderTop: `1px dashed rgba(9,9,12,0.1)`, margin: '2rem 0' }} />
-
-                    <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: COLORS.base, opacity: 0.6, letterSpacing: '1px', marginBottom: '1rem', fontWeight: 800, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <span>¿Qué hacés?</span>
-                        <span style={{ fontSize: '0.7rem', opacity: 0.5, letterSpacing: '0.5px', fontWeight: 600 }}>Atajos: 1/2/3 elegir · M sonido · R reiniciar</span>
-                    </h3>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {scene.choices.map((c, i) => (
-                            <motion.button
-                                key={i}
-                                whileHover={{ x: 6, background: COLORS.deep, color: COLORS.paper, borderColor: COLORS.deep }}
-                                onClick={() => choose(c)}
-                                style={{
-                                    background: COLORS.paper, color: COLORS.base, border: `1px solid rgba(9,9,12,0.15)`,
-                                    borderRadius: '16px', padding: '1.2rem', cursor: 'pointer', fontWeight: 600,
-                                    fontSize: '1rem', textAlign: 'left', fontFamily: 'inherit',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    gap: '1rem', transition: 'all 0.2s ease-out', position: 'relative'
-                                }}
-                            >
-                                <span style={{ position: 'absolute', top: '0.4rem', left: '0.6rem', fontSize: '0.65rem', color: COLORS.accent, fontWeight: 900, letterSpacing: '1px' }}>{i + 1}</span>
-                                <span style={{ flex: 1, lineHeight: 1.4, paddingLeft: '0.5rem' }}>{c.label}</span>
-                                <div style={{ minWidth: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,9,12,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <ChevronRight size={18} />
-                                </div>
-                            </motion.button>
-                        ))}
-                    </div>
+                    {typewriterDone && (
+                        <>
+                            <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: COLORS.base, opacity: 0.6, letterSpacing: '1px', marginBottom: '1rem', fontWeight: 800, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                <span>¿Qué hacés?</span>
+                                <span style={{ fontSize: '0.7rem', opacity: 0.5, letterSpacing: '0.5px', fontWeight: 600 }}>Atajos: 1/2/3 elegir · M sonido · R reiniciar</span>
+                            </h3>
+                            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                {scene.choices.map((c, i) => (
+                                    <motion.button
+                                        key={i}
+                                        whileHover={{ x: 6, background: COLORS.deep, color: COLORS.paper, borderColor: COLORS.deep }}
+                                        onClick={() => choose(c)}
+                                        style={{
+                                            background: COLORS.paper, color: COLORS.base, border: `1px solid rgba(9,9,12,0.15)`,
+                                            borderRadius: '16px', padding: '1.2rem', cursor: 'pointer', fontWeight: 600,
+                                            fontSize: '1rem', textAlign: 'left', fontFamily: 'inherit',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            gap: '1rem', transition: 'all 0.2s ease-out', position: 'relative'
+                                        }}
+                                    >
+                                        <span style={{ position: 'absolute', top: '0.4rem', left: '0.6rem', fontSize: '0.65rem', color: COLORS.accent, fontWeight: 900, letterSpacing: '1px' }}>{i + 1}</span>
+                                        <span style={{ flex: 1, lineHeight: 1.4, paddingLeft: '0.5rem' }}>{c.label}</span>
+                                        <div style={{ minWidth: '32px', height: '32px', borderRadius: '50%', background: 'rgba(9,9,12,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <ChevronRight size={18} />
+                                        </div>
+                                    </motion.button>
+                                ))}
+                            </motion.div>
+                        </>
+                    )}
                 </motion.div>
             </AnimatePresence>
 
