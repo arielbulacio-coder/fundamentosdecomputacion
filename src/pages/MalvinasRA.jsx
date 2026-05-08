@@ -1,8 +1,8 @@
 import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Html, Stars } from '@react-three/drei';
-import { motion } from 'framer-motion';
-import { Compass, Eye, Smartphone, ArrowLeft, Info } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Compass, Eye, Smartphone, ArrowLeft, Info, QrCode, Download, X } from 'lucide-react';
 
 const COLORS = {
     base: '#09090c',
@@ -165,6 +165,7 @@ const MalvinasRA = () => {
     const [info, setInfo] = useState(null);
     const [orientationEnabled, setOrientationEnabled] = useState(false);
     const [hasOrientation, setHasOrientation] = useState(false);
+    const [showMarker, setShowMarker] = useState(false);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && 'DeviceOrientationEvent' in window) {
@@ -198,9 +199,14 @@ const MalvinasRA = () => {
                 <a href="/proyecto-malvinas" style={{ pointerEvents: 'auto', textDecoration: 'none', color: COLORS.paper, display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(240,236,229,0.12)', padding: '0.5rem 0.85rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 600, backdropFilter: 'blur(8px)' }}>
                     <ArrowLeft size={16} /> Volver al proyecto
                 </a>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', pointerEvents: 'none' }}>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.accent, fontWeight: 800 }}>Realidad Aumentada</div>
-                    <div style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: '1.4rem', fontWeight: 700, fontStyle: 'italic' }}>Diorama Malvinas</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', pointerEvents: 'none' }}>
+                    <button onClick={() => setShowMarker(true)} style={{ pointerEvents: 'auto', background: COLORS.accent, color: COLORS.paper, border: 'none', borderRadius: '8px', padding: '0.4rem 0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 600, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                        <QrCode size={16} /> Punto de Anclaje
+                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.accent, fontWeight: 800 }}>Realidad Aumentada</div>
+                        <div style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: '1.4rem', fontWeight: 700, fontStyle: 'italic' }}>Diorama Malvinas</div>
+                    </div>
                 </div>
             </header>
 
@@ -344,6 +350,54 @@ const MalvinasRA = () => {
                     <Info size={12} style={{ flexShrink: 0, marginTop: '2px' }} /> Tocá una esfera o un nombre para explorar.
                 </div>
             </div>
+
+            {/* Modal de Marcador RA */}
+            <AnimatePresence>
+                {showMarker && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{
+                            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 100,
+                            background: 'rgba(9,9,12,0.95)', backdropFilter: 'blur(10px)',
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                            padding: '2rem'
+                        }}
+                    >
+                        <button onClick={() => setShowMarker(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: COLORS.paper, cursor: 'pointer' }}>
+                            <X size={32} />
+                        </button>
+                        
+                        <div style={{ textAlign: 'center', maxWidth: '600px' }}>
+                            <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '3px', color: COLORS.accent, fontWeight: 800, marginBottom: '0.5rem' }}>
+                                Punto X de Anclaje
+                            </div>
+                            <h2 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: '2.5rem', margin: '0 0 1.5rem 0' }}>
+                                Escaneá para ver el Diorama
+                            </h2>
+                            <p style={{ fontSize: '0.95rem', color: COLORS.sky, marginBottom: '2rem', lineHeight: 1.6 }}>
+                                Imprimí esta imagen o abrila en otra pantalla. Apuntá con la cámara de tu celular hacia ella para proyectar la experiencia inmersiva 3D.
+                            </p>
+                            
+                            <div style={{ background: '#fff', padding: '1rem', borderRadius: '16px', display: 'inline-block', marginBottom: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                                <img src="/malvinas_ar_anchor.png" alt="Punto de anclaje RA" style={{ width: '280px', height: '280px', objectFit: 'contain', display: 'block' }} />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                                <a href="/malvinas_ar_anchor.png" download="Punto_Anclaje_Malvinas.png" style={{ textDecoration: 'none', background: COLORS.paper, color: COLORS.base, fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: '999px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <Download size={18} /> Descargar Marcador
+                                </a>
+                            </div>
+
+                            <div style={{ marginTop: '3rem', opacity: 0.6 }}>
+                                <p style={{ fontSize: '0.75rem', marginBottom: '0.5rem' }}>Visualización inmersiva 3D del modelo:</p>
+                                <img src="/malvinas_diorama_3d.png" alt="Diorama 3D Preview" style={{ width: '100%', maxWidth: '400px', borderRadius: '12px', border: `1px solid ${COLORS.deep}` }} />
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
