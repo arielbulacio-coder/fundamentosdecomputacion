@@ -126,54 +126,42 @@
       
       <!-- Diorama anclado al marcador HIRO -->
       <a-marker preset="hiro" markerhandler>
-        <!-- Agrupamos y rotamos -90 en X porque el marcador HIRO está "acostado" -->
-        <a-entity scale="0.6 0.6 0.6" position="0 0.5 0" rotation="-90 0 0">
+        
+        <!-- Agrupamos la imagen y los hotspots -->
+        <a-entity position="0 0.2 0" rotation="-90 0 0">
             
-            <!-- Base de la isla (cilindros) -->
-            <a-cylinder radius="3" height="0.4" color="#3a4a3a" position="0 -0.2 0" shadow="receive: true"></a-cylinder>
-            <a-cylinder radius="2.8" height="0.05" color="#5a6b4f" position="0 0.05 0"></a-cylinder>
-            
-            <!-- Mar rodeando la isla -->
-            <a-cylinder radius="5" height="0.2" color="#35446a" position="0 -0.4 0" material="metalness: 0.6; roughness: 0.2; transparent: true; opacity: 0.9"></a-cylinder>
-            
-            <!-- Elevaciones (Rocas) -->
-            <a-sphere radius="0.6" position="-1.5 0.1 -1" color="#54624d"></a-sphere>
-            <a-sphere radius="0.8" position="1.5 0.1 -1.5" color="#54624d"></a-sphere>
-            <a-sphere radius="0.7" position="-2 0.1 1.5" color="#54624d"></a-sphere>
-            <a-sphere radius="0.5" position="1 0.1 1.8" color="#54624d"></a-sphere>
+            <!-- Imagen inmersiva generada 3D -->
+            <a-image src="/malvinas_diorama_3d.png" position="0 0 0" width="5" height="5" rotation="0 0 0"></a-image>
 
-            <!-- HOTSPOTS (Esferas flotantes interactivas) -->
+            <!-- HOTSPOTS (Esferas flotantes interactivas sobre la imagen) -->
             <!-- Bandera -->
-            <a-entity position="0 0.8 0" animation="property: position; to: 0 0.9 0; dir: alternate; dur: 2000; loop: true">
-                <a-sphere class="clickable" radius="0.25" color="#75aadb" material="emissive: #75aadb; emissiveIntensity: 0.6" 
-                          hotspot-click="title: Bandera Argentina; color: #75aadb; desc: El 2 de abril de 1982, las fuerzas argentinas izaron la bandera en Puerto Argentino tras la 'Operación Rosario'. La Constitución Nacional declara que recuperar las islas es un objetivo permanente e irrenunciable."></a-sphere>
-                <a-text value="Bandera" position="0 0.4 0" align="center" color="#fff" scale="0.8 0.8 0.8"></a-text>
+            <a-entity position="0 1 0.5" animation="property: position; to: 0 1.2 0.5; dir: alternate; dur: 2000; loop: true">
+                <a-sphere class="clickable" radius="0.3" color="#75aadb" material="emissive: #75aadb; emissiveIntensity: 0.8" 
+                          hotspot-click="title: Bandera Argentina; color: #75aadb; desc: El 2 de abril de 1982, las fuerzas argentinas izaron la bandera en Puerto Argentino."></a-sphere>
+                <a-text value="Bandera" position="0 0.5 0" align="center" color="#fff" scale="1 1 1"></a-text>
             </a-entity>
 
             <!-- Trinchera -->
-            <a-entity position="-1.8 0.5 1.5" animation="property: position; to: -1.8 0.6 1.5; dir: alternate; dur: 2200; loop: true">
-                <a-sphere class="clickable" radius="0.2" color="#b45354" material="emissive: #b45354; emissiveIntensity: 0.6" 
-                          hotspot-click="title: La Trinchera; color: #b45354; desc: Los conscriptos cavaban 'pozos de zorro' en suelo congelado. Sin equipamiento adecuado, el frío extremo, la humedad y la nieve provocaron pie de trinchera e hipotermia en jóvenes de 18 años."></a-sphere>
-                <a-text value="Trinchera" position="0 0.35 0" align="center" color="#fff" scale="0.7 0.7 0.7"></a-text>
+            <a-entity position="-1.5 -1 0.5" animation="property: position; to: -1.5 -0.8 0.5; dir: alternate; dur: 2200; loop: true">
+                <a-sphere class="clickable" radius="0.25" color="#b45354" material="emissive: #b45354; emissiveIntensity: 0.8" 
+                          hotspot-click="title: La Trinchera; color: #b45354; desc: Los conscriptos cavaban 'pozos de zorro' en suelo congelado sufriendo hipotermia."></a-sphere>
+                <a-text value="Trinchera" position="0 0.45 0" align="center" color="#fff" scale="0.9 0.9 0.9"></a-text>
             </a-entity>
 
             <!-- Cartas -->
-            <a-entity position="1.8 0.4 1.2" animation="property: position; to: 1.8 0.5 1.2; dir: alternate; dur: 1800; loop: true">
-                <a-sphere class="clickable" radius="0.2" color="#f0ece5" material="emissive: #f0ece5; emissiveIntensity: 0.6" 
-                          hotspot-click="title: Cartas a Casa; color: #f0ece5; desc: Las cartas eran el único canal humano. Se censuraban antes de salir y muchas no llegaron jamás. Las familias guardaron estas cartas como la mayor reliquia emocional de la guerra."></a-sphere>
-                <a-text value="Cartas" position="0 0.35 0" align="center" color="#fff" scale="0.7 0.7 0.7"></a-text>
+            <a-entity position="1.5 -0.5 0.5" animation="property: position; to: 1.5 -0.3 0.5; dir: alternate; dur: 1800; loop: true">
+                <a-sphere class="clickable" radius="0.25" color="#f0ece5" material="emissive: #f0ece5; emissiveIntensity: 0.8" 
+                          hotspot-click="title: Cartas a Casa; color: #f0ece5; desc: Las cartas eran el único canal humano. Muchas no llegaron jamás."></a-sphere>
+                <a-text value="Cartas" position="0 0.45 0" align="center" color="#fff" scale="0.9 0.9 0.9"></a-text>
             </a-entity>
 
             <!-- Belgrano -->
-            <a-entity position="-1 0.4 -2.2" animation="property: position; to: -1 0.5 -2.2; dir: alternate; dur: 2500; loop: true">
-                <a-sphere class="clickable" radius="0.22" color="#1565c0" material="emissive: #1565c0; emissiveIntensity: 0.6" 
-                          hotspot-click="title: Hundimiento del Belgrano; color: #1565c0; desc: El 2 de mayo de 1982, el submarino británico torpedeó al crucero ARA General Belgrano fuera de la zona de exclusión declarada. Murieron 323 marinos argentinos."></a-sphere>
-                <a-text value="ARA Belgrano" position="0 0.35 0" align="center" color="#fff" scale="0.7 0.7 0.7"></a-text>
+            <a-entity position="-0.5 1.8 0.5" animation="property: position; to: -0.5 2 0.5; dir: alternate; dur: 2500; loop: true">
+                <a-sphere class="clickable" radius="0.25" color="#1565c0" material="emissive: #1565c0; emissiveIntensity: 0.8" 
+                          hotspot-click="title: Hundimiento del Belgrano; color: #1565c0; desc: Torpedeado fuera de la zona de exclusión. Murieron 323 marinos argentinos."></a-sphere>
+                <a-text value="Belgrano" position="0 0.45 0" align="center" color="#fff" scale="0.9 0.9 0.9"></a-text>
             </a-entity>
             
-            <!-- Iluminación -->
-            <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
-            <a-light type="directional" color="#bcd0e0" intensity="0.8" position="2 4 2"></a-light>
         </a-entity>
       </a-marker>
       
