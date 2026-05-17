@@ -400,322 +400,36 @@ const ProyectoMalvinas = () => {
                     </div>
                 </section>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                    {/* CONCEPTO */}
-                    <section style={{ ...SECTION.container, margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <div style={SECTION.subtitle}>Concepto</div>
-                        <h2 style={SECTION.title}>Memoria viva, experiencia inmersiva</h2>
-                        <p style={SECTION.body}>
-                            Las formas tradicionales de enseñar historia suelen sentirse lejanas para los jóvenes.
-                            <strong> Malvinas en primera persona</strong> propone un recorrido participativo y emocional 
-                            que conecta a las nuevas generaciones con el conflicto desde una perspectiva humana y crítica.
-                        </p>
-                        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                            <ConceptChip icon={Archive} label="Archivo" />
-                            <ConceptChip icon={Snowflake} label="Frío" />
-                            <ConceptChip icon={Heart} label="Identidad" />
-                        </div>
-                    </section>
-                    
-                    <div style={{ borderRadius: '22px', overflow: 'hidden', height: '100%', minHeight: '300px' }}>
-                        <img 
-                            src="/malvinas_activacion.png" 
-                            alt="Activación Colimba" 
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            className="img-glow"
-                        />
-                    </div>
-                </div>
-
-                {/* ESTRATEGIA TRANSMEDIA */}
-                <section style={SECTION.container}>
-                    <div style={SECTION.subtitle}>Estrategia transmedia</div>
-                    <h2 style={SECTION.title}>De lo físico a lo digital</h2>
-                    <p style={{ ...SECTION.body, marginBottom: '1.5rem' }}>
-                        La experiencia física en el stand funciona como eje narrativo que se expande a plataformas digitales, 
-                        creando un ecosistema de contenidos adaptados a cada red social.
+                {/* DESCARGA DOSSIER EXPLICATIVO */}
+                <section style={{ ...SECTION.container, background: COLORS.base, color: COLORS.paper, textAlign: 'center' }}>
+                    <div style={{ ...SECTION.subtitle, color: COLORS.accent }}>Dossier Informativo</div>
+                    <h2 style={{ ...SECTION.title, color: COLORS.paper }}>Proyecto Malvinas</h2>
+                    <p style={{ ...SECTION.body, color: COLORS.sky, maxWidth: '600px', margin: '0 auto 1.5rem' }}>
+                        Toda la información sobre nuestro público objetivo, el propósito del proyecto, su escaleta inmersiva
+                        y la contextualización histórica se encuentra disponible en nuestro dossier explicativo.
                     </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
-                        <PlatformCard
-                            icon={Tv}
-                            name="TikTok"
-                            description="Videos breves, dinámicos e inmersivos."
-                            objective="Adolescentes."
-                            color="#111"
-                        />
-                        <PlatformCard
-                            icon={Video}
-                            name="YouTube"
-                            description="Documental síntesis del recorrido."
-                            objective="Comunicación integral."
-                            color="#FF0000"
-                        />
-                        <PlatformCard
-                            icon={ImageIcon}
-                            name="Instagram"
-                            description="Contenido visual y emocional."
-                            objective="Familias y comunidad."
-                            color={COLORS.accent}
-                        />
-                        <PlatformCard
-                            icon={Linkedin}
-                            name="LinkedIn"
-                            description="Enfoque pedagógico e institucional."
-                            objective="Docentes y sponsors."
-                            color="#0A66C2"
-                        />
-                    </div>
-                </section>
-
-                {/* ESCALETA DEL RECORRIDO DETALLADA */}
-                <section style={SECTION.container}>
-                    <div style={SECTION.subtitle}>El Recorrido Experiencial</div>
-                    <h2 style={SECTION.title}>8 Momentos: Una Jornada de Memoria</h2>
-                    <p style={{ ...SECTION.body, marginBottom: '2rem' }}>
-                        La experiencia está diseñada como un arco narrativo que comienza en el cuerpo, 
-                        pasa por la reflexión crítica y culmina en la conexión humana más profunda.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                        {/* Columna 1 */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.accent}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <Activity size={24} color={COLORS.accent} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>1. Activación: La "Colimba"</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Circuito de obstáculos físico y sensorial. Los alumnos deben colaborar para superar tareas de esfuerzo coordinativo.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Disciplina, Cuerpo, Grupo.
-                                </div>
-                            </div>
-
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.deep}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <Video size={24} color={COLORS.deep} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>2. El Relato del Comienzo</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Proyección envolvente sobre las causas geopolíticas y el clima social de abril de 1982.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Historia, Contexto, Territorio.
-                                </div>
-                            </div>
-
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.sky}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <HelpCircle size={24} color={COLORS.sky} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>3. Desafío de Saberes</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Trivia interactiva por equipos mediante tablets. No es competencia, es construcción de conocimiento.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Datos, Verdad, Participación.
-                                </div>
-                            </div>
-
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.accent}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <Wrench size={24} color={COLORS.accent} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>4. Taller de Supervivencia</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Laboratorio de diseño donde deben crear una solución técnica para el frío extremo con materiales reciclados.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Creatividad, Escasez, Resiliencia.
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Imagen Central / Collage */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center' }}>
-                            <div style={{ borderRadius: '22px', overflow: 'hidden', boxShadow: '0 15px 35px rgba(0,0,0,0.2)' }}>
-                                <img src="/malvinas_collage.png" alt="Etapas del recorrido" style={{ width: '100%', display: 'block' }} />
-                            </div>
-                            <div style={{ background: COLORS.deep, padding: '1rem', borderRadius: '14px', color: '#fff', textAlign: 'center' }}>
-                                <span style={{ fontSize: '0.8rem', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '1px' }}>Experiencia Total</span>
-                                <div style={{ fontSize: '1.2rem', fontWeight: 700 }}>120 Minutos de Inmersión</div>
-                            </div>
-                        </div>
-
-                        {/* Columna 2 */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.deep}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <Mic2 size={24} color={COLORS.deep} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>5. La Voz del Soldado</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Presentación de los proyectos. Cada grupo defiende su "herramienta" frente al resto.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Discurso, Empoderamiento, Oratoria.
-                                </div>
-                            </div>
-
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.accent}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <AlertTriangle size={24} color={COLORS.accent} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>6. Laboratorio de Medios</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Análisis de las "Fake News" de 1982. ¿Por qué nos dijeron que íbamos ganando?
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Crítica, Información, Manipulación.
-                                </div>
-                            </div>
-
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.sky}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <Camera size={24} color={COLORS.sky} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>7. Corresponsal del Hoy</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, color: COLORS.base }}>
-                                    Producción de un micro-documental en video contando la guerra desde su propia mirada digital.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.deep }}>
-                                    CONCEPTOS: Narrativa, Tecnología, Puente Generacional.
-                                </div>
-                            </div>
-
-                            <div style={{ background: COLORS.base, padding: '1.5rem', borderRadius: '14px', borderLeft: `5px solid ${COLORS.paper}`, color: COLORS.paper }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <Mail size={24} color={COLORS.paper} />
-                                    <h4 style={{ margin: 0, fontFamily: '"Public Sans", sans-serif', fontWeight: 800 }}>8. El Cierre: La Carta</h4>
-                                </div>
-                                <p style={{ fontSize: '0.9rem', margin: 0, opacity: 0.9 }}>
-                                    Silencio profundo. Lectura de una carta real y escritura de una respuesta personal al pasado.
-                                </p>
-                                <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', fontWeight: 700, color: COLORS.accent }}>
-                                    CONCEPTOS: Emoción, Humanidad, Nunca Más.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* MOODBOARD */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                    <div style={{ borderRadius: '22px', overflow: 'hidden' }}>
-                        <img 
-                            src="/malvinas_carta.png" 
-                            alt="Archivo y Memoria" 
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            className="img-glow"
-                        />
-                    </div>
-                    <section style={{ ...SECTION.container, background: COLORS.base, color: COLORS.paper, margin: 0 }}>
-                        <div style={{ ...SECTION.subtitle, color: COLORS.accent }}>Moodboard</div>
-                        <h2 style={{ ...SECTION.title, color: COLORS.paper }}>Estética de archivo</h2>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'grid', gap: '1rem', marginTop: '1.5rem' }}>
-                            <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                {[COLORS.base, COLORS.accent, COLORS.sky, COLORS.paper].map(c => (
-                                    <div key={c} style={{ width: '100%', height: '40px', background: c, borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)' }} />
-                                ))}
-                            </div>
-                            <div style={{ marginTop: '1rem' }}>
-                                <div style={{ ...SECTION.subtitle, color: COLORS.sky, fontSize: '0.6rem', marginBottom: '0.5rem' }}>Tipografías</div>
-                                <div style={{ fontFamily: '"EFCO Brookshire", serif', fontSize: '1.8rem', fontStyle: 'italic', color: COLORS.paper }}>EFCO Brookshire</div>
-                                <div style={{ fontFamily: '"Public Sans", sans-serif', fontSize: '1.2rem', fontWeight: 800, color: COLORS.sky }}>Public Sans</div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-                                <ConceptChip icon={Archive} label="Archivo" />
-                                <ConceptChip icon={Heart} label="Identidad" />
-                                <ConceptChip icon={Users} label="Juventud" />
-                            </div>
-                        </div>
-                    </section>
-                </div>
-
-                {/* CONTEXTO HISTÓRICO AMPLIADO */}
-                <section style={{ ...SECTION.container, background: COLORS.paper }}>
-                    <div style={SECTION.subtitle}>Contexto histórico</div>
-                    <h2 style={SECTION.title}>De la herencia colonial a la guerra</h2>
-                    <p style={SECTION.body}>
-                        La cuestión Malvinas no comienza en 1982 ni se cierra el 14 de junio de ese año. Es un proceso de soberanía,
-                        memoria y reparación que atraviesa <strong>casi dos siglos</strong>.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
-                        {[
-                            { year: '1493 → 1810', title: 'Herencia española', body: 'Las islas formaban parte del Virreinato del Río de la Plata. Tras la independencia (1816), Argentina hereda esos territorios por el principio de uti possidetis iuris.' },
-                            { year: '1820 → 1832', title: 'Soberanía argentina', body: 'David Jewett toma posesión formal en nombre de las Provincias Unidas (1820). Luis Vernet establece una colonia con familias y ganado.' },
-                            { year: '3 de enero 1833', title: 'Ocupación británica', body: 'La corbeta HMS Clio expulsa a las autoridades argentinas e instaura un gobierno colonial. El reclamo argentino comienza ese mismo día.' },
-                            { year: '1965', title: 'Resolución 2065 ONU', body: 'La Asamblea General reconoce la disputa de soberanía e insta a las partes a negociar. Argentina y Reino Unido inician décadas de negociación inconclusa.' },
-                            { year: '2 de abril 1982', title: 'Operación Rosario', body: 'La dictadura militar argentina, en crisis económica y social, ordena el desembarco. Las islas vuelven a izar la bandera argentina por 74 días.' },
-                            { year: '1 al 25 de mayo 1982', title: 'Operaciones bélicas', body: '1 de mayo: bombardeo Vulcan al aeropuerto. 2 de mayo: hundimiento del ARA General Belgrano (323 muertos). 25 de mayo: hundimiento del HMS Sheffield por misil Exocet.' },
-                            { year: '14 de junio 1982', title: 'Rendición', body: 'El General Mario Benjamín Menéndez firma el cese del fuego en Puerto Argentino. Caen 649 argentinos, 255 británicos y 3 isleños.' },
-                            { year: '1983 → 2003', title: 'Desmalvinización', body: 'Política de silencio: el Estado oculta a los veteranos. Cientos se suicidan en los años posteriores por la falta de contención psicológica y reconocimiento.' },
-                            { year: '1994', title: 'Constitución Nacional', body: 'La Disposición Transitoria Primera declara que la recuperación de las Islas Malvinas es objetivo permanente e irrenunciable de la Nación Argentina.' },
-                            { year: '2017 → presente', title: 'Identificación de los caídos', body: 'El Equipo Argentino de Antropología Forense identifica más de 110 cuerpos en el Cementerio de Darwin. Las familias pueden volver a despedir a sus seres queridos.' }
-                        ].map((item, i) => (
-                            <div key={i} style={{ background: '#fff', border: `1px solid rgba(9,9,12,0.08)`, borderRadius: '12px', padding: '1rem', borderLeft: `4px solid ${COLORS.accent}` }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: COLORS.accent, fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '0.4rem' }}>
-                                    <Calendar size={12} /> {item.year}
-                                </div>
-                                <h4 style={{ fontFamily: '"Public Sans", sans-serif', margin: 0, fontWeight: 800, color: COLORS.deep, fontSize: '1rem' }}>{item.title}</h4>
-                                <p style={{ fontFamily: '"Public Sans", sans-serif', fontSize: '0.85rem', margin: '0.4rem 0 0', color: COLORS.base, lineHeight: 1.55 }}>{item.body}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* COSTO HUMANO Y REFLEXIONES */}
-                <section style={{ ...SECTION.container, background: COLORS.base, color: COLORS.paper }}>
-                    <div style={{ ...SECTION.subtitle, color: COLORS.accent }}>Costo humano y reflexión</div>
-                    <h2 style={{ ...SECTION.title, color: COLORS.paper }}>Más allá de los números</h2>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginTop: '1.25rem' }}>
-                        {[
-                            { n: '649', label: 'Soldados argentinos caídos en combate' },
-                            { n: '+500', label: 'Suicidios de veteranos en la posguerra' },
-                            { n: '255', label: 'Soldados británicos caídos' },
-                            { n: '74', label: 'Días que duró la guerra' },
-                            { n: '18-19', label: 'Edad promedio de los conscriptos' },
-                            { n: '1833', label: 'Año de la ocupación británica original' }
-                        ].map((s, i) => (
-                            <div key={i} style={{ background: 'rgba(240,236,229,0.05)', border: '1px solid rgba(240,236,229,0.12)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                                <div style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontSize: '2rem', fontWeight: 700, color: COLORS.accent, lineHeight: 1 }}>{s.n}</div>
-                                <div style={{ fontSize: '0.78rem', color: COLORS.sky, marginTop: '0.4rem', lineHeight: 1.4 }}>{s.label}</div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-                        {[
-                            {
-                                titulo: 'No fue una causa, fueron pibes.',
-                                texto: 'Detrás de cada caído hay una madre que lo esperaba con la cena, un perro durmiendo en la cama, una novia que escribió cartas que nunca llegaron. Recordarlos como personas es la primera forma de honra.'
-                            },
-                            {
-                                titulo: 'La guerra como cortina',
-                                texto: 'La dictadura militar (1976-1983), en crisis económica y de legitimidad, usó la recuperación de Malvinas como herramienta política. La causa es justa; la guerra impuesta a esos pibes, no.'
-                            },
-                            {
-                                titulo: 'Pensamiento crítico de los medios',
-                                texto: 'Mientras se perdía la guerra, las tapas de revistas decían "Estamos ganando". Discutir Malvinas hoy es también discutir cómo se construyen los relatos mediáticos sobre cualquier conflicto.'
-                            },
-                            {
-                                titulo: 'Soberanía pacífica',
-                                texto: 'La Argentina sostiene el reclamo por vías diplomáticas. La memoria escolar, las experiencias inmersivas y el conocimiento histórico son parte de esa defensa cultural permanente.'
-                            }
-                        ].map((r, i) => (
-                            <div key={i} style={{ background: 'rgba(240,236,229,0.05)', borderLeft: `3px solid ${COLORS.accent}`, padding: '1.25rem', borderRadius: '10px' }}>
-                                <h4 style={{ fontFamily: '"EFCO Brookshire", "Playfair Display", Georgia, serif', fontStyle: 'italic', margin: 0, color: COLORS.paper, fontSize: '1.2rem', fontWeight: 700 }}>
-                                    {r.titulo}
-                                </h4>
-                                <p style={{ fontFamily: '"Public Sans", sans-serif', margin: '0.5rem 0 0', fontSize: '0.92rem', lineHeight: 1.65, color: COLORS.paper, opacity: 0.92 }}>
-                                    {r.texto}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+                    <a 
+                        href="/Proyecto_Malvinas_Explicativo.pdf" 
+                        download
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            background: COLORS.accent,
+                            color: COLORS.paper,
+                            textDecoration: 'none',
+                            padding: '1rem 2rem',
+                            borderRadius: '12px',
+                            fontWeight: 700,
+                            fontFamily: '"Public Sans", sans-serif',
+                            boxShadow: '0 10px 20px rgba(180,83,84,0.3)',
+                            transition: 'transform 0.2s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                        <FileText size={24} /> Descargar PDF Explicativo
+                    </a>
                 </section>
 
                 {/* VIDEO YOUTUBE */}
