@@ -77,7 +77,7 @@ tar -xzf $ArchiveRemote
 echo '> Building imagen frontend...'
 docker compose build fundamentos
 echo '> Recreando contenedor frontend (volumes intactos)...'
-docker compose up -d --force-recreate --remove-orphans fundamentos
+docker compose up -d --force-recreate fundamentos fundamentos-api fundamentos-db
 echo '> Estado de contenedores:'
 docker ps --format '  {{.Names}}  {{.Status}}' | grep fundamentos
 "@
