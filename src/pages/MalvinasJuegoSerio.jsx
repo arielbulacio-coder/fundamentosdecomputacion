@@ -841,7 +841,7 @@ const SCENES = {
         ]
     },
     pregunta_sgto: {
-        img: '/malvinas_cuartel.png', mood: 'tense', day: 0,
+        img: '/malvinas_cuartel2.png', mood: 'tense', day: 0,
         chapter: '1', title: 'En el cuartel',
         text: '"Vamos a recuperar nuestras Malvinas, soldado. Los ingleses las ocupan desde hace 149 años y las vamos a recuperar." El sargento te mira fijo y severo. "¿Alguna duda?"\n\nUn par de compañeros tuyos asienten con orgullo. Otros tragan saliva. Vos pensás en el mapa que te mostró el profesor de Geografía en quinto año: dos islas grises en una esquina del Atlántico, lejos de todo.',
         info: 'La ocupación británica data del 3 de enero de 1833. La decisión militar de 1982 fue tomada por la Junta Dictatorial liderada por Galtieri sin consultar al pueblo, en parte para canalizar el descontento social por la crisis económica y los crímenes del régimen.',
@@ -851,7 +851,7 @@ const SCENES = {
         ]
     },
     avion: {
-        img: '/malvinas_avion.png',
+        img: '/malvinas_avion2.png',
         mood: 'tense', day: 1,
         chapter: '1', title: 'Vuelo al sur',
         text: 'El Hércules está repleto, sofocante y ensordecedor. Sus gigantescas turbinas hacen vibrar cada centímetro de chapa del fuselaje, metiéndose en los huesos. Los muchachos, tratando de espantar el silencio, cantan la Marcha de Malvinas a todo pulmón; algunos ya van por la quinta vez. Hay risas nerviosas, bromas pesadas para disimular la ansiedad, y un suboficial en el rincón que reza apretando un rosario.\n\nMirás por la pequeña ventanilla circular y descubrís, a través de un denso colchón de nubes blancas, la inmensidad del Atlántico Sur: oscuro, profundo e infinito. Algunos en este avión jamás habían salido de los límites de su provincia. Muchos jamás habían visto la nieve o sentido verdadero frío. Demasiados no van a tener la oportunidad de volver.\n\nUn cabo te reparte de prisa una hoja de papel en blanco. "Si querés escribirle unas últimas líneas a tu vieja, hacelo ahora. Allá, en el barro, después no se va a poder".',
@@ -874,7 +874,7 @@ const SCENES = {
         ]
     },
     guardia_nocturna: {
-        img: '/malvinas_guardia.png', mood: 'cold', day: 3,
+        img: '/malvinas_guardia2.png', mood: 'cold', day: 3,
         chapter: '3', title: 'Primera Guardia',
         text: '2 AM. Tu turno de vigilancia. Estás solo en la intemperie. La humedad se cuela por los puños del capote y se mete en los huesos. La campera militar de mala calidad parece de papel mojado.\n\nA lo lejos escuchás el cañoneo naval británico contra la pista del aeropuerto. Cada estallido te hace temblar el suelo bajo las botas. Mirás las estrellas: en Buenos Aires nunca se veían tantas. Acá sí. Acá brillan como si fueran clavos en el techo del mundo.\n\nIntentás recordar el olor del café con leche de tu casa pero no lo lográs. El frío borra los olores antes que los recuerdos.',
         choices: [
@@ -927,7 +927,7 @@ const SCENES = {
         ]
     },
     ataque_aereo_previo: {
-        img: '/malvinas_collage.png', mood: 'battle', day: 50,
+        img: '/malvinas_collage2.png', mood: 'battle', day: 50,
         chapter: '6', title: 'Fuego naval',
         text: 'Mayo avanza. Los británicos desembarcan en San Carlos el 21. Avanzan lento pero seguros. Las noches se vuelven una pesadilla de hierro: barcos británicos disparan andanadas de cañón naval sobre las posiciones argentinas para quebrar la moral y no dejarlos dormir.\n\nLos proyectiles silban sobre el techo de la trinchera. Cada uno suena como un tren cayendo del cielo. Algunos explotan a metros, otros a kilómetros. Nunca sabés cuál te va a tocar.\n\nRamón te aprieta el brazo. No habla. Tiene los ojos cerrados y la boca apretada. Vos sentís el corazón en las orejas.',
         choices: [
@@ -937,7 +937,7 @@ const SCENES = {
         ]
     },
     paramedico: {
-        img: '/malvinas_paramedico.png', mood: 'battle', day: 52,
+        img: '/malvinas_paramedico2.png', mood: 'battle', day: 52,
         chapter: '6', title: 'Sangre joven',
         text: 'Antes del amanecer, una explosión muy cercana. Salen cuatro pibes corriendo del pozo de al lado. Tres traen al cuarto desmayado, sangrando del muslo. Le tiraron una andanada arriba.\n\nEl paramédico — un suboficial que en la vida civil era enfermero en Mar del Plata — corta el pantalón con tijera y aprieta. "Pinza, pinza, pinza", grita. No hay morfina. Le dan whisky de una petaca.\n\nEl chico abre los ojos. Pregunta por su mamá. El paramédico dice que sí, que ya viene, mientras ata el torniquete con desesperación.',
         info: 'Los paramédicos y enfermeros argentinos en Malvinas trabajaron con suministros mínimos en hospitales de campaña improvisados. Salvaron cientos de vidas con coraje y muchos cayeron junto a quienes intentaban salvar.',
@@ -958,7 +958,7 @@ const SCENES = {
         ]
     },
     medios: {
-        img: '/malvinas_medios.png', mood: 'tense', day: 65,
+        img: '/malvinas_medios2.png', mood: 'tense', day: 65,
         chapter: '8', title: 'Revistas del continente',
         text: 'En la sala de espera del hospital ves una pila de revistas "Gente" llegada en un Hércules de logística. La tapa muestra a una madre sonriente con la foto de su hijo conscripto. El título grita en mayúsculas: "ESTAMOS GANANDO".\n\nAdentro hay listas de donaciones millonarias: golosinas, abrigos, cigarrillos, chocolates. Toneladas. Vos no comiste un chocolate en treinta días.\n\nUn compañero, sentado al lado tuyo, abre la revista. Lee los nombres. Después la cierra y mira al vacío. "Mi vieja debe estar leyendo esto ahora mismo en el living", dice.',
         choices: [
@@ -979,7 +979,7 @@ const SCENES = {
         ]
     },
     rendicion: {
-        img: '/malvinas_rendicion.png', mood: 'cold', day: 74,
+        img: '/malvinas_rendicion2.png', mood: 'cold', day: 74,
         chapter: '10', title: 'La rendición',
         text: 'Humo blanco sobre Puerto Argentino. La orden es romper las armas y rendirse. Vos rompés el cerrojo de tu fusil contra una roca. El golpe seco te suena como el cierre de un libro.\n\nEl General Menéndez firma la capitulación a las 23:30 horas. Caminás hacia el galpón gris donde te van a registrar como prisionero de guerra. Hay miles. Pibes mojados, sucios, hambrientos, callados. Un teniente inglés joven, casi de tu edad, te ofrece un cigarrillo. Lo aceptás.\n\nTerminó. 74 días que cambiaron para siempre quién eras.',
         info: 'Saldo del conflicto: 649 caídos argentinos, 255 británicos y 3 isleños. Los conscriptos argentinos fueron capturados, registrados en el Boletín de Cautivos y devueltos al continente en barcos transatlánticos como el Canberra y vuelos comerciales fletados.',
@@ -1028,7 +1028,7 @@ const SCENES = {
         ]
     },
     reencuentro: {
-        img: '/malvinas_soldado_reflexion.png', mood: 'reunion', day: null,
+        img: '/malvinas_soldado_reflexion2.png', mood: 'reunion', day: null,
         chapter: 'Epílogo II', title: '10 años después',
         text: 'Año 1992. La inmensa plaza San Martín de Buenos Aires está iluminada débilmente por cientos de velitas que parpadean contra el viento. Es el décimo aniversario. Ramón viajó desde su pueblo en Corrientes en un colectivo destartalado de 18 horas de viaje solo para verte. Te abraza fuerte, con esa fuerza bruta que solo se aprende en la guerra. Te presenta a su hija pequeña: la llamó Malvina, y la sostiene orgulloso en brazos.\n\n"Pibe...", te murmura apretando su frente contra la tuya, con los ojos vidriosos. "Volveríamos a ese frío maldito mil veces... si fuera para abrazarnos de nuevo".\n\nEn la plaza brillan exactamente 649 velitas silenciosas. Una por cada compañero que se quedó haciendo guardia eterna en el sur. La velita de Sosa, el chico de Tucumán, está justo en el centro. La encendiste vos con las manos temblando. Ramón te aprieta el hombro. Una llovizna fina y fría comienza a caer sobre la ciudad, pero nadie en la plaza se mueve un solo centímetro.',
         memories: (path, stats) => {

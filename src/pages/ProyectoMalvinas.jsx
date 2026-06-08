@@ -391,7 +391,7 @@ const ProyectoMalvinas = () => {
                             </div>
                         </div>
                         <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }}>
-                            <img src="/malvinas_collage.png" alt="Decisiones narrativas" style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }} />
+                            <img src="/malvinas_collage2.png" alt="Decisiones narrativas" style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }} />
                             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem', background: 'linear-gradient(to top, rgba(9,9,12,0.9), transparent)', color: COLORS.paper }}>
                                 <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem' }}>Mosaico de rutas</p>
                                 <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.8 }}>Múltiples desenlaces basados en las decisiones del alumno.</p>
