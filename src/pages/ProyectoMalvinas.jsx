@@ -344,20 +344,20 @@ const ProyectoMalvinas = () => {
                     <h2 style={{ ...SECTION.title, color: COLORS.deep, marginBottom: '1rem', paddingLeft: '0.25rem' }}>Módulos digitales del proyecto</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
                         <ModuleCard
-                            to="/proyecto-malvinas/ra"
-                            icon={Box}
-                            badge="Realidad Aumentada"
-                            title="Diorama Malvinas"
-                            subtitle="Escena 3D inmersiva con 6 hotspots históricos. Funciona en celular con giroscopio."
-                            gradient={`linear-gradient(135deg, ${COLORS.base} 0%, ${COLORS.deep} 100%)`}
-                        />
-                        <ModuleCard
                             to="/proyecto-malvinas/juego"
                             icon={Gamepad2}
                             badge="Juego serio"
                             title="En primera persona"
                             subtitle="Sos Lautaro, conscripto de 18 años. 9 capítulos de decisiones, contexto histórico y reflexión final."
                             gradient={`linear-gradient(135deg, ${COLORS.deep} 0%, ${COLORS.accent} 100%)`}
+                        />
+                        <ModuleCard
+                            to="/proyecto-malvinas/ra"
+                            icon={Box}
+                            badge="Realidad Aumentada"
+                            title="Diorama Malvinas"
+                            subtitle="Escena 3D inmersiva con 6 hotspots históricos. Funciona en celular con giroscopio."
+                            gradient={`linear-gradient(135deg, ${COLORS.base} 0%, ${COLORS.deep} 100%)`}
                         />
                         <ModuleCard
                             to="/proyecto-malvinas/evaluacion"

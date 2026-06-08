@@ -148,13 +148,13 @@ const NavBar = () => {
                                     <Flag size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
                                     Visión general
                                 </Link>
-                                <Link to="/proyecto-malvinas/ra" className={`drop-link ${location.pathname === '/proyecto-malvinas/ra' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
-                                    <Box size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
-                                    Diorama RA
-                                </Link>
                                 <Link to="/proyecto-malvinas/juego" className={`drop-link ${location.pathname === '/proyecto-malvinas/juego' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
                                     <Gamepad2 size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
                                     Juego serio
+                                </Link>
+                                <Link to="/proyecto-malvinas/ra" className={`drop-link ${location.pathname === '/proyecto-malvinas/ra' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
+                                    <Box size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
+                                    Diorama RA
                                 </Link>
                                 <Link to="/proyecto-malvinas/evaluacion" className={`drop-link ${location.pathname === '/proyecto-malvinas/evaluacion' ? 'active' : ''}`} onClick={() => setActiveDropdown(null)}>
                                     <ClipboardList size={14} style={{ marginRight: '0.4rem', verticalAlign: 'middle' }} />
@@ -240,13 +240,13 @@ const NavBar = () => {
                         className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas' ? 'active' : ''}`}>
                         <Flag size={16} /> Visión general
                     </Link>
-                    <Link to="/proyecto-malvinas/ra" onClick={() => setIsOpen(false)}
-                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/ra' ? 'active' : ''}`}>
-                        <Box size={16} /> Diorama RA
-                    </Link>
                     <Link to="/proyecto-malvinas/juego" onClick={() => setIsOpen(false)}
                         className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/juego' ? 'active' : ''}`}>
                         <Gamepad2 size={16} /> Juego serio
+                    </Link>
+                    <Link to="/proyecto-malvinas/ra" onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/ra' ? 'active' : ''}`}>
+                        <Box size={16} /> Diorama RA
                     </Link>
                     <Link to="/proyecto-malvinas/evaluacion" onClick={() => setIsOpen(false)}
                         className={`mobile-nav-link ${location.pathname === '/proyecto-malvinas/evaluacion' ? 'active' : ''}`}>
