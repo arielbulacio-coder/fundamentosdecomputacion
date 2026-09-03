@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Shield, BookOpen, Flag, CircuitBoard, Box, ClipboardList, Gamepad2 } from 'lucide-react';
+import { Menu, X, Home, Shield, BookOpen, Flag, CircuitBoard, Box, ClipboardList, Gamepad2, Smartphone } from 'lucide-react';
 
 const NavBar = () => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -48,8 +48,36 @@ const NavBar = () => {
         }
     ];
 
+    const movilesGroups = [
+        {
+            label: 'Unidad 1 — Fundamentos RN & Expo',
+            links: [
+                { name: '1.1 Entorno y Flexbox', path: '/simulador-react-native?preset=flexbox' },
+                { name: '1.2 Estado y FlatList', path: '/simulador-react-native?preset=flatlist' },
+                { name: '1.3 Expo Router (Tabs)', path: '/simulador-react-native?preset=router' },
+            ]
+        },
+        {
+            label: 'Unidad 2 — Datos y Hardware',
+            links: [
+                { name: '2.1 Estado Global Zustand', path: '/simulador-react-native?preset=state' },
+                { name: '2.3 Formularios Zod', path: '/simulador-react-native?preset=form' },
+                { name: '2.4 Hardware: Cámara & GPS', path: '/simulador-react-native?preset=hardware' },
+            ]
+        },
+        {
+            label: 'Unidad 3 — Backend & Deploy',
+            links: [
+                { name: '3.1 Firebase en Tiempo Real', path: '/simulador-react-native?preset=firebase' },
+                { name: '3.2 Animaciones Reanimated 3', path: '/simulador-react-native?preset=animations' },
+                { name: '3.3 EAS Build & Deploy', path: '/aplicaciones-moviles' },
+            ]
+        }
+    ];
+
     const fundamentosPaths = fundamentosGroups.flatMap(g => g.links.map(l => l.path));
     const isFundamentosActive = fundamentosPaths.some(p => location.pathname === p);
+    const isMovilesActive = location.pathname === '/aplicaciones-moviles' || location.pathname === '/simulador-react-native';
 
     return (
         <nav style={{
@@ -119,6 +147,58 @@ const NavBar = () => {
                                                 key={link.path}
                                                 to={link.path}
                                                 className={`drop-link ${location.pathname === link.path ? 'active' : ''}`}
+                                                onClick={() => setActiveDropdown(null)}
+                                            >
+                                                {link.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Aplicaciones Móviles (mega-dropdown con link directo y simulador) */}
+                    <div
+                        style={{ position: 'relative' }}
+                        onMouseEnter={() => setActiveDropdown('moviles')}
+                        onMouseLeave={() => setActiveDropdown(null)}
+                    >
+                        <Link
+                            to="/aplicaciones-moviles"
+                            className={`nav-link ${isMovilesActive ? 'active' : ''}`}
+                            style={isMovilesActive ? { color: '#0284c7', background: 'rgba(2,132,199,0.08)' } : {}}
+                        >
+                            <Smartphone size={18} /> Aplicaciones Móviles <span style={{ fontSize: '0.7rem', marginLeft: '0.25rem' }}>▼</span>
+                        </Link>
+                        {activeDropdown === 'moviles' && (
+                            <div className="mega-menu" style={{ minWidth: '580px' }}>
+                                <div className="mega-group" style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'row', gap: '8px' }}>
+                                    <Link
+                                        to="/aplicaciones-moviles"
+                                        className={`drop-link ${location.pathname === '/aplicaciones-moviles' ? 'active' : ''}`}
+                                        onClick={() => setActiveDropdown(null)}
+                                        style={{ flex: 1, background: 'rgba(2,132,199,0.08)', color: '#0284c7', fontWeight: 800 }}
+                                    >
+                                        📱 Portada del Curso & Programa 2026
+                                    </Link>
+                                    <Link
+                                        to="/simulador-react-native"
+                                        className={`drop-link ${location.pathname === '/simulador-react-native' ? 'active' : ''}`}
+                                        onClick={() => setActiveDropdown(null)}
+                                        style={{ flex: 1, background: 'linear-gradient(135deg, #0284c7, #38bdf8)', color: '#fff', fontWeight: 800 }}
+                                    >
+                                        ⚡ Lanzar Simulador Móvil en Vivo
+                                    </Link>
+                                </div>
+                                {movilesGroups.map(group => (
+                                    <div key={group.label} className="mega-group">
+                                        <div className="mega-group-title" style={{ color: '#0284c7' }}>{group.label}</div>
+                                        {group.links.map(link => (
+                                            <Link
+                                                key={link.name}
+                                                to={link.path}
+                                                className="drop-link"
                                                 onClick={() => setActiveDropdown(null)}
                                             >
                                                 {link.name}
@@ -226,6 +306,41 @@ const NavBar = () => {
                                     to={link.path}
                                     onClick={() => setIsOpen(false)}
                                     className={`mobile-nav-link ${location.pathname === link.path ? 'active' : ''}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    ))}
+
+                    <div className="mobile-section-header" style={{ marginTop: '1.25rem', color: '#0284c7', background: 'rgba(2,132,199,0.08)' }}>
+                        <Smartphone size={16} /> Aplicaciones Móviles (React Native & Expo)
+                    </div>
+                    <Link
+                        to="/aplicaciones-moviles"
+                        onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/aplicaciones-moviles' ? 'active' : ''}`}
+                        style={{ background: 'rgba(2,132,199,0.05)', fontWeight: 800 }}
+                    >
+                        📱 Portada & Programa 2026
+                    </Link>
+                    <Link
+                        to="/simulador-react-native"
+                        onClick={() => setIsOpen(false)}
+                        className={`mobile-nav-link ${location.pathname === '/simulador-react-native' ? 'active' : ''}`}
+                        style={{ background: 'linear-gradient(135deg, #0284c7, #38bdf8)', color: '#fff', fontWeight: 800 }}
+                    >
+                        ⚡ Lanzar Simulador Móvil en Vivo
+                    </Link>
+                    {movilesGroups.map(group => (
+                        <div key={group.label} style={{ paddingLeft: '0.5rem' }}>
+                            <div className="mobile-unit-header">{group.label}</div>
+                            {group.links.map(link => (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    onClick={() => setIsOpen(false)}
+                                    className="mobile-nav-link"
                                 >
                                     {link.name}
                                 </Link>

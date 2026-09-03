@@ -24,6 +24,8 @@ import ProyectoMalvinas from './pages/ProyectoMalvinas';
 import MalvinasRA from './pages/MalvinasRA';
 import MalvinasEvaluacion from './pages/MalvinasEvaluacion';
 import MalvinasJuegoSerio from './pages/MalvinasJuegoSerio';
+import AplicacionesMoviles from './pages/AplicacionesMoviles';
+import SimuladorReactNative from './pages/SimuladorReactNative';
 
 // The portal takes over the full screen (no NavBar/Footer)
 function AppLayout() {
@@ -67,6 +69,8 @@ function AppLayout() {
           <Route path="/proyecto-malvinas" element={<ProyectoMalvinas />} />
           <Route path="/proyecto-malvinas/evaluacion" element={<MalvinasEvaluacion />} />
           <Route path="/proyecto-malvinas/juego" element={<MalvinasJuegoSerio />} />
+          <Route path="/aplicaciones-moviles" element={<AplicacionesMoviles />} />
+          <Route path="/simulador-react-native" element={<SimuladorReactNative />} />
         </Routes>
       </main>
       <Footer />

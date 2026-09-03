@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
     Box, Gamepad2, GraduationCap, Lightbulb, ArrowRight, Glasses, TestTube,
     BookOpen, Users, ClipboardList, Flag, Sparkles, Compass, FileSpreadsheet,
-    Award, MessageCircle, MonitorSmartphone
+    Award, MessageCircle, MonitorSmartphone, Smartphone
 } from 'lucide-react';
 
 const Home = () => {
@@ -26,6 +26,14 @@ const Home = () => {
     ];
 
     const destinations = [
+        {
+            to: '/aplicaciones-moviles',
+            icon: <Smartphone size={26} />,
+            badge: 'Materia & Laboratorio',
+            title: 'Aplicaciones Móviles (React Native & Expo)',
+            desc: 'Programa 2026 UNPilar: 3 unidades, navegación Expo Router, Zustand, Firebase en tiempo real, sensores de hardware y simulador interactivo de código.',
+            background: 'linear-gradient(135deg, rgba(2,132,199,0.95) 0%, rgba(56,189,248,0.75) 100%)'
+        },
         {
             to: '/fundamentos',
             icon: <BookOpen size={26} />,
@@ -101,6 +109,9 @@ const Home = () => {
                     transition={{ delay: 0.4 }}
                     style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}
                 >
+                    <Link to="/aplicaciones-moviles" style={{ background: 'linear-gradient(135deg, #0284c7, #38bdf8)', color: '#fff', textDecoration: 'none', padding: '1rem 1.75rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 10px 25px rgba(2,132,199,0.35)' }}>
+                        <Smartphone size={18} /> Aplicaciones Móviles
+                    </Link>
                     <Link to="/fundamentos" style={{ background: 'linear-gradient(135deg, #1e3a8a, #3b82f6)', color: '#fff', textDecoration: 'none', padding: '1rem 1.75rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 10px 25px rgba(59,130,246,0.3)' }}>
                         <BookOpen size={18} /> Fundamentos
                     </Link>
